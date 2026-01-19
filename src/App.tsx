@@ -110,7 +110,7 @@ function AppContent() {
           <Route path="/services/tax-compliances" element={<TaxCompliances />} />
           <Route path="/services/government-registrations" element={<GovernmentRegistrations />} />
         </Routes>
-        <WhyChooseUs />
+
       </main>
       <Footer onNavigate={() => { }} />
     </div>
