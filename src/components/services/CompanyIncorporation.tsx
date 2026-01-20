@@ -221,7 +221,7 @@ export function CompanyIncorporation() {
                 className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-neutral-200"
               >
                 {/* Header */}
-                <div className={`bg-gradient-to-r ${company.color} p-6 lg:p-8 text-white`}>
+                <div className="bg-primary p-6 lg:p-8 text-white">
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-4">
                       <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">

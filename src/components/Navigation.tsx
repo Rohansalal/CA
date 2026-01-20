@@ -116,7 +116,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
   const navItems = [
     { id: 'home', label: 'Home', route: '/' },
     { id: 'about', label: 'About Us', route: '/about' },
-    { id: 'services', label: 'Services', hasSubmenu: true },
+    { id: 'services', label: 'Services', hasSubmenu: true, route: '/services' },
     { id: 'industries', label: 'Industries', route: '/industries' },
     { id: 'resources', label: 'Resources', route: '/resources' },
     { id: 'contact', label: 'Contact Us', route: '/contact' },
@@ -150,7 +150,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
             <div className="flex items-center gap-4">
               <a href="tel:+911234567890" className="flex items-center gap-2 hover:text-accent transition-colors">
                 <Phone className="w-4 h-4" />
-                <span>+91 123 456 7890</span>
+                <span> +91  9811105573</span>
               </a>
               <a href="mailto:info@cafirm.com" className="flex items-center gap-2 hover:text-accent transition-colors">
                 <Mail className="w-4 h-4" />
@@ -165,11 +165,11 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
         </div>
       </div>
 
-      {/* Main navigation */}
+      {/* Main navigation
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-20">
           {/* Logo */}
-          <button
+      {/*  <button
             onClick={() => handleNavClick('/', 'home')}
             className="flex items-center gap-3"
           >
@@ -177,10 +177,30 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
               <span className="text-accent text-xl font-bold font-display">CA</span>
             </div>
             <div className="hidden sm:block">
-              <div className="text-xl font-bold text-primary font-display">Precision Associates</div>
+              <div className="text-xl font-bold text-primary font-display">Avinash Payal & Co.</div>
               <div className="text-xs text-neutral-600">Chartered Accountants</div>
             </div>
+          </button> */}
+
+      {/* Main navigation */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-20">
+          {/* Logo Section - CA Name First, Then Logo Image */}
+          <button
+            onClick={() => handleNavClick('/', 'home')}
+            className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+          >
+            <div className="flex flex-col items-center">
+              <div className="text-lg font-bold text-primary font-display leading-tight">Avinash Payal & Co.</div>
+              <div className="text-lg font-bold text-primary font-display leading-tight">Chartered Accountants</div>
+            </div>
+            <img
+              src="/logo.png"
+              alt="Company Logo"
+              className="w-16 h-15 bg-transparent"
+            />
           </button>
+
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center gap-8">
@@ -206,10 +226,13 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                     <div className="bg-white shadow-2xl border border-gray-200 rounded-xl overflow-hidden">
 
                       {/* Header */}
-                      <div className="bg-primary px-6 py-4 text-white">
+                      <button
+                        onClick={() => handleNavClick('/services', 'services')}
+                        className="w-full bg-primary px-6 py-4 text-white text-left hover:bg-primary/90 transition-colors"
+                      >
                         <h3 className="text-lg font-bold">Our Services</h3>
                         <p className="text-xs text-white/80 mt-1">Comprehensive CA & Business Solutions</p>
-                      </div>
+                      </button>
 
                       {/* Two-Panel Layout */}
                       <div className="flex">
@@ -355,6 +378,13 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                 {/* Mobile Services Submenu */}
                 {item.hasSubmenu && servicesOpen && (
                   <div className="mt-2 space-y-3 bg-neutral-50 rounded-lg p-3 ml-2 border-l-4 border-primary">
+                    <button
+                      onClick={() => handleNavClick('/services', 'services')}
+                      className="w-full text-left px-4 py-3 rounded-lg font-bold text-sm text-primary hover:bg-white transition-colors flex items-center gap-2 border border-dashed border-primary/20"
+                    >
+                      <span className="text-lg">📑</span>
+                      <span>View All Services</span>
+                    </button>
                     {serviceCategories.map((category) => {
                       const colors = getCategoryColors(category.color);
                       return (

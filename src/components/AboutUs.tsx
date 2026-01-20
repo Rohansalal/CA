@@ -27,21 +27,21 @@ export function AboutUs() {
 
   const team = [
     {
-      name: 'CA. Amit Sharma',
+      name: 'DUMMY CONTENT',
       designation: 'Managing Partner',
       qualification: 'FCA, DISA (ICAI)',
       experience: '15+ Years',
       specialization: 'Taxation & Audit',
     },
     {
-      name: 'CA. Priya Mehta',
+      name: 'DUMMY CONTENT',
       designation: 'Senior Partner',
       qualification: 'ACA, CFA',
       experience: '12+ Years',
       specialization: 'Corporate Finance & Advisory',
     },
     {
-      name: 'CA. Rajesh Kumar',
+      name: 'DUMMY CONTENT',
       designation: 'Partner',
       qualification: 'FCA, DISA',
       experience: '10+ Years',
@@ -64,9 +64,9 @@ export function AboutUs() {
       <section className="bg-gradient-to-br from-primary via-primary to-secondary text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-4xl mx-auto">
-            <h1 className="text-4xl lg:text-5xl text-white mb-6">About Precision Associates</h1>
+            <h1 className="text-4xl lg:text-5xl text-white mb-6">About Avinash Payal & Co.</h1>
             <p className="text-xl text-neutral-100 leading-relaxed">
-              A premier chartered accountancy firm delivering excellence in taxation, audit, and business advisory services since 2014. We combine deep expertise with a commitment to client success.
+              DUMMY CONTENT DUMMY CONTENT
             </p>
           </div>
         </div>
@@ -79,14 +79,17 @@ export function AboutUs() {
             <div>
               <h2 className="text-3xl lg:text-4xl text-primary mb-6">Our Story</h2>
               <div className="space-y-4 text-neutral-700 leading-relaxed">
-                <p>
-                  Founded in 2014, Precision Associates began with a vision to provide reliable, ethical, and innovative chartered accountancy services to businesses of all sizes. What started as a small practice has grown into a trusted firm serving over 1000 clients across diverse industries.
+                {/* <p>
+                  Founded in 2014, Avinash Payal & Co. began with a vision to provide reliable, ethical, and innovative chartered accountancy services to businesses of all sizes. What started as a small practice has grown into a trusted firm serving over 1000 clients across diverse industries.
                 </p>
                 <p>
                   Our journey has been marked by continuous learning, adaptation to regulatory changes, and an unwavering focus on client satisfaction. We've expanded our service offerings from traditional compliance to comprehensive business advisory, helping our clients navigate complex financial landscapes.
                 </p>
                 <p>
                   Today, we stand as a team of qualified chartered accountants, tax consultants, and financial advisors committed to delivering precision in every engagement. Our success is measured by the growth and compliance excellence of our clients.
+                </p> */}
+                <p>
+                  Lorem, ipsum dolor sit amet consectetur adipisicing elit. Enim quibusdam, molestiae veniam nostrum, maiores obcaecati atque cum, tempora eum dicta temporibus odio sed exercitationem iusto quidem officiis laborum eligendi ut.
                 </p>
               </div>
             </div>
@@ -201,7 +204,7 @@ export function AboutUs() {
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl text-primary mb-4">Our Journey</h2>
             <p className="text-lg text-neutral-600">
-              Key milestones that shaped Precision Associates
+              Key milestones that shaped Avinash Payal & Co.
             </p>
           </div>
           <div className="space-y-8">

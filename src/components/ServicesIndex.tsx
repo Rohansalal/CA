@@ -10,7 +10,24 @@ import { GovernmentRegistrations } from './services/GovernmentRegistrations';
 export function ServicesIndex() {
   const [selectedService, setSelectedService] = useState<string | null>(null);
 
-  const serviceCategories = [
+  interface ServiceItem {
+    id: string;
+    name: string;
+    description: string;
+    icon: any;
+    popular?: boolean;
+    comingSoon?: boolean;
+    linkedTo?: string;
+  }
+
+  interface ServiceCategory {
+    category: string;
+    icon: any;
+    color: string;
+    services: ServiceItem[];
+  }
+
+  const serviceCategories: ServiceCategory[] = [
     {
       category: 'Business Registrations',
       icon: Building2,
@@ -408,7 +425,7 @@ export function ServicesIndex() {
               <div key={catIndex}>
                 {/* Category Header */}
                 <div className="flex items-center gap-4 mb-8">
-                  <div className={`w-12 h-12 bg-gradient-to-r ${category.color} rounded-xl flex items-center justify-center`}>
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-primary">
                     <category.icon className="w-6 h-6 text-white" />
                   </div>
                   <div>
@@ -424,15 +441,14 @@ export function ServicesIndex() {
                       key={serviceIndex}
                       onClick={() => !service.comingSoon && handleServiceClick(service.id, service.linkedTo)}
                       disabled={service.comingSoon}
-                      className={`bg-white rounded-xl shadow-md border border-neutral-200 p-6 text-left transition-all group ${
-                        service.comingSoon
-                          ? 'opacity-60 cursor-not-allowed'
-                          : 'hover:shadow-2xl hover:-translate-y-1'
-                      }`}
+                      className={`bg-white rounded-xl shadow-md border border-neutral-200 p-6 text-left transition-all group ${service.comingSoon
+                        ? 'opacity-60 cursor-not-allowed'
+                        : 'hover:shadow-2xl hover:-translate-y-1'
+                        }`}
                     >
                       <div className="flex items-start justify-between mb-4">
-                        <div className={`w-12 h-12 bg-gradient-to-r ${category.color} bg-opacity-10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                          <service.icon className={`w-6 h-6 bg-gradient-to-r ${category.color} bg-clip-text text-transparent`} style={{ WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }} />
+                        <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform">
+                          <service.icon className="w-6 h-6 text-primary" />
                         </div>
                         <div className="flex flex-col gap-2">
                           {service.popular && (

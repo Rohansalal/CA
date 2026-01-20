@@ -29,7 +29,7 @@ export function ContactUs() {
     {
       icon: Phone,
       title: 'Phone',
-      details: ['+91 123 456 7890', '+91 098 765 4321'],
+      details: [' +91  9811105573', '+91 098 765 4321'],
       color: 'from-blue-500 to-blue-600',
     },
     {
@@ -56,7 +56,7 @@ export function ContactUs() {
     {
       city: 'Bangalore',
       address: '123, Business Tower, MG Road, Bangalore - 560001',
-      phone: '+91 123 456 7890',
+      phone: ' +91  9811105573',
       email: 'bangalore@precisionassociates.com',
     },
     {

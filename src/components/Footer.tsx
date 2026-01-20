@@ -53,10 +53,10 @@ export function Footer({ onNavigate }: FooterProps) {
           <div>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center">
-                <span className="text-white text-xl font-bold font-display">CA</span>
+                <img src="/logo.png" alt="Logo" className="w-12 h-12 rounded-lg object-cover bg-white border-0 shadow-none hover:shadow-lg transition-shadow" />
               </div>
               <div>
-                <div className="text-xl font-bold text-white font-display">Precision Associates</div>
+                <div className="text-xl font-bold text-white font-display">Avinash Payal & Co.</div>
                 <div className="text-xs text-neutral-200">Chartered Accountants</div>
               </div>
             </div>
@@ -122,15 +122,15 @@ export function Footer({ onNavigate }: FooterProps) {
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
                 <div className="text-neutral-200 text-sm">
-                  123, Business Tower,<br />
-                  MG Road, Bangalore<br />
-                  Karnataka - 560001
+                  dummy address<br />
+                  dummy city<br />
+                  dummy state - 000000
                 </div>
               </div>
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-accent flex-shrink-0" />
                 <a href="tel:+911234567890" className="text-neutral-200 hover:text-accent transition-colors text-sm">
-                  +91 123 456 7890
+                  +91  9811105573
                 </a>
               </div>
               <div className="flex items-center gap-3">
@@ -164,7 +164,7 @@ export function Footer({ onNavigate }: FooterProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-neutral-200">
             <div>
-              © 2026 Precision Associates. All rights reserved. | ICAI Registered Firm
+              © 2026 Avinash Payal & Co.. All rights reserved. | ICAI Registered Firm
             </div>
             <div className="flex gap-6">
               <button className="hover:text-accent transition-colors">Privacy Policy</button>

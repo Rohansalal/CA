@@ -12,7 +12,7 @@ export function Industries() {
         'TDS compliance for contractors',
         'Income recognition advisory',
       ],
-      color: 'from-blue-500 to-blue-600',
+      color: 'from-red-500 to-red-600',
     },
     {
       icon: ShoppingBag,
@@ -24,7 +24,7 @@ export function Industries() {
         'Inventory valuation',
         'Multi-state GST compliance',
       ],
-      color: 'from-purple-500 to-purple-600',
+      color: 'from-cyan-500 to-blue-600',
     },
     {
       icon: Factory,
@@ -36,7 +36,7 @@ export function Industries() {
         'Working capital management',
         'Export incentive schemes',
       ],
-      color: 'from-orange-500 to-orange-600',
+      color: 'from-cyan-500 to-blue-600',
     },
     {
       icon: Heart,
@@ -48,7 +48,7 @@ export function Industries() {
         'Drug licensing support',
         'Healthcare GST advisory',
       ],
-      color: 'from-red-500 to-red-600',
+      color: 'from-cyan-500 to-blue-600',
     },
     {
       icon: GraduationCap,
@@ -60,7 +60,7 @@ export function Industries() {
         '80G/12A registrations',
         'Fee management systems',
       ],
-      color: 'from-green-500 to-green-600',
+      color: 'from-cyan-500 to-blue-600',
     },
     {
       icon: Home,
@@ -72,7 +72,7 @@ export function Industries() {
         'Tourism GST compliance',
         'Foreign exchange advisory',
       ],
-      color: 'from-pink-500 to-pink-600',
+      color: 'from-cyan-500 to-blue-600',
     },
     {
       icon: Truck,
@@ -84,7 +84,7 @@ export function Industries() {
         'Freight accounting',
         'Fleet management advisory',
       ],
-      color: 'from-indigo-500 to-indigo-600',
+      color: 'from-cyan-500 to-blue-600',
     },
     {
       icon: Laptop,
@@ -96,7 +96,7 @@ export function Industries() {
         'SEZ compliance',
         'Export of services taxation',
       ],
-      color: 'from-teal-500 to-teal-600',
+      color: 'from-cyan-500 to-blue-600',
     },
   ];
 
@@ -108,7 +108,7 @@ export function Industries() {
           <div className="text-center max-w-4xl mx-auto">
             <h1 className="text-4xl lg:text-5xl text-white mb-6">Industries We Serve</h1>
             <p className="text-xl text-neutral-100 leading-relaxed">
-              Deep domain expertise across diverse sectors with tailored financial solutions that address industry-specific challenges and opportunities
+              DUMMY CONTENT
             </p>
           </div>
         </div>
@@ -123,7 +123,7 @@ export function Industries() {
                 key={index}
                 className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden border border-neutral-200 group"
               >
-                <div className={`bg-gradient-to-r ${industry.color} p-6 flex items-center gap-4`}>
+                <div className="p-6 flex items-center gap-4 bg-primary">
                   <div className="w-14 h-14 bg-white/20 rounded-xl flex items-center justify-center flex-shrink-0">
                     <industry.icon className="w-7 h-7 text-white" />
                   </div>
@@ -144,7 +144,7 @@ export function Industries() {
                       </div>
                     ))}
                   </div>
-                  <button className="px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all hover:shadow-lg flex items-center gap-2 group-hover:gap-3">
+                  <button className="px-6 py-3 text-white font-semibold rounded-lg transition-all hover:shadow-lg flex items-center gap-2 group-hover:gap-3 hover:opacity-90" style={{ backgroundColor: '#ee7228' }}>
                     Learn More
                     <ArrowRight className="w-4 h-4" />
                   </button>

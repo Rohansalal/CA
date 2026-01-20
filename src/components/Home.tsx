@@ -47,7 +47,7 @@ export function Home() {
       name: 'Rajesh Kumar',
       company: 'Tech Innovations Pvt Ltd',
       role: 'CEO',
-      content: 'Precision Associates has been instrumental in managing our complex tax structure. Their proactive approach saved us significant costs.',
+      content: 'Avinash Payal & Co. has been instrumental in managing our complex tax structure. Their proactive approach saved us significant costs.',
       rating: 5,
     },
     {
@@ -196,7 +196,7 @@ export function Home() {
               />
             </div>
             <div className="space-y-6">
-              <h2 className="text-3xl lg:text-4xl text-primary">Why Choose Precision Associates?</h2>
+              <h2 className="text-3xl lg:text-4xl text-primary">Why Choose Avinash Payal & Co.?</h2>
               <p className="text-lg text-neutral-600">
                 We combine deep financial expertise with a commitment to excellence, ensuring your business stays compliant while maximizing growth opportunities.
               </p>
