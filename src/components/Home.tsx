@@ -293,8 +293,7 @@ import { ImageWithFallback } from './figma/ImageWithFallback';
 import { FAQ } from './FAQ';
 import { ConsultingFormNew } from './ConsultingFormNew';
 import { TrustAndSocialProof } from './TrustAndSocialProof';
-// import { WhyChooseUs } from './WhyChooseUs';
-import { WhyChooseUs } from './WhyChooseUs';
+import { WhyChooseUs } from "./WhyChooseUs";
 import { FeaturedInsights } from './FeaturedInsights';
 
 export function Home() {
