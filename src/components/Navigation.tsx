@@ -152,9 +152,9 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                 <Phone className="w-4 h-4" />
                 <span> +91  9811105573</span>
               </a>
-              <a href="mailto:info@cafirm.com" className="flex items-center gap-2 hover:text-accent transition-colors">
+              <a href="mailto:info@caavinash.in" className="flex items-center gap-2 hover:text-accent transition-colors">
                 <Mail className="w-4 h-4" />
-                <span>info@cafirm.com</span>
+                <span>info@caavinash.in</span>
               </a>
             </div>
             <div className="flex items-center gap-2">

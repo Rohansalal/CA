@@ -1,65 +1,261 @@
-import React from 'react';
+// import { Award, CheckCircle, TrendingUp, Shield, Users, Target, Zap, Heart } from 'lucide-react';
+// import { ImageWithFallback } from './figma/ImageWithFallback';
 
-interface FeatureCardProps {
-    title: string;
-    description: string;
-    icon: React.ReactNode;
-}
+// export function WhyChooseUs() {
+//     const features = [
+//         {
+//             icon: Award,
+//             title: 'ICAI Registered Chartered Accountants',
+//             description: 'Certified professionals with proven expertise in taxation and compliance',
+//             color: 'from-blue-500 to-blue-600',
+//         },
+//         {
+//             icon: TrendingUp,
+//             title: '10+ Years of Industry Experience',
+//             description: 'Decade-long track record of delivering exceptional financial services',
+//             color: 'from-blue-500 to-blue-600',
+//         },
+//         {
+//             icon: Users,
+//             title: '1000+ Satisfied Clients Across Industries',
+//             description: 'Trusted by businesses from startups to large enterprises',
+//             color: 'from-blue-500 to-blue-600',
+//         },
+//         {
+//             icon: Shield,
+//             title: '100% Compliance & Accuracy Guarantee',
+//             description: 'Zero-error commitment with comprehensive quality checks',
+//             color: 'from-blue-500 to-blue-600',
+//         },
+//         {
+//             icon: Target,
+//             title: 'Proactive Tax Planning & Advisory',
+//             description: 'Strategic guidance to minimize tax liability and maximize savings',
+//             color: 'from-blue-500 to-blue-600',
+//         },
+//         {
+//             icon: Heart,
+//             title: 'Dedicated Relationship Manager',
+//             description: 'Personalized attention with a single point of contact',
+//             color: 'from-blue-500 to-blue-600',
+//         },
+//     ];
 
-const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon }) => {
-    return (
-        <div className="bg-white p-10 shadow-lg border border-gray-50 flex flex-col items-start transition-transform hover:-translate-y-2 duration-300">
-            <div className="flex items-center w-full mb-6">
-                <div className="bg-gray-100 p-4 rounded-full text-gray-400">
-                    {icon}
-                </div>
-                <div className="h-[1px] bg-gray-200 flex-grow mx-4"></div>
-                <h3 className="text-indigo-900 font-bold text-xl">{title}</h3>
-            </div>
-            <p className="text-gray-400 leading-relaxed mb-6 text-sm">
-                {description}
-            </p>
-            <button className="text-indigo-900 font-bold text-xs uppercase tracking-widest hover:text-blue-600 border-b border-transparent hover:border-blue-600 pb-1">
-                Read More
-            </button>
-        </div>
-    );
-};
+//     return (
+//         <section className="py-24 bg-gradient-to-b from-white via-neutral-50 to-white relative overflow-hidden">
+//             {/* Background Decorative Elements */}
+//             <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-br from-primary/5 to-transparent rounded-full blur-3xl" />
+//             <div className="absolute bottom-0 right-0 w-96 h-96 bg-gradient-to-bl from-accent/5 to-transparent rounded-full blur-3xl" />
 
-const WhyChooseUs: React.FC = () => {
+//             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+//                 {/* Section Header */}
+//                 <div className="text-center mb-16 mt-12">
+//                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-8">
+//                         <Award className="w-4 h-4 text-primary" />
+//                         <span className="text-sm font-semibold text-primary uppercase tracking-wide">Why Choose Us</span>
+//                     </div>
+//                     <h2 className="text-4xl lg:text-5xl font-bold text-primary mb-6">
+//                         Why Choose Avinash Payal & Co.?
+//                     </h2>
+//                     <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
+//                         We combine deep financial expertise with a commitment to excellence, ensuring your business stays compliant while maximizing growth opportunities. Here's what sets us apart.
+//                     </p>
+//                 </div>
+
+//                 {/* Main Content Grid */}
+//                 <div className="grid lg:grid-cols-2 gap-16 items-center mb-20">
+//                     {/* Image Side */}
+//                     <div className="order-2 lg:order-1">
+//                         <div className="relative">
+//                             {/* Glow Effect */}
+//                             <div className="absolute -inset-6 bg-gradient-to-br from-primary/20 via-accent/20 to-primary/20 rounded-3xl blur-3xl opacity-50" />
+
+//                             {/* Main Image */}
+//                             <div className="relative">
+//                                 <ImageWithFallback
+//                                     src="https://images.unsplash.com/photo-1759310610325-2c7cb621e5e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGhhbmRzaGFrZSUyMHRydXN0fGVufDF8fHx8MTc2ODgwOTM2Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+//                                     alt="Trusted Business Partnership"
+//                                     className="relative rounded-2xl shadow-2xl w-full h-[500px] object-cover"
+//                                 />
+
+//                                 {/* Floating Stats Card */}
+//                                 <div className="absolute -bottom-8 -right-8 bg-white rounded-2xl shadow-2xl p-6 border border-neutral-100">
+//                                     <div className="flex items-center gap-4">
+//                                         <div className="w-16 h-16 bg-gradient-to-br from-accent to-accent/80 rounded-xl flex items-center justify-center">
+//                                             <Award className="w-8 h-8 text-white" />
+//                                         </div>
+//                                         <div>
+//                                             <div className="text-3xl font-bold text-primary">4.9/5</div>
+//                                             <div className="text-sm text-neutral-600">Client Rating</div>
+//                                         </div>
+//                                     </div>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                     </div>
+
+//                     {/* Features Grid */}
+//                     <div className="order-1 lg:order-2">
+//                         <div className="grid gap-4">
+//                             {features.map((feature, index) => (
+//                                 <div
+//                                     key={index}
+//                                     className="group relative bg-white p-6 rounded-2xl border border-neutral-200 hover:border-primary/30 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+//                                 >
+//                                     {/* Background Gradient */}
+//                                     <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${feature.color} opacity-0 group-hover:opacity-5 rounded-bl-full transition-opacity duration-300`} />
+
+//                                     <div className="flex items-start gap-4 relative z-10">
+//                                         {/* Icon */}
+//                                         <div className={`flex-shrink-0 w-12 h-12 bg-gradient-to-br ${feature.color} rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all duration-300`}>
+//                                             <feature.icon className="w-6 h-6 text-white" />
+//                                         </div>
+
+//                                         {/* Content */}
+//                                         <div className="flex-1">
+//                                             <h3 className="text-lg font-bold text-primary mb-2 group-hover:text-accent transition-colors">
+//                                                 {feature.title}
+//                                             </h3>
+//                                             <p className="text-sm text-neutral-600 leading-relaxed">
+//                                                 {feature.description}
+//                                             </p>
+//                                         </div>
+
+//                                         {/* Check Icon */}
+//                                         <div className="flex-shrink-0">
+//                                             <CheckCircle className="w-5 h-5 text-green-500" />
+//                                         </div>
+//                                     </div>
+//                                 </div>
+//                             ))}
+//                         </div>
+//                     </div>
+//                 </div>
+//             </div>
+//         </section>
+//     );
+// }
+
+import { Award, CheckCircle, TrendingUp, Shield, Users, Target, Heart } from 'lucide-react';
+
+export function WhyChooseUs() {
     const features = [
         {
-            title: "Professional",
-            description: "Explain to you how all this mistaken idea of denouncing pleasure and praising pain was born and I will give you a complete.",
-            icon: <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+            icon: Award,
+            title: 'ICAI Registered Professionals',
+            description: 'Certified experts in taxation & compliance.',
         },
-        // Repeat for other cards...
+        {
+            icon: TrendingUp,
+            title: '10+ Years Experience',
+            description: 'Proven track record in financial growth.',
+        },
+        {
+            icon: Users,
+            title: '1000+ Satisfied Clients',
+            description: 'Trusted by startups to large enterprises.',
+        },
+        {
+            icon: Shield,
+            title: '100% Compliance Guarantee',
+            description: 'Zero-error commitment & quality checks.',
+        },
+        {
+            icon: Target,
+            title: 'Proactive Tax Planning',
+            description: 'Strategic guidance to maximize savings.',
+        },
+        {
+            icon: Heart,
+            title: 'Dedicated Support',
+            description: 'Personalized single point of contact.',
+        },
     ];
 
     return (
-        <section className="relative py-20 bg-white overflow-hidden">
-            {/* The Dotted Background Pattern */}
-            <div className="absolute bottom-0 left-0 w-full h-1/2 opacity-20 pointer-events-none"
-                style={{ backgroundImage: 'radial-gradient(#000 1px, transparent 1px)', backgroundSize: '20px 20px' }}>
-            </div>
+        <section className="py-20 bg-slate-50 relative overflow-hidden">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
-            <div className="container mx-auto px-4 relative z-10">
-                <h2 className="text-center text-4xl font-semibold text-gray-800 mb-16 relative">
-                    Why Choosing Chartered Accountants
-                    {/* Faded Background 'W' */}
-                    <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-9xl font-bold text-gray-100 -z-10 opacity-50">
-                        W
-                    </span>
-                </h2>
+                {/* Section Header */}
+                <div className="text-center mb-12">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100/50 rounded-full mb-4 border border-blue-200">
+                        <Award className="w-3.5 h-3.5 text-blue-700" />
+                        <span className="text-xs font-bold text-blue-800 uppercase tracking-wide">Why Choose Us</span>
+                    </div>
+                    <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
+                        Why Choose Avinash Payal & Co.?
+                    </h2>
+                    <p className="text-base text-slate-600 max-w-2xl mx-auto">
+                        Deep financial expertise combined with a commitment to excellence.
+                    </p>
+                </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {features.concat(features).slice(0, 3).map((f, index) => (
-                        <FeatureCard key={index} {...f} />
-                    ))}
+                {/* Main Content Grid */}
+                <div className="grid lg:grid-cols-2 gap-16 items-center">
+
+                    {/* Left Column: Large Image Card */}
+                    <div className="order-2 lg:order-1 flex justify-center lg:justify-end">
+                        <div className="relative rounded-lg overflow-hidden shadow-xl border border-slate-200 w-full max-w-sm group">
+                            <img
+                                src="https://images.unsplash.com/photo-1759310610325-2c7cb621e5e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGhhbmRzaGFrZSUyMHRydXN0fGVufDF8fHx8MTc2ODgwOTM2Nnww&ixlib=rb-4.1.0&q=80&w=1080"
+                                alt="Professional CA Partnership"
+                                className="w-full h-96 object-cover transition-transform duration-700 group-hover:scale-105"
+                            />
+                            {/* Overlay Gradient */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-blue-900/95 via-blue-900/50 to-transparent" />
+
+                            <div className="absolute bottom-4 left-4 text-white">
+                                <div className="flex items-center gap-2 mb-2">
+                                    <CheckCircle className="w-4 h-4 text-green-400" />
+                                    <span className="text-xs font-bold uppercase tracking-wider text-blue-100">Verified</span>
+                                </div>
+                                <h3 className="text-lg font-bold leading-tight">Professional Partner</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Column: Compact Feature Boxes */}
+                    <div className="order-1 lg:order-2">
+                        <div className="grid gap-4">
+                            {features.map((feature, index) => (
+                                <div
+                                    key={index}
+                                    className="group flex items-start gap-4 p-5 bg-white rounded-xl border border-slate-200 hover:border-blue-400 hover:shadow-lg transition-all duration-300"
+                                >
+                                    {/* Icon Box */}
+                                    <div className="flex-shrink-0 w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
+                                        <feature.icon className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" />
+                                    </div>
+
+                                    {/* Content */}
+                                    <div className="flex-1 min-w-0">
+                                        <h3 className="text-base font-bold text-slate-800 group-hover:text-blue-700 transition-colors leading-tight mb-1.5">
+                                            {feature.title}
+                                        </h3>
+                                        <p className="text-sm text-slate-600 leading-relaxed">
+                                            {feature.description}
+                                        </p>
+                                    </div>
+
+                                    {/* Arrow */}
+                                    <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <CheckCircle className="w-4 h-4 text-blue-500" />
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Badges */}
+                        <div className="mt-6 flex flex-wrap gap-2">
+                            {['ICAI Registered', 'ISO 9001', 'Secure'].map((badge, i) => (
+                                <span key={i} className="px-2.5 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-wide rounded border border-blue-100">
+                                    {badge}
+                                </span>
+                            ))}
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
     );
-};
-
-export default WhyChooseUs;
+}

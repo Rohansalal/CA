@@ -1,4 +1,20 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AuthProvider } from './contexts/AuthContext';
+import { AdminProvider } from './contexts/AdminContext';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { AdminProtectedRoute } from './components/AdminProtectedRoute';
+
+// Auth Pages
+import { Login } from './components/pages/Login';
+import { Register } from './components/pages/Register';
+import { Dashboard } from './components/pages/Dashboard';
+
+// Admin Pages
+import { AdminLogin } from './components/pages/AdminLogin';
+import { AdminDashboard } from './components/pages/AdminDashboard';
+import { AdminUsers } from './components/pages/AdminUsers';
+
+// Home Pages
 import { Home } from './components/Home';
 import { AboutUs } from './components/AboutUs';
 import { Services } from './components/Services';
@@ -36,11 +52,45 @@ function AppContent() {
 
   const currentPage = getPageFromRoute(location.pathname);
 
+  // Show navigation and footer only on non-auth and non-dashboard and non-admin pages
+  const showNavigation = !['/login', '/register', '/dashboard', '/admin'].some(path => location.pathname.startsWith(path));
+
   return (
     <div className="min-h-screen bg-neutral-50">
-      <Navigation currentPage={currentPage} onNavigate={() => { }} />
+      {showNavigation && <Navigation currentPage={currentPage} onNavigate={() => { }} />}
       <main>
         <Routes>
+          {/* Auth Routes */}
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Admin Routes */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <AdminProtectedRoute>
+                <AdminDashboard />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <AdminProtectedRoute>
+                <AdminUsers />
+              </AdminProtectedRoute>
+            }
+          />
+
           {/* Main Pages */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
@@ -112,7 +162,7 @@ function AppContent() {
         </Routes>
 
       </main>
-      <Footer onNavigate={() => { }} />
+      {showNavigation && <Footer onNavigate={() => { }} />}
     </div>
   );
 }
@@ -120,7 +170,11 @@ function AppContent() {
 export default function App() {
   return (
     <Router>
-      <AppContent />
+      <AuthProvider>
+        <AdminProvider>
+          <AppContent />
+        </AdminProvider>
+      </AuthProvider>
     </Router>
   );
 }
