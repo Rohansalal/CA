@@ -17,39 +17,39 @@ interface FormData {
 
 const stepContent = {
   1: {
-    title: 'Let\'s Start With Your Contact Information',
-    description: 'Help us understand who we\'re working with. Provide your basic details so our CA expert can reach out to you.',
+    title: 'Your Contact Details',
+    description: 'We need your contact information to ensure our expert CA team can reach you promptly. All information is kept strictly confidential.',
     highlights: [
-      '✓ Quick and Easy Process',
-      '✓ Secure & Confidential',
-      '✓ Personalized Solutions',
+      '✓ 100% Confidential & Secure',
+      '✓ Response within 24 hours',
+      '✓ Direct Expert Consultation',
     ],
   },
   2: {
-    title: 'Tell Us About Your Business',
-    description: 'Understanding your business structure and scale helps us provide the most relevant financial solutions for your needs.',
+    title: 'Business Information',
+    description: 'Share your business details to help us understand your structure, industry, and scale. This allows us to tailor our financial solutions specifically to your needs.',
     highlights: [
-      '✓ Industry Expertise',
-      '✓ Tailored Services',
-      '✓ Scalable Solutions',
+      '✓ Industry-Specific Solutions',
+      '✓ Scale-Appropriate Services',
+      '✓ Custom Financial Strategy',
     ],
   },
   3: {
-    title: 'What Services Do You Need?',
-    description: 'Select the CA services that are most relevant to your business. Our experts will provide customized guidance.',
+    title: 'Select Required Services',
+    description: 'Choose from our comprehensive range of CA services. You can select multiple services - our team will create a customized package that fits your requirements and budget.',
     highlights: [
-      '✓ 10+ Expert Services',
-      '✓ Comprehensive Coverage',
-      '✓ 24/7 Support Available',
+      '✓ 10+ Professional Services',
+      '✓ Flexible Service Packages',
+      '✓ Transparent Pricing',
     ],
   },
   4: {
-    title: 'Review Your Information',
-    description: 'Please verify all details are correct before submitting. You can edit any section if needed.',
+    title: 'Final Review & Submit',
+    description: 'Please review all the information you\'ve provided. You can go back to edit any section if needed before submitting your consultation request.',
     highlights: [
-      '✓ Double-Check Everything',
-      '✓ Edit if Needed',
-      '✓ Ready to Submit',
+      '✓ Verify All Details',
+      '✓ Edit Any Section',
+      '✓ One Click to Submit',
     ],
   },
 };
@@ -207,7 +207,7 @@ export function ConsultingFormNew() {
   }
 
   return (
-    <section className="py-24 bg-gradient-to-br from-primary via-primary to-secondary text-white relative overflow-hidden">
+    <section className="py-16 bg-gradient-to-br from-primary via-primary to-secondary text-white relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -215,44 +215,44 @@ export function ConsultingFormNew() {
         }} />
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
-        <div className="text-center mb-16 mt-8">
-          <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">Get Expert CA Guidance</h2>
-          <p className="text-lg text-blue-100">Complete our consultation form to connect with our expert chartered accountants</p>
+        <div className="text-center mb-10">
+          <h2 className="text-3xl lg:text-4xl font-bold text-white mb-3">Get Expert CA Guidance</h2>
+          <p className="text-base text-blue-100">Complete our consultation form to connect with our expert chartered accountants</p>
         </div>
-
+        <br />
         {/* Progress Indicator */}
-        <div className="flex justify-center mb-12">
-          <div className="flex items-center gap-4">
+        <div className="flex justify-center mb-8">
+          <div className="flex items-center gap-3">
             {[1, 2, 3, 4].map((step) => (
               <React.Fragment key={step}>
                 <button
                   onClick={() => step <= currentStep && setCurrentStep(step)}
-                  className={`w-12 h-12 rounded-full flex items-center justify-center font-bold transition-all ${step === currentStep
+                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all text-sm ${step === currentStep
                     ? 'bg-orange-500 text-white shadow-lg scale-110'
                     : step < currentStep
                       ? 'bg-blue-600 text-white'
                       : 'bg-white/20 text-white/60'
                     }`}
                 >
-                  {step < currentStep ? <Check className="w-5 h-5" /> : step}
+                  {step < currentStep ? <Check className="w-4 h-4" /> : step}
                 </button>
-                {step < 4 && <div className={`h-1 w-8 ${step < currentStep ? 'bg-orange-500' : 'bg-white/20'}`} />}
+                {step < 4 && <div className={`h-1 w-6 ${step < currentStep ? 'bg-orange-500' : 'bg-white/20'}`} />}
               </React.Fragment>
             ))}
           </div>
         </div>
 
         {/* Two Column Layout */}
-        <div className="grid lg:grid-cols-2 gap-12 items-start">
+        <div className="grid lg:grid-cols-2 gap-8 items-start">
           {/* LEFT SIDE - FORM */}
           <div className="order-2 lg:order-1">
-            <div className="bg-white rounded-2xl shadow-xl p-8 border border-neutral-200">
+            <div className="bg-white rounded-xl shadow-xl p-6 border border-neutral-200">
               {/* Step 1 */}
               {currentStep === 1 && (
-                <div className="space-y-6 animate-fadeIn">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-6">Your Contact Information</h3>
+                <div className="space-y-4 animate-fadeIn">
+                  <h3 className="text-xl font-bold text-slate-900 mb-4">Your Contact Information</h3>
 
                   <div>
                     <label className="block text-sm font-semibold text-neutral-800 mb-2">Full Name *</label>
@@ -262,7 +262,7 @@ export function ConsultingFormNew() {
                       value={formData.fullName}
                       onChange={handleInputChange}
                       placeholder="Enter your full name"
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition ${errors.fullName ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                      className={`w-full px-3 py-2 border-2 rounded-lg focus:outline-none transition text-sm text-neutral-900 placeholder:text-neutral-400 ${errors.fullName ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                         }`}
                     />
                     {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>}
@@ -276,7 +276,7 @@ export function ConsultingFormNew() {
                       value={formData.email}
                       onChange={handleInputChange}
                       placeholder="your.email@example.com"
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition ${errors.email ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-neutral-900 placeholder:text-neutral-400 ${errors.email ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                         }`}
                     />
                     {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
@@ -290,7 +290,7 @@ export function ConsultingFormNew() {
                       value={formData.mobile}
                       onChange={handleInputChange}
                       placeholder="+91 98765 43210"
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition ${errors.mobile ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-neutral-900 placeholder:text-neutral-400 ${errors.mobile ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                         }`}
                     />
                     {errors.mobile && <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>}
@@ -304,7 +304,7 @@ export function ConsultingFormNew() {
                       value={formData.city}
                       onChange={handleInputChange}
                       placeholder="Your city"
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition ${errors.city ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-neutral-900 placeholder:text-neutral-400 ${errors.city ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                         }`}
                     />
                     {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
@@ -320,14 +320,15 @@ export function ConsultingFormNew() {
                       ].map((method) => (
                         <button
                           key={method.value}
+                          type="button"
                           onClick={() => setFormData(prev => ({ ...prev, preferredContact: method.value as any }))}
-                          className={`flex-1 p-2 rounded-lg border-2 transition flex flex-col items-center gap-1 ${formData.preferredContact === method.value
+                          className={`flex-1 p-3 rounded-lg border-2 transition flex flex-col items-center gap-1 ${formData.preferredContact === method.value
                             ? 'border-orange-500 bg-orange-50 text-orange-700'
-                            : 'border-neutral-300 hover:border-orange-300'
+                            : 'border-neutral-300 hover:border-orange-300 text-neutral-700 hover:text-neutral-900'
                             }`}
                         >
-                          <method.icon className="w-4 h-4" />
-                          <span className="text-xs font-medium">{method.label}</span>
+                          <method.icon className="w-5 h-5" />
+                          <span className="text-sm font-medium">{method.label}</span>
                         </button>
                       ))}
                     </div>
@@ -337,8 +338,8 @@ export function ConsultingFormNew() {
 
               {/* Step 2 */}
               {currentStep === 2 && (
-                <div className="space-y-6 animate-fadeIn">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-6">Business Details</h3>
+                <div className="space-y-4 animate-fadeIn">
+                  <h3 className="text-xl font-bold text-slate-900 mb-4">Business Details</h3>
 
                   <div>
                     <label className="block text-sm font-semibold text-neutral-800 mb-2">Client Type *</label>
@@ -346,7 +347,7 @@ export function ConsultingFormNew() {
                       name="clientType"
                       value={formData.clientType}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition appearance-none ${errors.clientType ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition appearance-none text-neutral-900 ${errors.clientType ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                         }`}
                     >
                       <option value="">Select client type</option>
@@ -369,7 +370,7 @@ export function ConsultingFormNew() {
                         value={formData.businessName}
                         onChange={handleInputChange}
                         placeholder="Your business name"
-                        className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition ${errors.businessName ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                        className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-neutral-900 placeholder:text-neutral-400 ${errors.businessName ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                           }`}
                       />
                       {errors.businessName && <p className="text-red-500 text-sm mt-1">{errors.businessName}</p>}
@@ -382,7 +383,7 @@ export function ConsultingFormNew() {
                       name="industry"
                       value={formData.industry}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition appearance-none ${errors.industry ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition appearance-none text-neutral-900 ${errors.industry ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                         }`}
                     >
                       <option value="">Select industry</option>
@@ -403,7 +404,7 @@ export function ConsultingFormNew() {
                       name="annualTurnover"
                       value={formData.annualTurnover}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition appearance-none ${errors.annualTurnover ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition appearance-none text-neutral-900 ${errors.annualTurnover ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                         }`}
                     >
                       <option value="">Select range</option>
@@ -420,15 +421,15 @@ export function ConsultingFormNew() {
 
               {/* Step 3 */}
               {currentStep === 3 && (
-                <div className="space-y-6 animate-fadeIn">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-6">Required Services</h3>
+                <div className="space-y-4 animate-fadeIn">
+                  <h3 className="text-xl font-bold text-slate-900 mb-4">Required Services</h3>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     {caServices.map((service) => (
                       <button
                         key={service.id}
                         onClick={() => handleServiceToggle(service.id)}
-                        className={`w-full p-4 rounded-lg border-2 text-left transition ${formData.services.includes(service.id)
+                        className={`w-full p-3 rounded-lg border-2 text-left transition text-sm ${formData.services.includes(service.id)
                           ? 'border-orange-500 bg-orange-50'
                           : 'border-neutral-300 hover:border-orange-300'
                           }`}
@@ -455,7 +456,7 @@ export function ConsultingFormNew() {
                       onChange={handleInputChange}
                       placeholder="Tell us about your specific needs..."
                       rows={4}
-                      className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:outline-none focus:border-orange-500"
+                      className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:outline-none focus:border-orange-500 text-neutral-900 placeholder:text-neutral-400"
                     />
                   </div>
                 </div>
@@ -463,8 +464,8 @@ export function ConsultingFormNew() {
 
               {/* Step 4 */}
               {currentStep === 4 && (
-                <div className="space-y-6 animate-fadeIn">
-                  <h3 className="text-2xl font-bold text-slate-900 mb-6">Review Information</h3>
+                <div className="space-y-4 animate-fadeIn">
+                  <h3 className="text-xl font-bold text-slate-900 mb-4">Review Information</h3>
 
                   <div className="bg-neutral-50 rounded-lg p-4 space-y-4">
                     <div>
@@ -492,7 +493,7 @@ export function ConsultingFormNew() {
               )}
 
               {/* Navigation Buttons */}
-              <div className="flex gap-4 mt-10">
+              <div className="flex gap-3 mt-6">
                 <button
                   onClick={handlePrevious}
                   disabled={currentStep === 1}
@@ -508,7 +509,7 @@ export function ConsultingFormNew() {
                 {currentStep < 4 ? (
                   <button
                     onClick={handleNext}
-                    className="flex-1 px-4 py-3 bg-blue-600 text-black rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
+                    className="flex-1 px-4 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
                   >
                     Next
                     <ChevronRight className="w-4 h-4" />
@@ -530,19 +531,19 @@ export function ConsultingFormNew() {
 
           {/* RIGHT SIDE - CONTENT */}
           <div className="order-1 lg:order-2">
-            <div className="space-y-8">
+            <div className="space-y-6">
               {/* Step Content */}
               <div>
-                <h3 className="text-3xl font-bold text-white mb-4">
+                <h3 className="text-2xl font-bold text-white mb-3">
                   {stepContent[currentStep as keyof typeof stepContent].title}
                 </h3>
-                <p className="text-lg text-blue-100 leading-relaxed">
+                <p className="text-base text-blue-100 leading-relaxed">
                   {stepContent[currentStep as keyof typeof stepContent].description}
                 </p>
               </div>
 
               {/* Highlights */}
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {stepContent[currentStep as keyof typeof stepContent].highlights.map((highlight, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <div className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center flex-shrink-0">
@@ -554,7 +555,7 @@ export function ConsultingFormNew() {
               </div>
 
               {/* Trust Section */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 border border-white/20">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl p-6 border border-white/20">
                 <h4 className="font-bold text-white mb-4 flex items-center gap-2">
                   <Shield className="w-5 h-5 text-orange-400" />
                   Why Trust Us?
@@ -593,6 +594,8 @@ export function ConsultingFormNew() {
           </div>
         </div>
       </div>
+      <br />
+      <br />
     </section>
   );
 }

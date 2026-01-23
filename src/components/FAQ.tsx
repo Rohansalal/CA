@@ -1,4 +1,4 @@
-import { ChevronDown, HelpCircle } from 'lucide-react';
+import { ChevronDown, HelpCircle, MessageCircle, Phone } from 'lucide-react';
 import { useState } from 'react';
 
 export function FAQ() {
@@ -40,37 +40,56 @@ export function FAQ() {
   ];
 
   return (
-    <section className="pt-32 pb-24 bg-white relative overflow-hidden">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+    <section className="py-24 bg-white relative overflow-hidden">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl lg:text-5xl font-bold text-primary mb-3">Frequently Asked Questions</h2>
-          <div className="w-16 h-1 bg-gradient-to-r from-transparent via-accent to-transparent mx-auto mb-6"></div>
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-4">
+            <HelpCircle className="w-4 h-4 text-primary" />
+            <span className="text-xs font-bold text-primary uppercase tracking-wide">FAQ</span>
+          </div>
+          <h2 className="text-4xl lg:text-5xl font-bold text-primary mb-4">
+            Frequently Asked Questions
+          </h2>
           <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
-            Find quick answers to common questions about our CA services and advisory solutions
+            Find answers to common questions about our CA services
           </p>
         </div>
 
         {/* FAQ List */}
-        <div className="space-y-3">
+        <div className="space-y-5">
           {faqs.map((faq, index) => (
-            <div key={index} className="group">
+            <div
+              key={index}
+              className="bg-white rounded-2xl border-2 border-neutral-200 hover:border-primary/40 hover:shadow-xl transition-all duration-300 overflow-hidden"
+            >
               <button
                 onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full px-6 py-4 bg-white rounded-lg border border-neutral-200 hover:border-accent/40 hover:shadow-md transition-all duration-300 flex items-center justify-between group-hover:bg-neutral-50"
+                className="w-full px-8 py-6 flex items-center justify-between text-left transition-all duration-300"
               >
-                <span className="text-left font-semibold text-neutral-900 text-base group-hover:text-primary transition-colors">
+                <span className={`font-bold text-xl pr-6 transition-colors ${openIndex === index ? 'text-primary' : 'text-neutral-900'
+                  }`}>
                   {faq.question}
                 </span>
-                <ChevronDown
-                  className={`w-5 h-5 text-accent flex-shrink-0 ml-4 transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''
-                    }`}
-                />
+
+                <div className={`flex-shrink-0 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${openIndex === index
+                  ? 'bg-primary text-white shadow-md'
+                  : 'bg-neutral-100 text-neutral-600'
+                  }`}>
+                  <ChevronDown
+                    className={`w-6 h-6 transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''
+                      }`}
+                  />
+                </div>
               </button>
 
               {openIndex === index && (
-                <div className="px-6 py-4 bg-gradient-to-br from-accent/5 to-primary/5 border border-accent/20 border-t-0 rounded-b-lg">
-                  <p className="text-neutral-700 leading-relaxed text-sm">{faq.answer}</p>
+                <div className="px-8 pb-6 animate-fadeIn">
+                  <div className="pt-4 border-t-2 border-neutral-200">
+                    <p className="text-neutral-700 leading-relaxed text-base">
+                      {faq.answer}
+                    </p>
+                  </div>
                 </div>
               )}
             </div>
@@ -78,11 +97,21 @@ export function FAQ() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-16 pt-12 border-t border-neutral-200 text-center">
-          <p className="text-neutral-600 mb-4">Still have questions?</p>
-          <button className="px-8 py-3 mb-8 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-lg hover:shadow-lg hover:scale-105 transition-all duration-300">
-            SCHEDULE FREE CONSULTATION
-          </button>
+        <div className="mt-16 text-center">
+          <div className="p-8 bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl border border-primary/20">
+            <h3 className="text-2xl font-bold text-neutral-900 mb-3">Still have questions?</h3>
+            <p className="text-neutral-600 mb-6">Our expert CA team is ready to help you</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <button className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 hover:shadow-xl transition-all duration-300">
+                <MessageCircle className="w-5 h-5" />
+                SCHEDULE CONSULTATION
+              </button>
+              <button className="inline-flex items-center justify-center gap-2 px-8 py-3 bg-white text-primary font-semibold rounded-lg border-2 border-primary/30 hover:border-primary hover:bg-primary/5 transition-all duration-300">
+                <Phone className="w-5 h-5" />
+                CALL NOW
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

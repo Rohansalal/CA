@@ -177,59 +177,66 @@ export function WhyChooseUs() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
                 {/* Section Header */}
-                <div className="text-center mb-12">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-100/50 rounded-full mb-4 border border-blue-200">
-                        <Award className="w-3.5 h-3.5 text-blue-700" />
+                <div className="text-center mb-16">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-blue-100/50 rounded-full mb-4 border border-blue-200">
+                        <Award className="w-4 h-4 text-blue-700" />
                         <span className="text-xs font-bold text-blue-800 uppercase tracking-wide">Why Choose Us</span>
                     </div>
-                    <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-4">
+                    <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
                         Why Choose Avinash Payal & Co.?
                     </h2>
-                    <p className="text-base text-slate-600 max-w-2xl mx-auto">
+                    <p className="text-lg text-slate-600 max-w-2xl mx-auto">
                         Deep financial expertise combined with a commitment to excellence.
                     </p>
                 </div>
 
                 {/* Main Content Grid */}
-                <div className="grid lg:grid-cols-2 gap-16 items-center">
+                <div className="grid lg:grid-cols-2 gap-12 items-start">
 
-                    {/* Left Column: Large Image Card */}
-                    <div className="order-2 lg:order-1 flex justify-center lg:justify-end">
-                        <div className="relative rounded-lg overflow-hidden shadow-xl border border-slate-200 w-full max-w-sm group">
-                            <img
-                                src="https://images.unsplash.com/photo-1759310610325-2c7cb621e5e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGhhbmRzaGFrZSUyMHRydXN0fGVufDF8fHx8MTc2ODgwOTM2Nnww&ixlib=rb-4.1.0&q=80&w=1080"
-                                alt="Professional CA Partnership"
-                                className="w-full h-96 object-cover transition-transform duration-700 group-hover:scale-105"
-                            />
-                            {/* Overlay Gradient */}
-                            <div className="absolute inset-0 bg-gradient-to-t from-blue-900/95 via-blue-900/50 to-transparent" />
+                    {/* Left Column: Image */}
+                    <div className="order-2 lg:order-1">
+                        <div className="sticky top-8">
+                            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
+                                <img
+                                    src="https://images.unsplash.com/photo-1759310610325-2c7cb621e5e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGhhbmRzaGFrZSUyMHRydXN0fGVufDF8fHx8MTc2ODgwOTM2Nnww&ixlib=rb-4.1.0&q=80&w=1080"
+                                    alt="Professional CA Partnership"
+                                    className="w-full h-[600px] object-cover"
+                                />
+                                {/* Overlay */}
+                                <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-900/40 to-transparent" />
 
-                            <div className="absolute bottom-4 left-4 text-white">
-                                <div className="flex items-center gap-2 mb-2">
-                                    <CheckCircle className="w-4 h-4 text-green-400" />
-                                    <span className="text-xs font-bold uppercase tracking-wider text-blue-100">Verified</span>
+                                <div className="absolute bottom-6 left-6 right-6">
+                                    <div className="flex items-center gap-3 mb-3">
+                                        <div className="flex items-center gap-2 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full">
+                                            <CheckCircle className="w-4 h-4 text-green-600" />
+                                            <span className="text-xs font-bold text-slate-900 uppercase">ICAI Registered</span>
+                                        </div>
+                                        <div className="flex items-center gap-2 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full">
+                                            <span className="text-xs font-bold text-slate-900 uppercase">ISO 9001</span>
+                                        </div>
+                                    </div>
+                                    <h3 className="text-2xl font-bold text-white leading-tight">Trusted Financial Partner</h3>
                                 </div>
-                                <h3 className="text-lg font-bold leading-tight">Professional Partner</h3>
                             </div>
                         </div>
                     </div>
 
-                    {/* Right Column: Compact Feature Boxes */}
+                    {/* Right Column: Feature Boxes - Vertical Stack */}
                     <div className="order-1 lg:order-2">
-                        <div className="grid gap-4">
+                        <div className="space-y-4">
                             {features.map((feature, index) => (
                                 <div
                                     key={index}
-                                    className="group flex items-start gap-4 p-5 bg-white rounded-xl border border-slate-200 hover:border-blue-400 hover:shadow-lg transition-all duration-300"
+                                    className="group flex items-start gap-6 p-6 bg-white rounded-xl border-2 border-slate-200 hover:border-blue-500 hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
                                 >
                                     {/* Icon Box */}
-                                    <div className="flex-shrink-0 w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center group-hover:bg-blue-600 transition-colors duration-300">
-                                        <feature.icon className="w-6 h-6 text-blue-600 group-hover:text-white transition-colors" />
+                                    <div className="flex-shrink-0 w-14 h-14 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all duration-300">
+                                        <feature.icon className="w-7 h-7 text-white" />
                                     </div>
 
                                     {/* Content */}
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="text-base font-bold text-slate-800 group-hover:text-blue-700 transition-colors leading-tight mb-1.5">
+                                        <h3 className="text-lg font-bold text-slate-800 group-hover:text-blue-700 transition-colors mb-2">
                                             {feature.title}
                                         </h3>
                                         <p className="text-sm text-slate-600 leading-relaxed">
@@ -237,22 +244,26 @@ export function WhyChooseUs() {
                                         </p>
                                     </div>
 
-                                    {/* Arrow */}
-                                    <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <CheckCircle className="w-4 h-4 text-blue-500" />
+                                    {/* Check Icon */}
+                                    <div className="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                        <CheckCircle className="w-5 h-5 text-green-500" />
                                     </div>
                                 </div>
                             ))}
                         </div>
 
-                        {/* Badges */}
-                        <div className="mt-6 flex flex-wrap gap-2">
-                            {['ICAI Registered', 'ISO 9001', 'Secure'].map((badge, i) => (
-                                <span key={i} className="px-2.5 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-wide rounded border border-blue-100">
-                                    {badge}
-                                </span>
-                            ))}
-                        </div>
+                        {/* Bottom CTA Badge */}
+                        {/* <div className="mt-8 p-6 bg-gradient-to-r from-blue-50 to-blue-100 rounded-xl border border-blue-200">
+                            <div className="flex items-center justify-between">
+                                <div>
+                                    <p className="text-sm font-semibold text-blue-900 mb-1">Secure & Confidential</p>
+                                    <p className="text-xs text-blue-700">Your data is protected with enterprise-grade security</p>
+                                </div>
+                                <div className="flex-shrink-0">
+                                    <Shield className="w-8 h-8 text-blue-600" />
+                                </div>
+                            </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
