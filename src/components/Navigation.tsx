@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import {
-  Menu, X, Phone, Mail, ChevronDown, ChevronRight,
+  Menu, X, Phone, Mail, ChevronDown, ChevronRight, ArrowRight,
   Building2, Receipt, Scale,
   Landmark, PieChart, Calculator
 } from 'lucide-react';
@@ -37,10 +37,10 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     subServices: [
       { id: 'company-incorporation', name: 'Company Incorporation', route: '/services/business-registrations/company-incorporation' },
       { id: 'llp-formation', name: 'LLP Formation', route: '/services/business-registrations/llp-formation' },
-      //   { id: 'partnership-firm', name: 'Partnership Firm', route: '/services/business-registrations/partnership-firm' },
-      //   { id: 'sole-proprietorship', name: 'Sole Proprietorship', route: '/services/business-registrations/sole-proprietorship' },
-      //   { id: 'one-person-company', name: 'One Person Company (OPC)', route: '/services/business-registrations/one-person-company' },
-      //   { id: 'section-8-company', name: 'Section 8 Company (NGO)', route: '/services/business-registrations/section-8-company' },
+      { id: 'partnership-firm', name: 'Partnership Firm', route: '/services/business-registrations/partnership-firm' },
+      { id: 'sole-proprietorship', name: 'Sole Proprietorship', route: '/services/business-registrations/sole-proprietorship' },
+      { id: 'one-person-company', name: 'One Person Company (OPC)', route: '/services/business-registrations/one-person-company' },
+      { id: 'section-8-company', name: 'Section 8 Company (NGO)', route: '/services/business-registrations/section-8-company' },
     ]
   },
   {
@@ -273,93 +273,96 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
 
                 {/* Services Dropdown */}
                 {item.hasSubmenu && isServicesHovered && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50 pointer-events-auto transition-all duration-200">
-                    <div className="bg-white shadow-2xl border border-neutral-100 rounded-2xl overflow-hidden w-[98vw] max-w-full flex">
+                  <div className="fixed top-[118px] left-0 w-full z-50 flex justify-center pointer-events-auto">
+                    {/* Invisible bridge to prevent closing when moving from nav to menu */}
+                    <div className="absolute top-[-20px] left-0 w-full h-[20px]" />
 
+                    <div className="bg-white shadow-2xl shadow-blue-900/10 border border-neutral-100 rounded-2xl overflow-hidden w-[95vw] max-w-[1400px] flex max-h-[75vh]">
                       {/* Sidebar - Service Categories */}
-                      <div className="w-72 bg-white border-r border-neutral-100 py-3 max-h-[600px] overflow-y-auto shrink-0">
+                      <div className="w-80 bg-neutral-50/50 border-r border-neutral-100 py-6 px-4 shrink-0 flex flex-col gap-2 overflow-y-auto">
                         {SERVICE_CATEGORIES.map((category) => {
                           const Icon = category.icon;
-                          const styles = COLOR_STYLES[category.color] || COLOR_STYLES.blue;
+                          const isActive = activeCategory === category.id;
                           return (
                             <button
                               key={category.id}
                               onMouseEnter={() => setActiveCategory(category.id)}
                               onClick={() => handleNavClick(category.route, category.id)}
                               className={cn(
-                                "w-full text-left px-6 py-4 transition-all text-sm font-bold border-l-4 flex items-center gap-4",
-                                activeCategory === category.id
-                                  ? cn("bg-neutral-50", styles.activeText, styles.border, "border-l-4")
-                                  : "text-neutral-500 hover:bg-neutral-50 border-transparent hover:text-neutral-700"
+                                "w-full text-left px-5 py-4 transition-all text-[15px] font-semibold rounded-xl flex items-center gap-4 relative",
+                                isActive
+                                  ? "bg-white text-primary shadow-lg shadow-neutral-200/50 ring-1 ring-neutral-100 scale-105 z-10"
+                                  : "text-neutral-500 hover:bg-neutral-100/80 hover:text-neutral-700"
                               )}
                             >
-                              <Icon className={cn("w-6 h-6 shrink-0", activeCategory === category.id ? "opacity-100" : "opacity-70")} />
+                              <Icon className={cn("w-5 h-5 shrink-0 transition-colors", isActive ? "text-primary" : "text-neutral-400")} />
                               <span>{category.title}</span>
+                              {isActive && <ChevronRight className="w-4 h-4 ml-auto text-primary" />}
                             </button>
                           );
                         })}
                       </div>
 
                       {/* Content Area - Service Details */}
-                      <div className="flex-1 p-8 bg-neutral-50/[0.3] max-h-[600px] overflow-y-auto">
+                      <div className="flex-1 p-8 bg-white overflow-y-auto flex flex-col">
                         {activeCategory && (() => {
                           const category = SERVICE_CATEGORIES.find(c => c.id === activeCategory);
                           if (!category) return null;
-                          const Icon = category.icon;
-                          const styles = COLOR_STYLES[category.color] || COLOR_STYLES.blue;
-
                           return (
-                            <div className="animate-in fade-in duration-200 h-full flex flex-col">
+                            <div className="animate-in fade-in slide-in-from-right-2 duration-300 h-full flex flex-col">
+                              <div className="flex justify-between items-start mb-6 border-b border-neutral-100 pb-4">
+                                <div>
+                                  <h3 className="text-3xl font-bold font-display text-primary mb-2 display-font">{category.title}</h3>
+                                  <p className="text-neutral-500 text-sm max-w-lg">
+                                    Explore our professional {category.title.toLowerCase()} services tailored for your business.
+                                  </p>
+                                </div>
+                                <Link
+                                  to={category.route}
+                                  className="flex items-center gap-1 text-sm font-semibold text-primary hover:text-blue-700 transition-colors group/link mt-2 whitespace-nowrap"
+                                >
+                                  Client Guide <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                                </Link>
+                              </div>
 
-
-                              {/* Services Row (Horizontal) */}
-                              <div className="flex flex-row flex-nowrap gap-4 mt-6 w-full overflow-x-auto pb-3">
+                              {/* Services Grid - 3 Columns */}
+                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full pb-3">
                                 {category.subServices.map((sub, index) => (
                                   <Link
                                     key={sub.id}
                                     to={sub.route}
                                     onClick={() => setMobileMenuOpen(false)}
                                     className={cn(
-                                      "group flex flex-row items-center justify-between p-3.5 px-5 rounded-lg bg-white border border-neutral-100 shadow-sm",
-                                      "hover:shadow-md hover:border-neutral-200 transition-all duration-200",
-                                      "relative overflow-hidden w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(33.33%-0.75rem)]"
+                                      "group flex flex-col justify-between p-5 rounded-xl transition-all duration-300",
+                                      "bg-[#136da1] border border-[#136da1] text-white shadow-sm", // Default Blue
+                                      "hover:bg-[#4fa3d1] hover:border-[#4fa3d1] hover:shadow-lg hover:-translate-y-1 relative overflow-hidden", // Light Blue Hover
+                                      "min-h-[120px]"
                                     )}
                                   >
-                                    <div className={cn(
-                                      "absolute left-0 top-0 bottom-0 w-1 transition-transform duration-200 origin-left scale-y-0 group-hover:scale-y-100",
-                                      // We can dynamically assign a background color based on the category color loop
-                                      category.color === 'blue' && 'bg-blue-600',
-                                      category.color === 'blue' && 'bg-blue-600',
-                                      category.color === 'blue' && 'bg-blue-600',
-                                      category.color === 'blue' && 'bg-blue-600',
-                                      category.color === 'blue' && 'bg-blue-600'
-                                    )} />
+                                    <h4 className="font-semibold font-display text-[15px] leading-snug mb-3">
+                                      {sub.name}
+                                    </h4>
 
-                                    <span className="font-bold text-sm text-neutral-700 group-hover:text-neutral-900 z-10 leading-snug text-left line-clamp-2 pr-2">{sub.name}</span>
-                                    <div className={cn(
-                                      "w-7 h-7 rounded-full flex items-center justify-center transition-colors shrink-0",
-                                      styles.bg, // using the light bg for the circle
-                                      "group-hover:bg-white"
-                                    )}>
-                                      <ChevronRight className={cn(
-                                        "w-4 h-4 transition-all duration-200 transform",
-                                        styles.iconText, // using the colored icon
-                                        "group-hover:translate-x-0.5"
-                                      )} />
+                                    <div className="mt-auto flex items-center justify-between">
+                                      {/* Divider Line */}
+                                      <div className="h-0.5 w-8 bg-white/30 group-hover:bg-white/50 transition-colors duration-300" />
+
+                                      {/* Icon Circle */}
+                                      <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
+                                        <ChevronRight className="w-4 h-4 text-white transition-colors transform group-hover:translate-x-0.5" />
+                                      </div>
                                     </div>
                                   </Link>
                                 ))}
                               </div>
 
-                              <div className="mt-auto pt-8 flex justify-end">
+                              <div className="mt-auto pt-6 flex justify-center">
                                 <Link
                                   to={category.route}
-                                  className={cn(
-                                    "flex items-center gap-2 text-sm font-bold uppercase tracking-wider py-2 px-4 rounded-lg transition-colors",
-                                    styles.iconText, styles.iconBg
-                                  )}
+                                  className="inline-flex items-center justify-center px-6 py-2.5 bg-neutral-50 text-neutral-700 text-sm font-semibold rounded-full hover:bg-primary hover:text-white transition-all duration-300 group shadow-sm hover:shadow-md"
                                 >
-                                  Client Guide <ChevronRight className="w-4 h-4" />
+                                  Manage All {category.title}
+                                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                 </Link>
                               </div>
                             </div>
