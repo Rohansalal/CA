@@ -31,36 +31,36 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
   {
     id: 'business-registrations',
     title: 'Business Registrations',
-    route: '/services/business-registrations',
+    route: '#',
     icon: Building2,
     color: 'blue',
     subServices: [
-      { id: 'company-incorporation', name: 'Company Incorporation', route: '/services/business-registrations/company-incorporation' },
-      { id: 'llp-formation', name: 'LLP Formation', route: '/services/business-registrations/llp-formation' },
-      { id: 'partnership-firm', name: 'Partnership Firm', route: '/services/business-registrations/partnership-firm' },
-      { id: 'sole-proprietorship', name: 'Sole Proprietorship', route: '/services/business-registrations/sole-proprietorship' },
-      { id: 'one-person-company', name: 'One Person Company (OPC)', route: '/services/business-registrations/one-person-company' },
-      { id: 'section-8-company', name: 'Section 8 Company (NGO)', route: '/services/business-registrations/section-8-company' },
+        { id: 'company-incorporation', name: 'Company Incorporation', route: '/services/business-registrations/company-incorporation' },
+        { id: 'llp-formation', name: 'LLP Formation', route: '/services/business-registrations/llp-formation' },
+        { id: 'partnership-firm', name: 'Partnership Firm', route: '/services/business-registrations/partnership-firm' },
+        { id: 'sole-proprietorship', name: 'Sole Proprietorship', route: '/services/business-registrations/sole-proprietorship' },
+        { id: 'one-person-company', name: 'One Person Company (OPC)', route: '/services/business-registrations/one-person-company' },
+        { id: 'section-8-company', name: 'Section 8 Company (NGO)', route: '/services/business-registrations/section-8-company' },
     ]
   },
   {
     id: 'tax-registrations',
     title: 'Tax Registrations',
-    route: '/services/tax-registrations',
+    route: '#',
     icon: Receipt,
     color: 'blue',
     subServices: [
-      // { id: 'pan-registration', name: 'PAN Registration', route: '/services/tax-registrations/pan-registration' },
-      // { id: 'tan-registration', name: 'TAN Registration', route: '/services/tax-registrations/tan-registration' },
-      // { id: 'gst-registration', name: 'GST Registration', route: '/services/tax-registrations/gst-registration' },
-      // { id: 'professional-tax', name: 'Professional Tax Registration', route: '/services/tax-registrations/professional-tax' },
-      // { id: 'import-export-code', name: 'Import Export Code (IEC)', route: '/services/tax-registrations/import-export-code' },
+      { id: 'pan-registration', name: 'PAN Registration', route: '/services/tax-registrations/pan-registration' },
+      { id: 'tan-registration', name: 'TAN Registration', route: '/services/tax-registrations/tan-registration' },
+      { id: 'gst-registration', name: 'GST Registration', route: '/services/tax-registrations/gst-registration' },
+      { id: 'professional-tax', name: 'Professional Tax Registration', route: '/services/tax-registrations/professional-tax' },
+      { id: 'import-export-code', name: 'Import Export Code (IEC)', route: '/services/tax-registrations/import-export-code' },
     ]
   },
   {
     id: 'business-entity-law-compliances',
     title: 'Entity Law & Compliances',
-    route: '/services/business-entity-law-compliances',
+    route: '#',
     icon: Scale,
     color: 'blue',
     subServices: [
@@ -76,7 +76,7 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
   {
     id: 'tax-financial-compliances',
     title: 'Tax & Financial Audit',
-    route: '/services/tax-financial-compliances',
+    route: '#',
     icon: PieChart,
     color: 'blue',
     subServices: [
@@ -93,7 +93,7 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
   {
     id: 'government-registrations-compliances',
     title: 'Govt & Special Regulatory',
-    route: '/services/government-registrations-compliances',
+    route: '#',
     icon: Landmark,
     color: 'blue',
     subServices: [
@@ -304,13 +304,15 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                       </div>
 
                       {/* Content Area - Service Details */}
-                      <div className="flex-1 p-8 bg-white overflow-y-auto flex flex-col">
+                      <div className="flex-1 bg-white overflow-y-auto flex flex-col">
                         {activeCategory && (() => {
                           const category = SERVICE_CATEGORIES.find(c => c.id === activeCategory);
                           if (!category) return null;
                           return (
                             <div className="animate-in fade-in slide-in-from-right-2 duration-300 h-full flex flex-col">
-                              <div className="flex justify-between items-start mb-6 border-b border-neutral-100 pb-4">
+
+                              {/* Header Area - Off-White Background */}
+                              <div className="flex justify-between items-start p-8 bg-neutral-50 border-b border-neutral-100 shrink-0">
                                 <div>
                                   <h3 className="text-3xl font-bold font-display text-primary mb-2 display-font">{category.title}</h3>
                                   <p className="text-neutral-500 text-sm max-w-lg">
@@ -325,45 +327,41 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                                 </Link>
                               </div>
 
-                              {/* Services Grid - 3 Columns */}
-                              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full pb-3">
-                                {category.subServices.map((sub, index) => (
+                              {/* Main Content - White Background */}
+                              <div className="p-8 flex-1 flex flex-col">
+                                {/* Services Grid - 3 Columns */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full pb-3">
+                                  {category.subServices.map((sub, index) => (
+                                    <Link
+                                      key={sub.id}
+                                      to={sub.route}
+                                      onClick={() => setMobileMenuOpen(false)}
+                                      className={cn(
+                                        "group flex items-center justify-center p-4 rounded-xl border transition-all duration-300",
+                                        "bg-blue-600 border-blue-600 text-white shadow-sm", // Standard Blue
+                                        "hover:bg-blue-400 hover:border-blue-400 hover:shadow-lg hover:-translate-y-1 relative overflow-hidden", // Lighter Blue Hover
+                                        "min-h-[80px] text-center"
+                                      )}
+                                    >
+                                      <h4 className="font-bold text-[14px] leading-relaxed group-hover:text-black transition-colors">
+                                        {sub.name}
+                                      </h4>
+
+                                      {/* Optional: Very subtle gradient overlay on hover */}
+                                      <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                                    </Link>
+                                  ))}
+                                </div>
+
+                                <div className="mt-auto pt-4 flex justify-center">
                                   <Link
-                                    key={sub.id}
-                                    to={sub.route}
-                                    onClick={() => setMobileMenuOpen(false)}
-                                    className={cn(
-                                      "group flex flex-col justify-between p-5 rounded-xl transition-all duration-300",
-                                      "bg-[#136da1] border border-[#136da1] text-white shadow-sm", // Default Blue
-                                      "hover:bg-[#4fa3d1] hover:border-[#4fa3d1] hover:shadow-lg hover:-translate-y-1 relative overflow-hidden", // Light Blue Hover
-                                      "min-h-[120px]"
-                                    )}
+                                    to={category.route}
+                                    className="inline-flex items-center justify-center px-6 py-2.5 bg-neutral-50 text-neutral-700 text-sm font-semibold rounded-full hover:bg-primary hover:text-white transition-all duration-300 group shadow-sm hover:shadow-md"
                                   >
-                                    <h4 className="font-semibold font-display text-[15px] leading-snug mb-3">
-                                      {sub.name}
-                                    </h4>
-
-                                    <div className="mt-auto flex items-center justify-between">
-                                      {/* Divider Line */}
-                                      <div className="h-0.5 w-8 bg-white/30 group-hover:bg-white/50 transition-colors duration-300" />
-
-                                      {/* Icon Circle */}
-                                      <div className="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center group-hover:bg-white/20 transition-colors">
-                                        <ChevronRight className="w-4 h-4 text-white transition-colors transform group-hover:translate-x-0.5" />
-                                      </div>
-                                    </div>
+                                    Manage All {category.title}
+                                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                                   </Link>
-                                ))}
-                              </div>
-
-                              <div className="mt-auto pt-6 flex justify-center">
-                                <Link
-                                  to={category.route}
-                                  className="inline-flex items-center justify-center px-6 py-2.5 bg-neutral-50 text-neutral-700 text-sm font-semibold rounded-full hover:bg-primary hover:text-white transition-all duration-300 group shadow-sm hover:shadow-md"
-                                >
-                                  Manage All {category.title}
-                                  <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                                </Link>
+                                </div>
                               </div>
                             </div>
                           );
