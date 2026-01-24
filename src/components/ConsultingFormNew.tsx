@@ -262,7 +262,7 @@ export function ConsultingFormNew() {
                       value={formData.fullName}
                       onChange={handleInputChange}
                       placeholder="Enter your full name"
-                      className={`w-full px-3 py-2 border-2 rounded-lg focus:outline-none transition text-sm text-neutral-900 placeholder:text-neutral-400 ${errors.fullName ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                      className={`w-full px-3 py-2 border-2 rounded-lg focus:outline-none transition text-sm text-black bg-white placeholder:text-neutral-500 ${errors.fullName ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                         }`}
                     />
                     {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>}
@@ -276,7 +276,7 @@ export function ConsultingFormNew() {
                       value={formData.email}
                       onChange={handleInputChange}
                       placeholder="your.email@example.com"
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-neutral-900 placeholder:text-neutral-400 ${errors.email ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-black bg-white placeholder:text-neutral-500 ${errors.email ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                         }`}
                     />
                     {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
@@ -290,7 +290,7 @@ export function ConsultingFormNew() {
                       value={formData.mobile}
                       onChange={handleInputChange}
                       placeholder="+91 98765 43210"
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-neutral-900 placeholder:text-neutral-400 ${errors.mobile ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-black bg-white placeholder:text-neutral-500 ${errors.mobile ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                         }`}
                     />
                     {errors.mobile && <p className="text-red-500 text-sm mt-1">{errors.mobile}</p>}
@@ -304,7 +304,7 @@ export function ConsultingFormNew() {
                       value={formData.city}
                       onChange={handleInputChange}
                       placeholder="Your city"
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-neutral-900 placeholder:text-neutral-400 ${errors.city ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-black bg-white placeholder:text-neutral-500 ${errors.city ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                         }`}
                     />
                     {errors.city && <p className="text-red-500 text-sm mt-1">{errors.city}</p>}
@@ -347,7 +347,7 @@ export function ConsultingFormNew() {
                       name="clientType"
                       value={formData.clientType}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition appearance-none text-neutral-900 ${errors.clientType ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-black bg-white ${errors.clientType ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                         }`}
                     >
                       <option value="">Select client type</option>
@@ -370,7 +370,7 @@ export function ConsultingFormNew() {
                         value={formData.businessName}
                         onChange={handleInputChange}
                         placeholder="Your business name"
-                        className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-neutral-900 placeholder:text-neutral-400 ${errors.businessName ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                        className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-black bg-white placeholder:text-neutral-500 ${errors.businessName ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                           }`}
                       />
                       {errors.businessName && <p className="text-red-500 text-sm mt-1">{errors.businessName}</p>}
@@ -383,7 +383,7 @@ export function ConsultingFormNew() {
                       name="industry"
                       value={formData.industry}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition appearance-none text-neutral-900 ${errors.industry ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-black bg-white ${errors.industry ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                         }`}
                     >
                       <option value="">Select industry</option>
@@ -404,7 +404,7 @@ export function ConsultingFormNew() {
                       name="annualTurnover"
                       value={formData.annualTurnover}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition appearance-none text-neutral-900 ${errors.annualTurnover ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition text-black bg-white ${errors.annualTurnover ? 'border-red-500' : 'border-neutral-300 focus:border-orange-500'
                         }`}
                     >
                       <option value="">Select range</option>
@@ -424,25 +424,23 @@ export function ConsultingFormNew() {
                 <div className="space-y-4 animate-fadeIn">
                   <h3 className="text-xl font-bold text-slate-900 mb-4">Required Services</h3>
 
-                  <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-3">
                     {caServices.map((service) => (
                       <button
                         key={service.id}
                         onClick={() => handleServiceToggle(service.id)}
-                        className={`w-full p-3 rounded-lg border-2 text-left transition text-sm ${formData.services.includes(service.id)
+                        className={`w-full p-3 rounded-lg border-2 text-left transition text-sm flex items-center gap-3 ${formData.services.includes(service.id)
                           ? 'border-orange-500 bg-orange-50'
                           : 'border-neutral-300 hover:border-orange-300'
                           }`}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className={`w-5 h-5 rounded border-2 flex items-center justify-center ${formData.services.includes(service.id)
-                            ? 'bg-orange-500 border-orange-500'
-                            : 'border-neutral-400'
-                            }`}>
-                            {formData.services.includes(service.id) && <Check className="w-3 h-3 text-white" />}
-                          </div>
-                          <span className="font-medium">{service.label}</span>
+                        <div className={`w-5 h-5 rounded border-2 flex items-center justify-center flex-shrink-0 ${formData.services.includes(service.id)
+                          ? 'bg-orange-500 border-orange-500'
+                          : 'border-neutral-400'
+                          }`}>
+                          {formData.services.includes(service.id) && <Check className="w-3 h-3 text-white" />}
                         </div>
+                        <span className="font-medium">{service.label}</span>
                       </button>
                     ))}
                   </div>
@@ -456,7 +454,7 @@ export function ConsultingFormNew() {
                       onChange={handleInputChange}
                       placeholder="Tell us about your specific needs..."
                       rows={4}
-                      className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:outline-none focus:border-orange-500 text-neutral-900 placeholder:text-neutral-400"
+                      className="w-full px-4 py-3 border-2 border-neutral-300 rounded-lg focus:outline-none focus:border-orange-500 text-black bg-white placeholder:text-neutral-500"
                     />
                   </div>
                 </div>
@@ -509,7 +507,7 @@ export function ConsultingFormNew() {
                 {currentStep < 4 ? (
                   <button
                     onClick={handleNext}
-                    className="flex-1 px-4 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-700 transition flex items-center justify-center gap-2"
+                    className="flex-1 px-4 py-3 rounded-lg font-semibold flex items-center justify-center gap-2 transition"
                   >
                     Next
                     <ChevronRight className="w-4 h-4" />

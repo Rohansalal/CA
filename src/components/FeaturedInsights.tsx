@@ -123,7 +123,7 @@ export function FeaturedInsights() {
                 <div className="text-center pb-16">
                     <button
                         className="inline-flex items-center gap-3 px-14 py-4
-                        bg-orange-600 text-white font-semibold text-base
+                        bg-orange-600 text-blue-600 hover:text-blue-700 font-bold text-base
                         rounded-full shadow-md
                         hover:bg-orange-700 hover:shadow-xl
                         transition-all duration-300 ease-out

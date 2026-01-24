@@ -44,6 +44,9 @@ export function FAQ() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16">
+          <br />
+          <br />
+          <br />
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-4">
             <HelpCircle className="w-4 h-4 text-primary" />
             <span className="text-xs font-bold text-primary uppercase tracking-wide">FAQ</span>

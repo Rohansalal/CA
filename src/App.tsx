@@ -39,7 +39,8 @@ import { GovernmentRegistrations } from './components/services/GovernmentRegistr
 
 import Navigation from './components/Navigation';
 import { Footer } from './components/Footer';
-import WhyChooseUs from './components/whyChooseUS';
+import {WhyChooseUs} from './components/WhyChooseUs';
+import {FeaturedInsights} from './components/FeaturedInsights';
 
 function AppContent() {
   const location = useLocation();

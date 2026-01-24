@@ -13,45 +13,45 @@ export function Home() {
       icon: FileText,
       title: 'Taxation Services',
       description: 'Expert tax planning, ITR filing, and compliance for individuals and businesses.',
-      gradient: 'from-blue-500 to-blue-600',
+      gradient: 'from-[#136da1] to-[#136da1]',
     },
     {
       icon: Calculator,
       title: 'GST Services',
       description: 'Complete GST registration, filing, compliance, and advisory solutions.',
-      gradient: 'from-blue-500 to-blue-600',
+      gradient: 'from-[#136da1] to-[#136da1]',
     },
     {
       icon: Shield,
       title: 'Audit & Assurance',
       description: 'Statutory, internal, and tax audits with comprehensive assurance services.',
-      gradient: 'from-blue-500 to-blue-600',
+      gradient: 'from-[#136da1] to-[#136da1]',
     },
     {
       icon: Building,
       title: 'Company Registration',
       description: 'Seamless incorporation, registration, and statutory compliance services.',
-      gradient: 'from-blue-500 to-blue-600',
+      gradient: 'from-[#136da1] to-[#136da1]',
     },
     {
       icon: BarChart3,
       title: 'Virtual CFO',
       description: 'Strategic financial planning and CFO services for growing businesses.',
-      gradient: 'from-blue-500 to-blue-600',
+      gradient: 'from-[#136da1] to-[#136da1]',
     },
     {
       icon: Globe,
       title: 'NRI Taxation',
       description: 'Specialized tax services for Non-Resident Indians and global taxation.',
-      gradient: 'from-blue-500 to-blue-600',
+      gradient: 'from-[#136da1] to-[#136da1]',
     },
   ];
 
   const stats = [
-    { number: '1000+', label: 'Clients Served', icon: Users, color: 'from-blue-500 to-blue-600' },
-    { number: '10+', label: 'Years Experience', icon: Award, color: 'from-blue-500 to-blue-600' },
-    { number: '100%', label: 'Compliance Focus', icon: Shield, color: 'from-blue-500 to-blue-600' },
-    { number: '₹500Cr+', label: 'Assets Managed', icon: TrendingUp, color: 'from-blue-500 to-blue-600' },
+    { number: '1000+', label: 'Clients Served', icon: Users, color: 'from-[#136da1] to-[#136da1]' },
+    { number: '10+', label: 'Years Experience', icon: Award, color: 'from-[#136da1] to-[#136da1]' },
+    { number: '100%', label: 'Compliance Focus', icon: Shield, color: 'from-[#136da1] to-[#136da1]' },
+    { number: '₹500Cr+', label: 'Assets Managed', icon: TrendingUp, color: 'from-[#136da1] to-[#136da1]' },
   ];
 
 
@@ -104,13 +104,13 @@ export function Home() {
                 ))}
               </div>
             </div>
-            <div className="mt-8 lg:mt-0">
+            <div className="mt-x8 lg:mt-0">
               <div className="relative">
                 <div className="absolute -inset-4 bg-accent/20 rounded-2xl blur-2xl" />
                 <ImageWithFallback
                   src="https://images.unsplash.com/photo-1692133226337-55e513450a32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBhY2NvdW50YW50JTIwb2ZmaWNlfGVufDF8fHx8MTc2ODc0NzA0OXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                   alt="Professional Accounting Services"
-                  className="relative rounded-2xl shadow-2xl w-full h-[300px] sm:h-[400px] lg:h-[500px] object-cover"
+                  className="relative rounded-2xl shadow-2xl w-full h-[600px] sm:h-[600px] lg:h-[600px] object-cover"
                 />
               </div>
             </div>
@@ -119,14 +119,14 @@ export function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="bg-white py-16 -mt-16 relative z-10">
+      {/* <section className="bg-white py-16 -mt-16 relative z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-2xl shadow-2xl border border-neutral-100 p-8 md:p-12">
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
               {stats.map((stat, index) => (
                 <div key={index} className="text-center group">
                   <div className="flex justify-center mb-4">
-                    <div className={`w-20 h-20 bg-gradient-to-br ${stat.color} rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300`}>
+                    <div className="w-20 h-20 rounded-2xl flex items-center justify-center shadow-lg group-hover:shadow-xl group-hover:scale-110 transition-all duration-300" style={{ backgroundColor: '#136da1' }}>
                       <stat.icon className="w-10 h-10 text-white" />
                     </div>
                   </div>
@@ -137,7 +137,7 @@ export function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* Trust & Social Proof Section */}
       {/* <TrustAndSocialProof /> */}
@@ -146,6 +146,9 @@ export function Home() {
       <section className="py-24 bg-gradient-to-b from-neutral-50 to-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
+            <br />
+            <br />
+            <br />
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-4">
               <Sparkles className="w-4 h-4 text-primary" />
               <span className="text-sm font-semibold text-primary uppercase tracking-wide">Our Expertise</span>
@@ -161,11 +164,11 @@ export function Home() {
                 key={index}
                 className="relative bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 group hover:-translate-y-2 border border-neutral-100 overflow-hidden text-center"
               >
-                <div className={`absolute top-0 right-0 w-32 h-32 bg-gradient-to-br ${service.gradient} opacity-5 rounded-bl-full`} />
+                <div className="absolute top-0 right-0 w-32 h-32 opacity-5 rounded-bl-full" style={{ backgroundColor: '#136da1' }} />
 
                 {/* Centered Icon */}
                 <div className="flex justify-center mb-6">
-                  <div className={`w-20 h-20 bg-gradient-to-br ${service.gradient} rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all duration-300`}>
+                  <div className="w-20 h-20 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all duration-300" style={{ backgroundColor: '#136da1' }}>
                     <service.icon className="w-10 h-10 text-white" />
                   </div>
                 </div>

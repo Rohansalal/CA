@@ -29,19 +29,19 @@ export function ContactUs() {
     {
       icon: Phone,
       title: 'Phone',
-      details: [' +91  9811105573', '+91 098 765 4321'],
+      details: [' +91  9811105573', '+91 8800656377'],
       color: 'from-blue-500 to-blue-600',
     },
     {
       icon: Mail,
       title: 'Email',
-      details: ['info@precisionassociates.com', 'contact@precisionassociates.com'],
+      details: [' info@caavinash.in', 'apa.cafirm@gmail.com'],
       color: 'from-green-500 to-green-600',
     },
     {
       icon: MapPin,
       title: 'Office Address',
-      details: ['123, Business Tower, MG Road', 'Bangalore, Karnataka - 560001'],
+      details: ['206-207 S/F Vardhman Tower, Behind Petrol Pump, Near CBSE building,', 'Preet Vihar, New Delhi,Delhi, 110092'],
       color: 'from-purple-500 to-purple-600',
     },
     {
@@ -242,6 +242,8 @@ export function ContactUs() {
             <div className="space-y-8">
               <div className="bg-neutral-100 rounded-xl overflow-hidden h-96">
                 <iframe
+                  // src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.0!2d77.6!3d12.97!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU4JzEyLjAiTiA3N8KwMzYnMDAuMCJF!5e0!3m2!1sen!2sin!4v1234567890"
+                  // src="https://www.google.com/maps/place/Avinash+Payal+%26+Associates/@28.639674,77.2939163,764m/data=!3m2!1e3!4b1!4m6!3m5!1s0x390cfb0ef32b0225:0xd7702561bb0cfe7b!8m2!3d28.639674!4d77.2939163!16s%2Fg%2F11mplrwv4k?entry=ttu&g_ep=EgoyMDI2MDEyMS4wIKXMDSoKLDEwMDc5MjA3M0gBUAM%3D"
                   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.0!2d77.6!3d12.97!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU4JzEyLjAiTiA3N8KwMzYnMDAuMCJF!5e0!3m2!1sen!2sin!4v1234567890"
                   width="100%"
                   height="100%"
@@ -268,7 +270,7 @@ export function ContactUs() {
       </section>
 
       {/* Multiple Offices */}
-      <section className="py-20 bg-neutral-50">
+      {/* <section className="py-20 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <h2 className="text-3xl lg:text-4xl text-primary mb-4">Our Offices</h2>
@@ -305,7 +307,7 @@ export function ContactUs() {
             ))}
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }

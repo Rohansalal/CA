@@ -11,9 +11,9 @@ export function Footer({ onNavigate }: FooterProps) {
   const getRoutePath = (id: string): string => {
     const routeMap: Record<string, string> = {
       'home': '/',
-      'about': '/about',
-      'services': '/services',
-      'industries': '/industries',
+      'about': '/#',
+      'services': '/#',
+      'industries': '/#',
       'resources': '/resources',
       'contact': '/contact',
     };
@@ -122,9 +122,9 @@ export function Footer({ onNavigate }: FooterProps) {
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-accent flex-shrink-0 mt-1" />
                 <div className="text-neutral-200 text-sm">
-                  dummy address<br />
-                  dummy city<br />
-                  dummy state - 000000
+                  206-207 S/F Vardhman Tower, Behind Petrol Pump, Near CBSE building,<br />
+                  Preet Vihar, New Delhi,<br />
+                  Delhi, 110092
                 </div>
               </div>
               <div className="flex items-center gap-3">
@@ -135,8 +135,8 @@ export function Footer({ onNavigate }: FooterProps) {
               </div>
               <div className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-accent flex-shrink-0" />
-                <a href="mailto:info@precisionassociates.com" className="text-neutral-200 hover:text-accent transition-colors text-sm">
-                  info@precisionassociates.com
+                <a href="mailto: info@caavinash.in" className="text-neutral-200 hover:text-accent transition-colors text-sm">
+                  info@caavinash.in
                 </a>
               </div>
             </div>
