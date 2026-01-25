@@ -238,8 +238,8 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
               className="w-16 h-15 bg-transparent"
             />
             <div className="flex flex-col items-center">
-              <div className="text-2xl font-bold text-primary font-display leading-tight">Avinash Payal & Associates</div>
-              <div className="text-lg font-bold text-primary font-display leading-tight">Chartered Accountants</div>
+              <div className="text-xl font-bold text-primary font-display leading-tight">Avinash Payal & Associates</div>
+              <div className="text-lg  font-semibold text-primary font-display leading-tight">Chartered Accountants</div>
             </div>
 
           </button>
