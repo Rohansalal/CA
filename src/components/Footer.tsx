@@ -56,7 +56,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 <img src="/logo.png" alt="Logo" className="w-12 h-12 rounded-lg object-cover bg-white border-0 shadow-none hover:shadow-lg transition-shadow" />
               </div>
               <div>
-                <div className="text-xl font-bold text-white font-display">Avinash Payal & Co.</div>
+                <div className="text-xl font-bold text-white font-display">Avinash Payal & Associates</div>
                 <div className="text-xs text-neutral-200">Chartered Accountants</div>
               </div>
             </div>
