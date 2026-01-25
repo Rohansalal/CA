@@ -66,7 +66,8 @@ export function Testimonials() {
                             </div>
                             <p className="text-neutral-700 mb-1 italic leading-relaxed text-lg">"{testimonial.content}"</p>
                             <div className="flex items-center gap-3 pt-12 border-t border-neutral-200">
-                                <div className="w-14 h-14 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md">
+                                {/* <div className="w-14 h-14 bg-gradient-to-br from-primary to-accent rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md"> */}
+                                <div className="w-14 h-14 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md" style={{ backgroundColor: '#3b82f6' }}>
                                     {testimonial.avatar}
                                 </div>
                                 <div>
