@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import {
   Menu, X, Phone, Mail, ChevronDown, ChevronRight, ArrowRight,
@@ -189,6 +189,49 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
   const [servicesOpen, setServicesOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(SERVICE_CATEGORIES[0].id);
   const [isServicesHovered, setIsServicesHovered] = useState(false);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  // Clear timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (hoverTimeoutRef.current) clearTimeout(hoverTimeoutRef.current);
+    };
+  }, []);
+
+  // Close on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsServicesHovered(false);
+    };
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  // Close on Scroll
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isServicesHovered) setIsServicesHovered(false);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isServicesHovered]);
+
+  const handleMouseEnter = (hasSubmenu: boolean) => {
+    if (!hasSubmenu) return;
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current);
+      hoverTimeoutRef.current = null;
+    }
+    setIsServicesHovered(true);
+  };
+
+  const handleMouseLeave = (hasSubmenu: boolean) => {
+    if (!hasSubmenu) return;
+    hoverTimeoutRef.current = setTimeout(() => {
+      setIsServicesHovered(false);
+      setActiveCategory(SERVICE_CATEGORIES[0].id); // Reset to first category on close
+    }, 200);
+  };
 
   const handleNavClick = (route: string, id: string) => {
     navigate(route);
@@ -249,9 +292,9 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
             {NAV_ITEMS.map((item) => (
               <div
                 key={item.id}
-                className="relative"
-                onMouseEnter={() => item.hasSubmenu && setIsServicesHovered(true)}
-                onMouseLeave={() => item.hasSubmenu && setIsServicesHovered(false)}
+                className="relative h-full flex items-center"
+                onMouseEnter={() => handleMouseEnter(!!item.hasSubmenu)}
+                onMouseLeave={() => handleMouseLeave(!!item.hasSubmenu)}
               >
                 <button
                   onClick={() => {
@@ -272,105 +315,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                   )} />
                 </button>
 
-                {/* Services Dropdown */}
-                {item.hasSubmenu && isServicesHovered && (
-                  <div className="fixed top-[118px] left-0 w-full z-50 flex justify-center pointer-events-auto">
-                    {/* Invisible bridge to prevent closing when moving from nav to menu */}
-                    <div className="absolute top-[-20px] left-0 w-full h-[20px]" />
-
-                    <div className="bg-white shadow-2xl shadow-blue-900/10 border border-neutral-100 rounded-2xl overflow-hidden w-[95vw] max-w-[1400px] flex max-h-[75vh]">
-                      {/* Sidebar - Service Categories */}
-                      <div className="w-80 bg-neutral-50/50 border-r border-neutral-100 py-6 px-4 shrink-0 flex flex-col gap-2 overflow-y-auto">
-                        {SERVICE_CATEGORIES.map((category) => {
-                          const Icon = category.icon;
-                          const isActive = activeCategory === category.id;
-                          return (
-                            <button
-                              key={category.id}
-                              onMouseEnter={() => setActiveCategory(category.id)}
-                              onClick={() => handleNavClick(category.route, category.id)}
-                              className={cn(
-                                "w-full text-left px-5 py-4 transition-all text-[15px] font-semibold rounded-xl flex items-center gap-4 relative",
-                                isActive
-                                  ? "bg-white text-primary shadow-lg shadow-neutral-200/50 ring-1 ring-neutral-100 scale-105 z-10"
-                                  : "text-neutral-500 hover:bg-neutral-100/80 hover:text-neutral-700"
-                              )}
-                            >
-                              <Icon className={cn("w-5 h-5 shrink-0 transition-colors", isActive ? "text-primary" : "text-neutral-400")} />
-                              <span>{category.title}</span>
-                              {isActive && <ChevronRight className="w-4 h-4 ml-auto text-primary" />}
-                            </button>
-                          );
-                        })}
-                      </div>
-
-                      {/* Content Area - Service Details */}
-                      <div className="flex-1 bg-white overflow-y-auto flex flex-col">
-                        {activeCategory && (() => {
-                          const category = SERVICE_CATEGORIES.find(c => c.id === activeCategory);
-                          if (!category) return null;
-                          return (
-                            <div className="animate-in fade-in slide-in-from-right-2 duration-300 h-full flex flex-col">
-
-                              {/* Header Area - Off-White Background */}
-                              <div className="flex justify-between items-start p-8 bg-neutral-50 border-b border-neutral-100 shrink-0">
-                                <div>
-                                  <h3 className="text-3xl font-bold font-display text-primary mb-2 display-font">{category.title}</h3>
-                                  <p className="text-neutral-500 text-sm max-w-lg">
-                                    Explore our professional {category.title.toLowerCase()} services tailored for your business.
-                                  </p>
-                                </div>
-                                <Link
-                                  to={category.route}
-                                  className="flex items-center gap-1 text-sm font-semibold text-primary hover:text-blue-700 transition-colors group/link mt-2 whitespace-nowrap"
-                                >
-                                  Client Guide <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
-                                </Link>
-                              </div>
-
-                              {/* Main Content - White Background */}
-                              <div className="p-8 flex-1 flex flex-col">
-                                {/* Services Grid - 3 Columns */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full pb-3">
-                                  {category.subServices.map((sub, index) => (
-                                    <Link
-                                      key={sub.id}
-                                      to={sub.route}
-                                      onClick={() => setMobileMenuOpen(false)}
-                                      className={cn(
-                                        "group flex items-center justify-center p-4 rounded-xl border transition-all duration-300",
-                                        "bg-blue-600 border-blue-600 text-white shadow-sm", // Standard Blue
-                                        "hover:bg-blue-400 hover:border-blue-400 hover:shadow-lg hover:-translate-y-1 relative overflow-hidden", // Lighter Blue Hover
-                                        "min-h-[80px] text-center"
-                                      )}
-                                    >
-                                      <h4 className="font-bold text-[14px] leading-relaxed group-hover:text-black transition-colors">
-                                        {sub.name}
-                                      </h4>
-
-                                      {/* Optional: Very subtle gradient overlay on hover */}
-                                      <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                                    </Link>
-                                  ))}
-                                </div>
-
-                                <div className="mt-auto pt-4 flex justify-center">
-                                  <Link
-                                    to={category.route}
-                                    className="inline-flex items-center justify-center px-6 py-2.5 bg-neutral-50 text-neutral-700 text-sm font-semibold rounded-full hover:bg-primary hover:text-white transition-all duration-300 group shadow-sm hover:shadow-md"
-                                  >
-                                    Manage All {category.title}
-                                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                                  </Link>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        })()}
-                      </div>
-                    </div>
-                  </div>
-                )}
+                {/* Services Dropdown removed from here */}
               </div>
             ))}
           </div>
@@ -469,6 +414,114 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
             >
               BOOK CONSULTATION
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Services Dropdown - Desktop */}
+      {isServicesHovered && (
+        <div
+          className="absolute top-full left-0 w-full z-50 flex justify-center pointer-events-auto"
+          onMouseEnter={() => handleMouseEnter(true)}
+          onMouseLeave={() => handleMouseLeave(true)}
+        >
+          {/* Invisible bridge to prevent closing when moving from nav to menu */}
+          <div className="absolute top-[-20px] left-0 w-full h-[20px]" />
+
+          <div className="bg-white shadow-2xl shadow-blue-900/10 border border-neutral-100 rounded-b-2xl overflow-hidden w-[95vw] max-w-[1400px] flex max-h-[75vh]">
+            {/* Sidebar - Service Categories */}
+            <div className="w-80 bg-neutral-50/50 border-r border-neutral-100 py-6 px-4 shrink-0 flex flex-col gap-2 overflow-y-auto">
+              {SERVICE_CATEGORIES.map((category) => {
+                const Icon = category.icon;
+                const isActive = activeCategory === category.id;
+                return (
+                  <button
+                    key={category.id}
+                    onMouseEnter={() => setActiveCategory(category.id)}
+                    onClick={() => handleNavClick(category.route, category.id)}
+                    className={cn(
+                      "w-full text-left px-5 py-4 transition-all text-[15px] font-semibold rounded-xl flex items-center gap-4 relative",
+                      isActive
+                        ? "bg-white text-primary shadow-lg shadow-neutral-200/50 ring-1 ring-neutral-100 scale-105 z-10"
+                        : "text-neutral-500 hover:bg-neutral-100/80 hover:text-neutral-700"
+                    )}
+                  >
+                    <Icon className={cn("w-5 h-5 shrink-0 transition-colors", isActive ? "text-primary" : "text-neutral-400")} />
+                    <span>{category.title}</span>
+                    {isActive && <ChevronRight className="w-4 h-4 ml-auto text-primary" />}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Content Area - Service Details */}
+            <div className="flex-1 bg-white overflow-y-auto flex flex-col">
+              {activeCategory && (() => {
+                const category = SERVICE_CATEGORIES.find(c => c.id === activeCategory);
+                if (!category) return null;
+                return (
+                  <div className="animate-in fade-in slide-in-from-right-2 duration-300 h-full flex flex-col">
+
+                    {/* Header Area - Off-White Background */}
+                    <div className="flex justify-between items-start p-8 bg-neutral-50 border-b border-neutral-100 shrink-0">
+                      <div>
+                        <h3 className="text-3xl font-bold font-display text-primary mb-2 display-font">{category.title}</h3>
+                        <p className="text-neutral-500 text-sm max-w-lg">
+                          Explore our professional {category.title.toLowerCase()} services tailored for your business.
+                        </p>
+                      </div>
+                      <Link
+                        to={category.route}
+                        onClick={() => setIsServicesHovered(false)}
+                        className="px-4 py-2 bg-slate-50 text-slate-700 text-sm font-semibold rounded-lg border border-slate-200 hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center gap-2 group/btn"
+                      >
+                        Client Guide <ArrowRight className="w-4 h-4 group-hover/link:translate-x-1 transition-transform" />
+                      </Link>
+                    </div>
+
+                    {/* Main Content - White Background */}
+                    <div className="p-8 flex-1 flex flex-col">
+                      {/* Services Grid - 3 Columns */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full pb-3">
+                        {category.subServices.map((sub, index) => (
+                          <Link
+                            key={sub.id}
+                            to={sub.route}
+                            onClick={() => {
+                              setMobileMenuOpen(false);
+                              setIsServicesHovered(false);
+                            }}
+                            className={cn(
+                              "group flex items-center justify-center p-4 rounded-xl border transition-all duration-300",
+                              "bg-blue-600 border-blue-600 text-white shadow-sm", // Standard Blue
+                              "hover:bg-blue-400 hover:border-blue-400 hover:shadow-lg hover:-translate-y-1 relative overflow-hidden", // Lighter Blue Hover
+                              "min-h-[80px] text-center"
+                            )}
+                          >
+                            <h4 className="font-bold text-[14px] leading-relaxed group-hover:text-black transition-colors">
+                              {sub.name}
+                            </h4>
+
+                            {/* Optional: Very subtle gradient overlay on hover */}
+                            <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                          </Link>
+                        ))}
+                      </div>
+
+                      <div className="mt-auto pt-4 flex justify-center">
+                        <Link
+                          to={category.route}
+                          className="inline-flex items-center justify-center px-6 py-2.5 bg-neutral-50 text-neutral-700 text-sm font-semibold rounded-full hover:bg-primary hover:text-white transition-all duration-300 group shadow-sm hover:shadow-md"
+                        >
+                          Manage All {category.title}
+                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })()}
+            </div>
           </div>
         </div>
       )}
