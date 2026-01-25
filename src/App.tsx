@@ -39,8 +39,7 @@ import { GovernmentRegistrations } from './components/services/GovernmentRegistr
 
 import Navigation from './components/Navigation';
 import { Footer } from './components/Footer';
-import {WhyChooseUs} from './components/WhyChooseUs';
-import {FeaturedInsights} from './components/FeaturedInsights';
+import { ScrollToTop } from './components/ScrollToTop';
 
 function AppContent() {
   const location = useLocation();
@@ -171,6 +170,7 @@ function AppContent() {
 export default function App() {
   return (
     <Router>
+      <ScrollToTop />
       <AuthProvider>
         <AdminProvider>
           <AppContent />
