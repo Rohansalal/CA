@@ -35,12 +35,12 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     icon: Building2,
     color: 'blue',
     subServices: [
-        { id: 'company-incorporation', name: 'Company Incorporation', route: '/services/business-registrations/company-incorporation' },
-        { id: 'llp-formation', name: 'LLP Formation', route: '/services/business-registrations/llp-formation' },
-        { id: 'partnership-firm', name: 'Partnership Firm', route: '/services/business-registrations/partnership-firm' },
-        { id: 'sole-proprietorship', name: 'Sole Proprietorship', route: '/services/business-registrations/sole-proprietorship' },
-        { id: 'one-person-company', name: 'One Person Company (OPC)', route: '/services/business-registrations/one-person-company' },
-        { id: 'section-8-company', name: 'Section 8 Company (NGO)', route: '/services/business-registrations/section-8-company' },
+      { id: 'company-incorporation', name: 'Company Incorporation', route: '/services/business-registrations/company-incorporation' },
+      { id: 'llp-formation', name: 'LLP Formation', route: '/services/business-registrations/llp-formation' },
+      { id: 'partnership-firm', name: 'Partnership Firm', route: '/services/business-registrations/partnership-firm' },
+      { id: 'sole-proprietorship', name: 'Sole Proprietorship', route: '/services/business-registrations/sole-proprietorship' },
+      { id: 'one-person-company', name: 'One Person Company (OPC)', route: '/services/business-registrations/one-person-company' },
+      { id: 'section-8-company', name: 'Section 8 Company (NGO)', route: '/services/business-registrations/section-8-company' },
     ]
   },
   {
@@ -232,15 +232,16 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
             onClick={() => handleNavClick('/', 'home')}
             className="flex items-center gap-3 hover:opacity-80 transition-opacity"
           >
-            <div className="flex flex-col items-center">
-              <div className="text-lg font-bold text-primary font-display leading-tight">Avinash Payal & Co.</div>
-              <div className="text-lg font-bold text-primary font-display leading-tight">Chartered Accountants</div>
-            </div>
             <img
               src="/logo.png"
               alt="Company Logo"
               className="w-16 h-15 bg-transparent"
             />
+            <div className="flex flex-col items-center">
+              <div className="text-lg font-bold text-primary font-display leading-tight">Avinash Payal & Associates</div>
+              <div className="text-lg font-bold text-primary font-display leading-tight">Chartered Accountants</div>
+            </div>
+
           </button>
 
           {/* Desktop Navigation */}

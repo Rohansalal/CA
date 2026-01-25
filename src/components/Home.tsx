@@ -193,11 +193,13 @@ export function Home() {
 
       </section>
 
+      {/* Why Choose Us Section */}
+      <WhyChooseUs />
+
       {/* Premium Consulting Form Section */}
       <ConsultingFormNew />
 
-      {/* Why Choose Us Section */}
-      <WhyChooseUs />
+
 
 
       {/* CTA Section */}

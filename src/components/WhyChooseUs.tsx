@@ -55,7 +55,7 @@
 //                         <span className="text-sm font-semibold text-primary uppercase tracking-wide">Why Choose Us</span>
 //                     </div>
 //                     <h2 className="text-4xl lg:text-5xl font-bold text-primary mb-6">
-//                         Why Choose Avinash Payal & Co.?
+//                         Why Choose Avinash Payal & Associates?
 //                     </h2>
 //                     <p className="text-lg text-neutral-600 max-w-3xl mx-auto leading-relaxed">
 //                         We combine deep financial expertise with a commitment to excellence, ensuring your business stays compliant while maximizing growth opportunities. Here's what sets us apart.
@@ -173,19 +173,25 @@ export function WhyChooseUs() {
     ];
 
     return (
-        <section className="py-20 bg-slate-50 relative overflow-hidden">
+        <section className="py-20 bg-gradient-to-br from-primary via-primary to-secondary text-white relative overflow-hidden">
+            <div className="absolute inset-0 opacity-10">
+                <div className="absolute inset-0" style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v6h6V4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                }} />
+            </div>
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
                 {/* Section Header */}
                 <div className="text-center mb-16">
-                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4 border border-[#136da1]/20" style={{ backgroundColor: 'rgba(19, 109, 161, 0.05)' }}>
-                        <Award className="w-4 h-4" style={{ color: '#136da1' }} />
-                        <span className="text-xs font-bold uppercase tracking-wide" style={{ color: '#136da1' }}>Why Choose Us</span>
+                    <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full mb-4 border border-white/20" style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}>
+                        <Award className="w-4 h-4 text-white" />
+                        <span className="text-xs font-bold uppercase tracking-wide text-white">Why Choose Us</span>
                     </div>
-                    <h2 className="text-4xl lg:text-5xl font-bold text-slate-900 mb-4">
-                        Why Choose Avinash Payal & Co.?
+                    <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+                        Why Choose Avinash Payal & Associates?
                     </h2>
-                    <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+                    <p className="text-lg text-blue-100 max-w-2xl mx-auto">
                         Deep financial expertise combined with a commitment to excellence.
                     </p>
                 </div>
@@ -239,7 +245,7 @@ export function WhyChooseUs() {
                                         <h3 className="text-lg font-bold text-slate-800 group-hover:text-[#136da1] transition-colors mb-2">
                                             {feature.title}
                                         </h3>
-                                        <p className="text-sm text-slate-600 leading-relaxed">
+                                        <p className="text-sm text-orange-600 font-bold leading-relaxed">
                                             {feature.description}
                                         </p>
                                     </div>
