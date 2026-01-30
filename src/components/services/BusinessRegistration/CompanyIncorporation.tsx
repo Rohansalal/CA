@@ -1,6 +1,20 @@
 import { Building2, CheckCircle, FileText, Clock, ArrowRight, Users, Shield, TrendingUp, AlertCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../contexts/AuthContext';
 
 export function CompanyIncorporation() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  const handleStartRegistration = (companyType: string) => {
+    if (isAuthenticated) {
+      // If logged in, go to dashboard with service selection
+      navigate('/dashboard', { state: { selectedService: 'Company Incorporation', companyType } });
+    } else {
+      // If not logged in, redirect to login page
+      navigate('/login', { state: { returnTo: '/dashboard', selectedService: 'Company Incorporation', companyType } });
+    }
+  };
   const companyTypes = [
     {
       type: 'Private Limited Company',
@@ -326,7 +340,10 @@ export function CompanyIncorporation() {
 
                   {/* CTA */}
                   <div className="mt-6 flex gap-4">
-                    <button className="flex-1 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all hover:shadow-lg">
+                    <button
+                      onClick={() => handleStartRegistration(company.type)}
+                      className="flex-1 px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all hover:shadow-lg"
+                    >
                       Start Registration
                     </button>
                     <button className="px-6 py-3 border-2 border-primary text-primary font-semibold rounded-lg hover:bg-primary hover:text-white transition-all">
@@ -370,7 +387,10 @@ export function CompanyIncorporation() {
           <p className="text-xl text-neutral-100 mb-8">
             Our CA experts will guide you through the entire process
           </p>
-          <button className="px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center gap-2">
+          <button
+            onClick={() => handleStartRegistration('Private Limited Company')}
+            className="px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center gap-2"
+          >
             GET STARTED NOW
             <ArrowRight className="w-5 h-5" />
           </button>

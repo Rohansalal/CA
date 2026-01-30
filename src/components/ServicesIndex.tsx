@@ -1,11 +1,25 @@
 import { useState } from 'react';
 import { Building2, FileText, Shield, Globe, Users, Calculator, TrendingUp, Briefcase, ArrowRight } from 'lucide-react';
-import { CompanyIncorporation } from './services/CompanyIncorporation';
-import { LLPFormation } from './services/LLPFormation';
-import { PartnershipFirm } from './services/PartnershipFirm';
-import { TaxRegistrations } from './services/TaxRegistrations';
-import { TaxCompliances } from './services/TaxCompliances';
-import { GovernmentRegistrations } from './services/GovernmentRegistrations';
+import { CompanyIncorporation } from './services/BusinessRegistration/CompanyIncorporation';
+import { LLPFormation } from './services/BusinessRegistration/LLPFormation';
+import { PartnershipFirm } from './services/BusinessRegistration/PartnershipFirm';
+
+// Other Registrations
+import { PFESICRegistration } from './services/OtherRegistrations/PFESICRegistration';
+import { FSSAIRegistration } from './services/OtherRegistrations/FSSAIRegistration';
+import { IECRegistration } from './services/OtherRegistrations/IECRegistration';
+import { DSCRegistration } from './services/OtherRegistrations/DSCRegistration';
+import { MSMERegistration } from './services/OtherRegistrations/MSMERegistration';
+import { TrademarkRegistration } from './services/OtherRegistrations/TrademarkRegistration';
+
+import { StatutoryAudit } from './services/AuditAssurance/StatutoryAudit';
+import { TaxAudit } from './services/AuditAssurance/TaxAudit';
+import { InternalAudit } from './services/AuditAssurance/InternalAudit';
+import { GSTAudit } from './services/AuditAssurance/GSTAudit';
+
+import { TaxRegistrations } from './services/TaxRegistration/TaxRegistrations';
+import { TaxCompliances } from './services/TaxCompliances/TaxCompliances';
+import { GovernmentRegistrations } from './services/OtherRegistrations/GovernmentRegistrations';
 
 export function ServicesIndex() {
   const [selectedService, setSelectedService] = useState<string | null>(null);
@@ -94,13 +108,7 @@ export function ServicesIndex() {
           icon: FileText,
           popular: true,
         },
-        {
-          id: 'tax-audit',
-          name: 'Tax Audit',
-          description: 'Form 3CA/3CB, 3CD audit services',
-          icon: Shield,
-          linkedTo: 'tax-compliances',
-        },
+
         {
           id: 'advance-tax',
           name: 'Advance Tax',
@@ -132,12 +140,43 @@ export function ServicesIndex() {
       ],
     },
     {
+      category: 'Audit & Assurance',
+      icon: Shield,
+      color: 'from-teal-500 to-teal-600',
+      services: [
+        {
+          id: 'statutory-audit',
+          name: 'Statutory Audit',
+          description: 'Compliance with Companies Act, 2013',
+          icon: FileText,
+        },
+        {
+          id: 'tax-audit',
+          name: 'Tax Audit',
+          description: 'Form 3CA/3CB, 3CD audit services',
+          icon: Calculator,
+        },
+        {
+          id: 'internal-audit',
+          name: 'Internal Audit',
+          description: 'Improve operational efficiency & risk management',
+          icon: Shield,
+        },
+        {
+          id: 'gst-audit',
+          name: 'GST Audit',
+          description: 'Reconciliation & GSTR-9C filing',
+          icon: FileText,
+        },
+      ],
+    },
+    {
       category: 'Government Registrations & Licenses',
       icon: Shield,
       color: 'from-orange-500 to-orange-600',
       services: [
         {
-          id: 'government-registrations',
+          id: 'msme-udyam',
           name: 'MSME/Udyam Registration',
           description: 'Micro, Small & Medium Enterprise registration',
           icon: Briefcase,
@@ -155,14 +194,12 @@ export function ServicesIndex() {
           name: 'FSSAI License',
           description: 'Food business license registration',
           icon: Shield,
-          linkedTo: 'government-registrations',
         },
         {
           id: 'iec-code',
           name: 'Import Export Code (IEC)',
           description: 'Import-export business registration',
           icon: Globe,
-          linkedTo: 'government-registrations',
         },
         {
           id: 'trade-license',
@@ -176,14 +213,18 @@ export function ServicesIndex() {
           name: 'Trademark Registration',
           description: 'Brand name & logo protection',
           icon: Shield,
-          linkedTo: 'government-registrations',
         },
         {
-          id: 'epfo-esic',
-          name: 'EPFO / ESIC Return',
+          id: 'digital-signature',
+          name: 'Digital Signature (DSC)',
+          description: 'Class 3 DSC for filing',
+          icon: Shield,
+        },
+        {
+          id: 'pf-esic',
+          name: 'PF & ESIC Registration',
           description: 'Employee provident fund & insurance',
           icon: Users,
-          linkedTo: 'government-registrations',
         },
         {
           id: 'shops-establishment',
@@ -375,6 +416,76 @@ export function ServicesIndex() {
       </div>
     );
   }
+
+  if (selectedService === 'msme-udyam') return (
+    <div>
+      <button onClick={handleBackToIndex} className="fixed top-24 left-4 z-40 px-4 py-2 bg-white shadow-lg rounded-lg text-primary font-semibold hover:bg-neutral-50 transition-all flex items-center gap-2">← Back to All Services</button>
+      <MSMERegistration />
+    </div>
+  );
+
+  if (selectedService === 'fssai-license') return (
+    <div>
+      <button onClick={handleBackToIndex} className="fixed top-24 left-4 z-40 px-4 py-2 bg-white shadow-lg rounded-lg text-primary font-semibold hover:bg-neutral-50 transition-all flex items-center gap-2">← Back to All Services</button>
+      <FSSAIRegistration />
+    </div>
+  );
+
+  if (selectedService === 'iec-code') return (
+    <div>
+      <button onClick={handleBackToIndex} className="fixed top-24 left-4 z-40 px-4 py-2 bg-white shadow-lg rounded-lg text-primary font-semibold hover:bg-neutral-50 transition-all flex items-center gap-2">← Back to All Services</button>
+      <IECRegistration />
+    </div>
+  );
+
+  if (selectedService === 'trademark') return (
+    <div>
+      <button onClick={handleBackToIndex} className="fixed top-24 left-4 z-40 px-4 py-2 bg-white shadow-lg rounded-lg text-primary font-semibold hover:bg-neutral-50 transition-all flex items-center gap-2">← Back to All Services</button>
+      <TrademarkRegistration />
+    </div>
+  );
+
+  if (selectedService === 'digital-signature') return (
+    <div>
+      <button onClick={handleBackToIndex} className="fixed top-24 left-4 z-40 px-4 py-2 bg-white shadow-lg rounded-lg text-primary font-semibold hover:bg-neutral-50 transition-all flex items-center gap-2">← Back to All Services</button>
+      <DSCRegistration />
+    </div>
+  );
+
+  if (selectedService === 'pf-esic') return (
+    <div>
+      <button onClick={handleBackToIndex} className="fixed top-24 left-4 z-40 px-4 py-2 bg-white shadow-lg rounded-lg text-primary font-semibold hover:bg-neutral-50 transition-all flex items-center gap-2">← Back to All Services</button>
+      <PFESICRegistration />
+    </div>
+  );
+
+  if (selectedService === 'statutory-audit') return (
+    <div>
+      <button onClick={handleBackToIndex} className="fixed top-24 left-4 z-40 px-4 py-2 bg-white shadow-lg rounded-lg text-primary font-semibold hover:bg-neutral-50 transition-all flex items-center gap-2">← Back to All Services</button>
+      <StatutoryAudit />
+    </div>
+  );
+
+  if (selectedService === 'tax-audit') return (
+    <div>
+      <button onClick={handleBackToIndex} className="fixed top-24 left-4 z-40 px-4 py-2 bg-white shadow-lg rounded-lg text-primary font-semibold hover:bg-neutral-50 transition-all flex items-center gap-2">← Back to All Services</button>
+      <TaxAudit />
+    </div>
+  );
+
+  if (selectedService === 'internal-audit') return (
+    <div>
+      <button onClick={handleBackToIndex} className="fixed top-24 left-4 z-40 px-4 py-2 bg-white shadow-lg rounded-lg text-primary font-semibold hover:bg-neutral-50 transition-all flex items-center gap-2">← Back to All Services</button>
+      <InternalAudit />
+    </div>
+  );
+
+  if (selectedService === 'gst-audit') return (
+    <div>
+      <button onClick={handleBackToIndex} className="fixed top-24 left-4 z-40 px-4 py-2 bg-white shadow-lg rounded-lg text-primary font-semibold hover:bg-neutral-50 transition-all flex items-center gap-2">← Back to All Services</button>
+      <GSTAudit />
+    </div>
+  );
 
   // Services Index/Directory
   return (

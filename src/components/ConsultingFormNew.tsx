@@ -93,7 +93,7 @@ export function ConsultingFormNew() {
       if (!formData.email.trim()) newErrors.email = 'Email is required';
       else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Invalid email format';
       if (!formData.mobile.trim()) newErrors.mobile = 'Mobile number is required';
-      else if (!/^[0-9]{10}$/.test(formData.mobile.replace(/[^\d]/g, ''))) newErrors.mobile = 'Must be 10 digits';
+      else if (!/^[\+]?[0-9\s\-]{10,15}$/.test(formData.mobile)) newErrors.mobile = 'Enter valid mobile with country code';
       if (!formData.city.trim()) newErrors.city = 'City is required';
     }
 
@@ -145,26 +145,51 @@ export function ConsultingFormNew() {
     }
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const handleSubmit = async () => {
     if (validateStep(3)) {
-      setSubmitted(true);
-      setTimeout(() => {
-        setCurrentStep(1);
-        setSubmitted(false);
-        setFormData({
-          fullName: '',
-          email: '',
-          mobile: '',
-          city: '',
-          preferredContact: 'phone',
-          clientType: '',
-          businessName: '',
-          industry: '',
-          annualTurnover: '',
-          services: [],
-          description: '',
+      setIsSubmitting(true);
+      try {
+        const response = await fetch('http://localhost:5000/api/consultations', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData),
         });
-      }, 3000);
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Failed to submit request');
+        }
+
+        setSubmitted(true);
+        // Reset form after successful submission
+        setTimeout(() => {
+          setCurrentStep(1);
+          setSubmitted(false);
+          setFormData({
+            fullName: '',
+            email: '',
+            mobile: '',
+            city: '',
+            preferredContact: 'phone',
+            clientType: '',
+            businessName: '',
+            industry: '',
+            annualTurnover: '',
+            services: [],
+            description: '',
+          });
+        }, 3000);
+      } catch (error: any) {
+        console.error('Submission error:', error);
+        alert(error.message || 'Something went wrong. Please try again.');
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -474,10 +499,20 @@ export function ConsultingFormNew() {
                 ) : (
                   <button
                     onClick={handleSubmit}
-                    className="flex-1 px-4 py-3 bg-white border-2 border-orange-500 text-orange-600 rounded-lg font-semibold hover:bg-orange-50 transition flex items-center justify-center gap-2"
+                    disabled={isSubmitting}
+                    className="flex-1 px-4 py-3 bg-white border-2 border-orange-500 text-orange-600 rounded-lg font-semibold hover:bg-orange-50 transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    <Check className="w-4 h-4" />
-                    Submit
+                    {isSubmitting ? (
+                      <>
+                        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                        Submitting...
+                      </>
+                    ) : (
+                      <>
+                        <Check className="w-4 h-4" />
+                        Submit
+                      </>
+                    )}
                   </button>
                 )}
               </div>

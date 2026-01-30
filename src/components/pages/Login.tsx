@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
-import { Mail, Lock, AlertCircle, Loader } from 'lucide-react';
+import { Mail, Lock, AlertCircle, Loader, ShoppingCart } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -9,6 +9,12 @@ export const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const { login, loading, error, clearError } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get redirect info from location state
+  const returnTo = location.state?.returnTo || '/dashboard';
+  const selectedService = location.state?.selectedService;
+  const companyType = location.state?.companyType;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,7 +26,10 @@ export const Login: React.FC = () => {
 
     try {
       await login(email, password);
-      navigate('/dashboard');
+      // Redirect to the intended destination with service info
+      navigate(returnTo, {
+        state: { selectedService, companyType }
+      });
     } catch (err) {
       console.error('Login error:', err);
     }
@@ -40,6 +49,23 @@ export const Login: React.FC = () => {
         {/* Card */}
         <div className="bg-white rounded-2xl shadow-2xl p-8">
           <h2 className="text-3xl font-bold text-primary mb-6 text-center">Welcome Back</h2>
+
+          {/* Service Selection Notice */}
+          {selectedService && (
+            <div className="mb-6 flex items-start gap-3 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+              <ShoppingCart className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-blue-900 font-semibold text-sm">Service Selected</p>
+                <p className="text-blue-700 text-sm mt-1">
+                  {selectedService}
+                  {companyType && ` - ${companyType}`}
+                </p>
+                <p className="text-blue-600 text-xs mt-1">
+                  Login to continue with your purchase
+                </p>
+              </div>
+            </div>
+          )}
 
           {/* Error Alert */}
           {error && (

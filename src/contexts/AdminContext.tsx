@@ -21,6 +21,7 @@ interface AdminContextType {
   error: string | null;
   isAdminAuthenticated: boolean;
   verifyAdminAccess: () => Promise<boolean>;
+  adminLogin: (email: string, password: string) => Promise<void>;
   clearError: () => void;
 }
 
@@ -31,6 +32,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Note: We don't automatically load admin user on mount to enforce strict verification via verifyAdminAccess
+  // But we can check if there's an existing token and user role
   useEffect(() => {
     const token = localStorage.getItem('authToken');
     const user = localStorage.getItem('user');
@@ -51,6 +54,46 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       }
     }
   }, []);
+
+  const adminLogin = async (email: string, password: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_BASE_URL}/admin/login`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email, password })
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Admin login failed');
+      }
+
+      // Save token and user data
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+
+      setAdminUser({
+        id: data.user.id,
+        userId: data.user.id,
+        role: data.user.role,
+        isAdmin: true
+      });
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Admin login failed';
+      setError(errorMessage);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const verifyAdminAccess = async (): Promise<boolean> => {
     try {
@@ -79,7 +122,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       }
 
       const data = await response.json();
-      
+
       if (data.isAdmin && (data.role === 'ADMIN' || data.role === 'SUPER_ADMIN')) {
         setAdminUser({
           id: data.userId,
@@ -110,6 +153,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     error,
     isAdminAuthenticated: !!adminUser && adminUser.isAdmin,
     verifyAdminAccess,
+    adminLogin,
     clearError
   };
 

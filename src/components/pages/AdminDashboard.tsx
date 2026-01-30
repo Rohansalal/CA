@@ -44,6 +44,17 @@ interface RecentService {
   createdAt: string;
 }
 
+interface ConsultationRequest {
+  id: number;
+  fullName: string;
+  email: string;
+  mobile: string;
+  businessName: string;
+  services: { serviceCode: string }[];
+  status: string;
+  createdAt: string;
+}
+
 export const AdminDashboard: React.FC = () => {
   const { user, logout } = useAuth();
   const { adminUser } = useAdmin();
@@ -52,17 +63,14 @@ export const AdminDashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentUsers, setRecentUsers] = useState<RecentUser[]>([]);
   const [recentServices, setRecentServices] = useState<RecentService[]>([]);
+  const [consultations, setConsultations] = useState<ConsultationRequest[]>([]); // New State
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'services' | 'analytics' | 'tickets'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'users' | 'services' | 'analytics' | 'tickets' | 'consultations'>('overview'); // Added consultations
 
   useEffect(() => {
-    if (!adminUser) {
-      navigate('/admin/login');
-      return;
-    }
     fetchDashboardData();
-  }, [adminUser, navigate]);
+  }, []);
 
   const fetchDashboardData = async () => {
     try {
@@ -74,23 +82,34 @@ export const AdminDashboard: React.FC = () => {
         return;
       }
 
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/admin/dashboard/stats`,
-        {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        }
-      );
+      // Parallel fetching: Stats + Consultations
+      // Note: In a real app, you might want to fetch consultations only when the tab is active to save bandwidth.
+      // But for now, fetching all is fine or I can just fetch stats here and fetch consultations when tab changes.
+      // I'll stick to fetching everything for simplicity or separate it. Let's fetch consultations separately or add it here.
+      // Actually, let's fetch consultations in a separate useEffect when activeTab changes, OR just fetch it all here if payload is small.
+      // Let's fetch it here for now to ensure data is ready.
 
-      if (!response.ok) {
-        throw new Error('Failed to fetch dashboard data');
+      const [statsRes, consultationsRes] = await Promise.all([
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/dashboard/stats`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        }),
+        fetch(`${import.meta.env.VITE_API_BASE_URL}/consultations?limit=50`, { // Fetch recent 50
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+      ]);
+
+      if (!statsRes.ok) throw new Error('Failed to fetch dashboard data');
+
+      const statsData = await statsRes.json();
+      setStats(statsData.stats);
+      setRecentUsers(statsData.recentUsers);
+      setRecentServices(statsData.recentServices);
+
+      if (consultationsRes.ok) {
+        const consulData = await consultationsRes.json();
+        setConsultations(consulData.data || []);
       }
 
-      const data = await response.json();
-      setStats(data.stats);
-      setRecentUsers(data.recentUsers);
-      setRecentServices(data.recentServices);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Error fetching data';
       setError(errorMessage);
@@ -98,6 +117,11 @@ export const AdminDashboard: React.FC = () => {
       setLoading(false);
     }
   };
+
+  // ... (render)
+
+
+
 
   const handleLogout = () => {
     logout();
@@ -155,15 +179,14 @@ export const AdminDashboard: React.FC = () => {
         {/* Navigation Tabs */}
         <div className="bg-white rounded-lg shadow-md mb-8 overflow-hidden">
           <div className="flex border-b overflow-x-auto">
-            {(['overview', 'users', 'services', 'analytics', 'tickets'] as const).map((tab) => (
+            {(['overview', 'users', 'services', 'analytics', 'tickets', 'consultations'] as const).map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`flex-1 px-6 py-4 font-semibold transition whitespace-nowrap ${
-                  activeTab === tab
-                    ? 'text-primary border-b-2 border-primary'
-                    : 'text-gray-600 hover:text-primary'
-                }`}
+                className={`flex-1 px-6 py-4 font-semibold transition whitespace-nowrap ${activeTab === tab
+                  ? 'text-primary border-b-2 border-primary'
+                  : 'text-gray-600 hover:text-primary'
+                  }`}
               >
                 {tab.charAt(0).toUpperCase() + tab.slice(1)}
               </button>
@@ -315,12 +338,11 @@ export const AdminDashboard: React.FC = () => {
                             <td className="px-6 py-4 text-gray-900">{svc.service.name}</td>
                             <td className="px-6 py-4 text-gray-900">₹{svc.service.price}</td>
                             <td className="px-6 py-4">
-                              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                                svc.status === 'ACTIVE' ? 'bg-green-100 text-green-800' :
+                              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${svc.status === 'ACTIVE' ? 'bg-green-100 text-green-800' :
                                 svc.status === 'COMPLETED' ? 'bg-blue-100 text-blue-800' :
-                                svc.status === 'PENDING_PAYMENT' ? 'bg-yellow-100 text-yellow-800' :
-                                'bg-red-100 text-red-800'
-                              }`}>
+                                  svc.status === 'PENDING_PAYMENT' ? 'bg-yellow-100 text-yellow-800' :
+                                    'bg-red-100 text-red-800'
+                                }`}>
                                 {svc.status}
                               </span>
                             </td>
@@ -348,6 +370,57 @@ export const AdminDashboard: React.FC = () => {
                 <ShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">Services Management</h3>
                 <p className="text-gray-600">Navigate to <button onClick={() => navigate('/admin/services')} className="text-primary font-semibold hover:underline">Services Page</button></p>
+              </div>
+            )}
+
+            {activeTab === 'consultations' && (
+              <div className="bg-gray-50 rounded-lg p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-bold text-gray-900">Recent Consultation Requests</h3>
+                  <button onClick={fetchDashboardData} className="text-sm text-primary hover:underline">Refresh</button>
+                </div>
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm">
+                    <thead className="bg-white border-b">
+                      <tr>
+                        <th className="px-6 py-3 text-left font-semibold text-gray-900">Date</th>
+                        <th className="px-6 py-3 text-left font-semibold text-gray-900">Client Name</th>
+                        <th className="px-6 py-3 text-left font-semibold text-gray-900">Mobile</th>
+                        <th className="px-6 py-3 text-left font-semibold text-gray-900">Business</th>
+                        <th className="px-6 py-3 text-left font-semibold text-gray-900">Services</th>
+                        <th className="px-6 py-3 text-left font-semibold text-gray-900">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                      {consultations.length > 0 ? (
+                        consultations.map((req) => (
+                          <tr key={req.id} className="bg-white hover:bg-gray-50">
+                            <td className="px-6 py-4 text-gray-600">{new Date(req.createdAt).toLocaleDateString()}</td>
+                            <td className="px-6 py-4 text-gray-900 font-medium">{req.fullName}<br /><span className="text-xs text-gray-500">{req.email}</span></td>
+                            <td className="px-6 py-4 text-gray-600">{req.mobile}</td>
+                            <td className="px-6 py-4 text-gray-600">{req.businessName || '-'}</td>
+                            <td className="px-6 py-4 text-gray-600 uppercase">
+                              {req.services.map(s => s.serviceCode).join(', ')}
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${req.status === 'NEW' ? 'bg-blue-100 text-blue-800' :
+                                req.status === 'CONTACTED' ? 'bg-yellow-100 text-yellow-800' :
+                                  req.status === 'CLOSED' ? 'bg-green-100 text-green-800' :
+                                    'bg-gray-100 text-gray-800'
+                                }`}>
+                                {req.status}
+                              </span>
+                            </td>
+                          </tr>
+                        ))
+                      ) : (
+                        <tr>
+                          <td colSpan={6} className="px-6 py-8 text-center text-gray-500">No consultation requests found.</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             )}
 

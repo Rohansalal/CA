@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useAdmin } from '../../contexts/AdminContext';
 import { Mail, Lock, AlertCircle, Loader, Shield } from 'lucide-react';
 
 export const AdminLogin: React.FC = () => {
@@ -9,7 +10,8 @@ export const AdminLogin: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { login } = useAuth();
+  const { adminLogin } = useAdmin();
+  const { setUserData } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,20 +25,17 @@ export const AdminLogin: React.FC = () => {
 
     try {
       setLoading(true);
-      await login(email, password);
+      // Use the dedicated admin login function which hits /api/admin/login
+      await adminLogin(email, password);
 
-      // Check if user is admin
-      const user = localStorage.getItem('user');
-      if (user) {
-        const userData = JSON.parse(user);
-        if (userData.role === 'ADMIN' || userData.role === 'SUPER_ADMIN') {
-          navigate('/admin/dashboard');
-        } else {
-          setError('You do not have admin privileges');
-          localStorage.removeItem('authToken');
-          localStorage.removeItem('user');
-        }
+      // Sync AuthContext with the new user data
+      const storedUser = localStorage.getItem('user');
+      if (storedUser) {
+        setUserData(JSON.parse(storedUser));
       }
+
+      // If successful, adminLogin will set the token and user in context
+      navigate('/admin/dashboard');
     } catch (err) {
       setError('Login failed. Please check your credentials.');
       console.error('Login error:', err);

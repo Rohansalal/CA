@@ -110,7 +110,7 @@ export function Home() {
                 <ImageWithFallback
                   src="https://images.unsplash.com/photo-1692133226337-55e513450a32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBhY2NvdW50YW50JTIwb2ZmaWNlfGVufDF8fHx8MTc2ODc0NzA0OXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                   alt="Professional Accounting Services"
-                  className="relative rounded-2xl shadow-2xl w-full h-[600px] sm:h-[600px] lg:h-[600px] object-cover"
+                  className="relative rounded-2xl shadow-2xl w-full h-[800px] sm:h-[800px] lg:h-[800px] object-cover"
                 />
               </div>
             </div>

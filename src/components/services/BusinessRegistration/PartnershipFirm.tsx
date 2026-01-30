@@ -1,6 +1,18 @@
 import { Handshake, CheckCircle, FileText, Clock, ArrowRight, AlertCircle, Users, Shield } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../contexts/AuthContext';
 
 export function PartnershipFirm() {
+  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
+
+  const handleStartRegistration = () => {
+    if (isAuthenticated) {
+      navigate('/dashboard', { state: { selectedService: 'Partnership Firm' } });
+    } else {
+      navigate('/login', { state: { returnTo: '/dashboard', selectedService: 'Partnership Firm' } });
+    }
+  };
   const partnershipTypes = [
     {
       type: 'General Partnership',
@@ -436,7 +448,9 @@ export function PartnershipFirm() {
             Get expert assistance with partnership deed drafting and complete registration
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center justify-center gap-2">
+            <button
+              onClick={handleStartRegistration}
+              className="px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center justify-center gap-2">
               START REGISTRATION
               <ArrowRight className="w-5 h-5" />
             </button>

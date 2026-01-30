@@ -118,7 +118,7 @@ export function ContactUs() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Contact Form */}
-            <div>
+            <div className="bg-white p-8 rounded-2xl border border-neutral-200 shadow-lg">
               <h2 className="text-3xl lg:text-4xl text-primary mb-4">Send us a Message</h2>
               <p className="text-lg text-neutral-600 mb-8">
                 Fill out the form below and we'll get back to you within 24 hours
@@ -244,7 +244,7 @@ export function ContactUs() {
                 <iframe
                   // src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.0!2d77.6!3d12.97!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU4JzEyLjAiTiA3N8KwMzYnMDAuMCJF!5e0!3m2!1sen!2sin!4v1234567890"
                   // src="https://www.google.com/maps/place/Avinash+Payal+%26+Associates/@28.639674,77.2939163,764m/data=!3m2!1e3!4b1!4m6!3m5!1s0x390cfb0ef32b0225:0xd7702561bb0cfe7b!8m2!3d28.639674!4d77.2939163!16s%2Fg%2F11mplrwv4k?entry=ttu&g_ep=EgoyMDI2MDEyMS4wIKXMDSoKLDEwMDc5MjA3M0gBUAM%3D"
-                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3888.0!2d77.6!3d12.97!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMTLCsDU4JzEyLjAiTiA3N8KwMzYnMDAuMCJF!5e0!3m2!1sen!2sin!4v1234567890"
+                  src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3328.4095547952206!2d77.29391629999999!3d28.639674000000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfb0ef32b0225%3A0xd7702561bb0cfe7b!2sAvinash%20Payal%20%26%20Associates!5e1!3m2!1sen!2sin!4v1769728807106!5m2!1sen!2sin"
                   width="100%"
                   height="100%"
                   style={{ border: 0 }}
