@@ -1,4 +1,4 @@
-import { Users, Award, Target, Heart, TrendingUp, Shield, CheckCircle } from 'lucide-react';
+import { Users, Award, Target, Heart, TrendingUp, Shield, CheckCircle, Building, Briefcase, Handshake, Lightbulb, Star } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
 export function AboutUs() {
@@ -68,13 +68,72 @@ export function AboutUs() {
     },
   ];
 
-  const milestones = [
-    { year: '2014', event: 'Firm Established' },
-    { year: '2016', event: '100+ Clients Milestone' },
-    { year: '2018', event: 'Expanded to Corporate Advisory' },
-    { year: '2020', event: '500+ Clients Across India' },
-    { year: '2022', event: 'ISO 9001:2015 Certified' },
-    { year: '2024', event: '1000+ Satisfied Clients' },
+  const journeyMilestones = [
+    {
+      year: '2005',
+      label: 'INCEPTION',
+      title: 'Foundation of the Firm',
+      tag: 'Established',
+      description: 'Started as a proprietorship with a focused mission to deliver exceptional audit and assurance services to emerging local businesses.',
+      footerIcon: Building,
+      footerText: 'First Client Acquisition',
+      color: 'from-primary to-blue-600',
+      shadow: 'shadow-primary/20',
+      tagColor: 'bg-primary/5 text-primary border-primary/10',
+      footerColor: 'text-primary'
+    },
+    {
+      year: '2011',
+      label: 'EXPANSION',
+      title: 'Partnership & Growth',
+      tag: 'Strategic Move',
+      description: 'Reconstituted as a partnership firm, integrating diverse expertise and expanding our service portfolio to include comprehensive corporate advisory solutions.',
+      footerIcon: Briefcase,
+      footerText: 'Service Portfolio Expanded',
+      color: 'from-accent to-orange-600',
+      shadow: 'shadow-accent/20',
+      tagColor: 'bg-accent/5 text-accent border-accent/10',
+      footerColor: 'text-accent'
+    },
+    {
+      year: '2016',
+      label: 'RECOGNITION',
+      title: 'National Empanelment',
+      tag: 'Prestigious',
+      description: 'Recognized by the C&AG of India and entrusted with statutory audits for major Public Sector Banks, validating our technical excellence and reliability.',
+      footerIcon: Award,
+      footerText: 'Industry Recognition Achieved',
+      color: 'from-secondary to-slate-800',
+      shadow: 'shadow-secondary/20',
+      tagColor: 'bg-secondary/5 text-secondary border-secondary/10',
+      footerColor: 'text-secondary'
+    },
+    {
+      year: '2019',
+      label: 'ALLIANCES',
+      title: 'Corporate Partnerships',
+      tag: 'Enduring',
+      description: 'Forged lasting relationships with leading corporates and institutions, establishing ourselves as a key strategic partner in their financial growth journey.',
+      footerIcon: Handshake,
+      footerText: 'Long-term Partnerships Formed',
+      color: 'from-primary to-blue-500',
+      shadow: 'shadow-primary/20',
+      tagColor: 'bg-primary/5 text-primary border-primary/10',
+      footerColor: 'text-primary'
+    },
+    {
+      year: 'Present',
+      label: 'LEADERSHIP',
+      title: 'Domain Expertise',
+      tag: 'Industry Leader',
+      description: 'Established deep specialization in complex audits, appellate representations, and strategic financial consulting across diverse industry sectors.',
+      footerIcon: Lightbulb,
+      footerText: 'Continuous Innovation & Growth',
+      color: 'from-accent to-orange-500',
+      shadow: 'shadow-accent/20',
+      tagColor: 'bg-accent/5 text-accent border-accent/10',
+      footerColor: 'text-accent'
+    },
   ];
 
   return (
@@ -256,111 +315,83 @@ export function AboutUs() {
         </div>
       </section>
 
-      {/* Milestones Timeline */}
-      <section className="py-24 bg-white relative">
+      {/* Connected Journey Timeline */}
+      <section className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-20 max-w-3xl mx-auto">
-            <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-6">Our Journey of Excellence</h2>
-            <div className="w-24 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full mb-6"></div>
-            <p className="text-lg text-neutral-600 leading-relaxed">
-              From a humble beginning to a nationally recognized firm, every milestone represents our dedication to professional integrity and client success.
+          <div className="text-center mb-16">
+            <h2 className="text-3xl lg:text-4xl font-bold text-slate-900 mb-6">Our Journey of Excellence</h2>
+            <div className="w-20 h-1.5 bg-gradient-to-r from-primary to-accent mx-auto rounded-full mb-6"></div>
+            <p className="text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
+              Connecting our past achievements to our future vision through a legacy of trust and expertise.
             </p>
           </div>
 
-          <div className="max-w-4xl mx-auto relative">
-            {/* Professional Timeline Implementation */}
-            <div className="space-y-12 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-neutral-200 before:to-transparent">
+          <div className="relative max-w-6xl mx-auto">
+            {/* The Central Spine (Gradient) */}
+            <div className="absolute left-8 md:left-1/2 top-0 bottom-0 w-1 bg-gradient-to-b from-primary/5 via-primary/30 to-primary/5 transform md:-translate-x-1/2 rounded-full"></div>
 
-              {/* Item 1: 2005 */}
-              <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-50 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 group-hover:scale-110 transition-transform duration-300">
-                  <div className="w-3 h-3 bg-primary rounded-full"></div>
-                </div>
+            <div className="space-y-12">
+              {journeyMilestones.map((item, index) => (
+                <div key={index} className="relative group">
+                  {/* Layout Container */}
+                  <div className={`flex flex-col md:flex-row items-center transition-all duration-300 ${index % 2 === 1 ? 'md:flex-row-reverse' : ''}`}>
 
-                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-xl border border-neutral-100 shadow-sm hover:shadow-lg transition-all duration-300 group-hover:border-primary/20">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-2xl text-primary">2005</span>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-accent bg-accent/5 px-2 py-1 rounded">Inception</span>
+                    {/* Empty Space for Balance */}
+                    <div className="hidden md:block md:w-1/2"></div>
+
+                    {/* Central Connector Node */}
+                    <div className="absolute left-8 md:left-1/2 transform -translate-x-1/2 flex items-center justify-center z-10 my-auto h-full">
+                      {/* The Dot */}
+                      <div className={`w-6 h-6 rounded-full border-4 border-slate-50 bg-white ring-2 ring-primary/20 group-hover:ring-accent/50 transition-all duration-500 scale-100 group-hover:scale-125 z-20 relative`}>
+                        <div className={`w-full h-full rounded-full bg-gradient-to-br ${item.color} opacity-80 group-hover:opacity-100`}></div>
+                      </div>
+                    </div>
+
+                    {/* Connector Arm (Desktop Only) - The physical link */}
+                    <div className={`hidden md:block absolute left-1/2 top-1/2 w-16 h-[2px] bg-primary/20 -translate-y-1/2 z-0 
+                        ${index % 2 === 1 ? '-translate-x-full origin-right' : 'origin-left'} 
+                        group-hover:bg-accent/40 group-hover:w-20 transition-all duration-500`}>
+                      {/* Little ball at the end of the arm */}
+                      <div className={`absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-primary/40 rounded-full ${index % 2 === 1 ? 'left-0' : 'right-0'}`}></div>
+                    </div>
+
+                    {/* Content Card */}
+                    <div className={`w-full pl-20 md:pl-0 md:w-1/2 md:py-4 relative z-10 ${index % 2 === 1 ? 'md:pr-20 md:text-right' : 'md:pl-20 md:text-left'}`}>
+                      <div className={`relative bg-white p-8 rounded-2xl shadow-sm border border-slate-100 hover:shadow-xl transition-all duration-300 group-hover:-translate-y-1 group-hover:border-primary/10`}>
+
+                        <div className={`flex flex-col ${index % 2 === 1 ? 'md:items-end' : 'md:items-start'}`}>
+                          {/* Year Label */}
+                          <div className="inline-block mb-2">
+                            <span className={`text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br ${item.color} leading-none`}>
+                              {item.year}
+                            </span>
+                          </div>
+
+                          {/* Title with Tag */}
+                          <div className={`flex flex-wrap items-center gap-3 mb-4 ${index % 2 === 1 ? 'md:justify-end' : 'md:justify-start'}`}>
+                            <h3 className="text-xl font-bold text-slate-800">{item.title}</h3>
+                            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${item.tagColor} uppercase tracking-wider`}>
+                              {item.label}
+                            </span>
+                          </div>
+
+                          <p className="text-slate-600 mb-6 text-sm leading-relaxed font-light">
+                            {item.description}
+                          </p>
+
+                          {/* Footer Meta */}
+                          <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wide ${item.footerColor || 'text-primary'} ${index % 2 === 1 ? 'md:flex-row-reverse' : ''} bg-slate-50 px-3 py-1.5 rounded-lg`}>
+                            <item.footerIcon className="w-4 h-4" />
+                            <span>{item.footerText}</span>
+                          </div>
+                        </div>
+
+                      </div>
+                    </div>
+
                   </div>
-                  <h3 className="text-lg font-bold text-neutral-800 mb-2">Foundation of the Firm</h3>
-                  <p className="text-neutral-600 text-sm leading-relaxed">
-                    Started as a proprietorship with a focus on delivering high-quality audit and assurance services to local businesses.
-                  </p>
                 </div>
-              </div>
-
-              {/* Item 2: 2011 */}
-              <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-50 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 group-hover:scale-110 transition-transform duration-300">
-                  <div className="w-3 h-3 bg-primary rounded-full"></div>
-                </div>
-
-                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-xl border border-neutral-100 shadow-sm hover:shadow-lg transition-all duration-300 group-hover:border-primary/20">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-2xl text-primary">2011</span>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-accent bg-accent/5 px-2 py-1 rounded">Growth</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-neutral-800 mb-2">Partnership & Expansion</h3>
-                  <p className="text-neutral-600 text-sm leading-relaxed">
-                    Reconstituted as a partnership firm, bringing in diverse expertise and expanding our service portfolio to include corporate advisory.
-                  </p>
-                </div>
-              </div>
-
-              {/* Item 3: Recognition */}
-              <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-50 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 group-hover:scale-110 transition-transform duration-300">
-                  <div className="w-3 h-3 bg-primary rounded-full"></div>
-                </div>
-
-                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-xl border border-neutral-100 shadow-sm hover:shadow-lg transition-all duration-300 group-hover:border-primary/20">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-xl text-primary">Key Milestone</span>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-accent bg-accent/5 px-2 py-1 rounded">Recognition</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-neutral-800 mb-2">National Empanelment</h3>
-                  <p className="text-neutral-600 text-sm leading-relaxed">
-                    Recognized by the C&AG of India and entrusted with statutory audits for major Public Sector Banks, validating our technical excellence.
-                  </p>
-                </div>
-              </div>
-
-              {/* Item 4: Relationships */}
-              <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-50 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 group-hover:scale-110 transition-transform duration-300">
-                  <div className="w-3 h-3 bg-primary rounded-full"></div>
-                </div>
-
-                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-xl border border-neutral-100 shadow-sm hover:shadow-lg transition-all duration-300 group-hover:border-primary/20">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-xl text-primary">Ongoing</span>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-accent bg-accent/5 px-2 py-1 rounded">Trust</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-neutral-800 mb-2">Corporate Alliances</h3>
-                  <p className="text-neutral-600 text-sm leading-relaxed">
-                    Built lasting relationships with leading corporates and institutions, becoming a key strategic partner in their financial growth.
-                  </p>
-                </div>
-              </div>
-
-              {/* Item 5: Expertise */}
-              <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white bg-slate-50 shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 group-hover:scale-110 transition-transform duration-300">
-                  <div className="w-3 h-3 bg-primary rounded-full"></div>
-                </div>
-
-                <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-white p-6 rounded-xl border border-neutral-100 shadow-sm hover:shadow-lg transition-all duration-300 group-hover:border-primary/20">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-bold text-xl text-primary">Present</span>
-                    <span className="text-xs font-semibold uppercase tracking-wider text-accent bg-accent/5 px-2 py-1 rounded">Leadership</span>
-                  </div>
-                  <h3 className="text-lg font-bold text-neutral-800 mb-2">Domain Expertise</h3>
-                  <p className="text-neutral-600 text-sm leading-relaxed">
-                    Established deep specialization in complex audits, appellate representations, and strategic financial consulting for diverse industries.
-                  </p>
-                </div>
-              </div>
-
+              ))}
             </div>
           </div>
         </div>
