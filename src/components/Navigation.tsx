@@ -84,11 +84,11 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     icon: Calculator,
     color: 'blue',
     subServices: [
-      { id: 'advance-tax-calculation', name: 'Advance Tax Calculation', route: '/services/tax-compliances/advance-tax-calculation' },
-      { id: 'itr-filing', name: 'ITR Filing', route: '/services/tax-compliances/itr-filing' },
-      { id: 'tds-return-filing', name: 'TDS Return Filing', route: '/services/tax-compliances/tds-return-filing' },
-      { id: 'gst-return-filing', name: 'GST Return Filing', route: '/services/tax-compliances/gst-return-filing' },
-      { id: 'gst-annual-return', name: 'GST Annual Return', route: '/services/tax-compliances/gst-annual-return' },
+      // { id: 'advance-tax-calculation', name: 'Advance Tax Calculation', route: '/services/tax-compliances/advance-tax-calculation' },
+      // { id: 'itr-filing', name: 'ITR Filing', route: '/services/tax-compliances/itr-filing' },
+      // { id: 'tds-return-filing', name: 'TDS Return Filing', route: '/services/tax-compliances/tds-return-filing' },
+      // { id: 'gst-return-filing', name: 'GST Return Filing', route: '/services/tax-compliances/gst-return-filing' },
+      // { id: 'gst-annual-return', name: 'GST Annual Return', route: '/services/tax-compliances/gst-annual-return' },
     ]
   },
   {
@@ -98,10 +98,10 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     icon: PieChart,
     color: 'blue',
     subServices: [
-      { id: 'statutory-audit', name: 'Statutory Audit', route: '/services/audit-assurance/statutory-audit' },
-      { id: 'tax-audit', name: 'Tax Audit', route: '/services/audit-assurance/tax-audit' },
-      { id: 'gst-audit', name: 'GST Audit', route: '/services/audit-assurance/gst-audit' },
-      { id: 'internal-audit', name: 'Internal Audit', route: '/services/audit-assurance/internal-audit' },
+      // { id: 'statutory-audit', name: 'Statutory Audit', route: '/services/audit-assurance/statutory-audit' },
+      // { id: 'tax-audit', name: 'Tax Audit', route: '/services/audit-assurance/tax-audit' },
+      // { id: 'gst-audit', name: 'GST Audit', route: '/services/audit-assurance/gst-audit' },
+      // { id: 'internal-audit', name: 'Internal Audit', route: '/services/audit-assurance/internal-audit' },
     ]
   },
   {
@@ -111,18 +111,18 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     icon: Landmark,
     color: 'blue',
     subServices: [
-      { id: 'fssai-registration', name: 'FSSAI Registration', route: '/services/other-registrations/fssai' },
-      { id: 'import-export-code', name: 'Import Export Code (IEC)', route: '/services/other-registrations/iec' },
-      { id: 'msme-registration', name: 'MSME Registration', route: '/services/other-registrations/msme' },
-      { id: 'dsc', name: 'Digital Signature (DSC)', route: '/services/other-registrations/dsc' },
-      { id: 'pf-esic-registration', name: 'PF & ESIC Registration', route: '/services/other-registrations/pf-esic' },
-      { id: 'trademark-registration', name: 'Trademark Registration', route: '/services/other-registrations/trademark' },
-      { id: 'copyright-registration', name: 'Copyright Registration', route: '/services/other-registrations/copyright' },
-      { id: 'startup-india', name: 'Startup India', route: '/services/other-registrations/startup-india' },
-      { id: 'trade-license', name: 'Trade License', route: '/services/other-registrations/trade-license' },
-      { id: 'labour-registration', name: 'Shop & Establishment', route: '/services/other-registrations/labour-registration' },
-      { id: 'drug-license', name: 'Drug License', route: '/services/other-registrations/drug-license' },
-      { id: 'pollution-control', name: 'Pollution Control (NOC)', route: '/services/other-registrations/pollution-control' },
+      // { id: 'fssai-registration', name: 'FSSAI Registration', route: '/services/other-registrations/fssai' },
+      // { id: 'import-export-code', name: 'Import Export Code (IEC)', route: '/services/other-registrations/iec' },
+      // { id: 'msme-registration', name: 'MSME Registration', route: '/services/other-registrations/msme' },
+      // { id: 'dsc', name: 'Digital Signature (DSC)', route: '/services/other-registrations/dsc' },
+      // { id: 'pf-esic-registration', name: 'PF & ESIC Registration', route: '/services/other-registrations/pf-esic' },
+      // { id: 'trademark-registration', name: 'Trademark Registration', route: '/services/other-registrations/trademark' },
+      // { id: 'copyright-registration', name: 'Copyright Registration', route: '/services/other-registrations/copyright' },
+      // { id: 'startup-india', name: 'Startup India', route: '/services/other-registrations/startup-india' },
+      // { id: 'trade-license', name: 'Trade License', route: '/services/other-registrations/trade-license' },
+      // { id: 'labour-registration', name: 'Shop & Establishment', route: '/services/other-registrations/labour-registration' },
+      // { id: 'drug-license', name: 'Drug License', route: '/services/other-registrations/drug-license' },
+      // { id: 'pollution-control', name: 'Pollution Control (NOC)', route: '/services/other-registrations/pollution-control' },
     ]
   },
 ];
