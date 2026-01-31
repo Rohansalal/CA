@@ -16,6 +16,7 @@ interface SubService {
   id: string;
   name: string;
   route: string;
+  subServices?: SubService[];
 }
 
 interface ServiceCategory {
@@ -23,7 +24,7 @@ interface ServiceCategory {
   title: string;
   route: string;
   icon: React.ElementType;
-  color: 'blue' | 'blue' | 'blue' | 'blue' | 'blue';
+  color: 'blue' | 'blue' | 'blue' | 'blue' | 'blue'; // Kept as original though redundant
   subServices: SubService[];
 }
 
@@ -60,21 +61,30 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     ]
   },
   {
-    id: 'business-compliances',
-    title: 'Business Compliances',
-    route: '/services/business-entity-law-compliances',
-    icon: Scale,
+    id: 'accounting-services',
+    title: 'Accounting Services',
+    route: '/services/business-compliances/book-keeping',
+    icon: Calculator,
     color: 'blue',
     subServices: [
       { id: 'book-keeping', name: 'Book Keeping', route: '/services/business-compliances/book-keeping' },
       { id: 'book-supervision', name: 'Book Supervision', route: '/services/business-compliances/book-supervision' },
-      { id: 'change-directors-kmp', name: 'Change in directors/KMP', route: '/services/business-compliances/change-directors-kmp' },
-      { id: 'change-registered-office', name: 'Change in Registered office', route: '/services/business-compliances/change-registered-office' },
-      { id: 'annual-filing-company', name: 'Annual filling-Company', route: '/services/business-compliances/annual-filing-company' },
-      { id: 'din-dir3-kyc', name: 'DIN / DIR3-KYC', route: '/services/business-compliances/din-dir3-kyc' },
-      { id: 'minutes-book', name: 'Minutes Book', route: '/services/business-compliances/minutes-book' },
-      { id: 'statutory-record', name: 'Statutory record', route: '/services/business-compliances/statutory-record' },
-      { id: 'annual-filing-llp', name: 'Annual filling-LLP', route: '/services/business-compliances/annual-filing-llp' },
+      {
+        id: 'roc-mca-compliance',
+        name: 'ROC / MCA Compliance',
+        route: '/services/roc-mca-compliance',
+        subServices: [
+          { id: 'change-directors-kmp', name: 'Change in directors/KMP', route: '/services/business-compliances/change-directors-kmp' },
+          { id: 'change-registered-office', name: 'Change in Registered office', route: '/services/business-compliances/change-registered-office' },
+          { id: 'annual-filing-company', name: 'Annual filling-Company', route: '/services/business-compliances/annual-filing-company' },
+          { id: 'din', name: 'DIN', route: '/services/business-compliances/din-dir3-kyc' },
+          { id: 'dir3-kyc', name: 'DIR3-KYC', route: '/services/business-compliances/din-dir3-kyc' },
+          { id: 'dir-wkyc', name: 'DIR-WKYC', route: '/services/business-compliances/din-dir3-kyc' },
+          { id: 'minutes-book', name: 'Minutes Book', route: '/services/business-compliances/minutes-book' },
+          { id: 'statutory-record', name: 'Statutory record', route: '/services/business-compliances/statutory-record' },
+          { id: 'annual-filing-llp', name: 'Annual filling-LLP', route: '/services/business-compliances/annual-filing-llp' },
+        ]
+      },
     ]
   },
   {
@@ -84,11 +94,11 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     icon: Calculator,
     color: 'blue',
     subServices: [
-      // { id: 'advance-tax-calculation', name: 'Advance Tax Calculation', route: '/services/tax-compliances/advance-tax-calculation' },
-      // { id: 'itr-filing', name: 'ITR Filing', route: '/services/tax-compliances/itr-filing' },
-      // { id: 'tds-return-filing', name: 'TDS Return Filing', route: '/services/tax-compliances/tds-return-filing' },
-      // { id: 'gst-return-filing', name: 'GST Return Filing', route: '/services/tax-compliances/gst-return-filing' },
-      // { id: 'gst-annual-return', name: 'GST Annual Return', route: '/services/tax-compliances/gst-annual-return' },
+      { id: 'advance-tax-calculation', name: 'Advance Tax Calculation', route: '/services/tax-compliances/advance-tax-calculation' },
+      { id: 'itr-filing', name: 'ITR Filing', route: '/services/tax-compliances/itr-filing' },
+      { id: 'tds-return-filing', name: 'TDS Return Filing', route: '/services/tax-compliances/tds-return-filing' },
+      { id: 'gst-return-filing', name: 'GST Return Filing', route: '/services/tax-compliances/gst-return-filing' },
+      { id: 'gst-annual-return', name: 'GST Annual Return', route: '/services/tax-compliances/gst-annual-return' },
     ]
   },
   {
@@ -98,10 +108,10 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     icon: PieChart,
     color: 'blue',
     subServices: [
-      // { id: 'statutory-audit', name: 'Statutory Audit', route: '/services/audit-assurance/statutory-audit' },
-      // { id: 'tax-audit', name: 'Tax Audit', route: '/services/audit-assurance/tax-audit' },
-      // { id: 'gst-audit', name: 'GST Audit', route: '/services/audit-assurance/gst-audit' },
-      // { id: 'internal-audit', name: 'Internal Audit', route: '/services/audit-assurance/internal-audit' },
+      { id: 'statutory-audit', name: 'Statutory Audit', route: '/services/audit-assurance/statutory-audit' },
+      { id: 'tax-audit', name: 'Tax Audit', route: '/services/audit-assurance/tax-audit' },
+      { id: 'gst-audit', name: 'GST Audit', route: '/services/audit-assurance/gst-audit' },
+      { id: 'internal-audit', name: 'Internal Audit', route: '/services/audit-assurance/internal-audit' },
     ]
   },
   {
@@ -111,18 +121,18 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
     icon: Landmark,
     color: 'blue',
     subServices: [
-      // { id: 'fssai-registration', name: 'FSSAI Registration', route: '/services/other-registrations/fssai' },
-      // { id: 'import-export-code', name: 'Import Export Code (IEC)', route: '/services/other-registrations/iec' },
-      // { id: 'msme-registration', name: 'MSME Registration', route: '/services/other-registrations/msme' },
-      // { id: 'dsc', name: 'Digital Signature (DSC)', route: '/services/other-registrations/dsc' },
-      // { id: 'pf-esic-registration', name: 'PF & ESIC Registration', route: '/services/other-registrations/pf-esic' },
-      // { id: 'trademark-registration', name: 'Trademark Registration', route: '/services/other-registrations/trademark' },
-      // { id: 'copyright-registration', name: 'Copyright Registration', route: '/services/other-registrations/copyright' },
-      // { id: 'startup-india', name: 'Startup India', route: '/services/other-registrations/startup-india' },
-      // { id: 'trade-license', name: 'Trade License', route: '/services/other-registrations/trade-license' },
-      // { id: 'labour-registration', name: 'Shop & Establishment', route: '/services/other-registrations/labour-registration' },
-      // { id: 'drug-license', name: 'Drug License', route: '/services/other-registrations/drug-license' },
-      // { id: 'pollution-control', name: 'Pollution Control (NOC)', route: '/services/other-registrations/pollution-control' },
+      { id: 'fssai-registration', name: 'FSSAI Registration', route: '/services/other-registrations/fssai' },
+      { id: 'import-export-code', name: 'Import Export Code (IEC)', route: '/services/other-registrations/iec' },
+      { id: 'msme-registration', name: 'MSME Registration', route: '/services/other-registrations/msme' },
+      { id: 'dsc', name: 'Digital Signature (DSC)', route: '/services/other-registrations/dsc' },
+      { id: 'pf-esic-registration', name: 'PF & ESIC Registration', route: '/services/other-registrations/pf-esic' },
+      { id: 'trademark-registration', name: 'Trademark Registration', route: '/services/other-registrations/trademark' },
+      { id: 'copyright-registration', name: 'Copyright Registration', route: '/services/other-registrations/copyright' },
+      { id: 'startup-india', name: 'Startup India', route: '/services/other-registrations/startup-india' },
+      { id: 'trade-license', name: 'Trade License', route: '/services/other-registrations/trade-license' },
+      { id: 'labour-registration', name: 'Shop & Establishment', route: '/services/other-registrations/labour-registration' },
+      { id: 'drug-license', name: 'Drug License', route: '/services/other-registrations/drug-license' },
+      { id: 'pollution-control', name: 'Pollution Control (NOC)', route: '/services/other-registrations/pollution-control' },
     ]
   },
 ];
@@ -149,55 +159,29 @@ const COLOR_STYLES = {
     border: 'border-blue-100',
     hover: 'hover:bg-blue-100',
   },
-  green: {
-    bg: 'bg-green-50',
-    text: 'text-green-900',
-    activeBg: 'bg-green-50',
-    activeText: 'text-green-700',
-    iconBg: 'bg-green-100',
-    iconText: 'text-green-600',
-    hoverText: 'hover:text-green-700',
-    bulletGroupHover: 'group-hover/sub:bg-green-600',
-    border: 'border-green-100',
-    hover: 'hover:bg-green-100',
-  },
-  purple: {
-    bg: 'bg-purple-50',
-    text: 'text-purple-900',
-    activeBg: 'bg-purple-50',
-    activeText: 'text-purple-700',
-    iconBg: 'bg-purple-100',
-    iconText: 'text-purple-600',
-    hoverText: 'hover:text-purple-700',
-    bulletGroupHover: 'group-hover/sub:bg-purple-600',
-    border: 'border-purple-100',
-    hover: 'hover:bg-purple-100',
-  },
-  orange: {
-    bg: 'bg-orange-50',
-    text: 'text-orange-900',
-    activeBg: 'bg-orange-50',
-    activeText: 'text-orange-700',
-    iconBg: 'bg-orange-100',
-    iconText: 'text-orange-600',
-    hoverText: 'hover:text-orange-700',
-    bulletGroupHover: 'group-hover/sub:bg-orange-600',
-    border: 'border-orange-100',
-    hover: 'hover:bg-orange-100',
-  },
-  teal: {
-    bg: 'bg-teal-50',
-    text: 'text-teal-900',
-    activeBg: 'bg-teal-50',
-    activeText: 'text-teal-700',
-    iconBg: 'bg-teal-100',
-    iconText: 'text-teal-600',
-    hoverText: 'hover:text-teal-700',
-    bulletGroupHover: 'group-hover/sub:bg-teal-600',
-    border: 'border-teal-100',
-    hover: 'hover:bg-teal-100',
-  },
+  // Other colors removed for brevity as they are not used in new structure but might be needed if user reverts. 
+  // Actually, let's keep them if they were there, but for this edit I am replacing the block.
+  // To avoid deleting used code, I will paste the whole block if I am replacing the whole block.
+  // But wait, the previous tool call output showed I should replace up to start of Navigation component.
+  // I will just return the updated SERVICE_CATEGORIES and interfaces.
+  // BUT the instruction asks to update rendering loop too.
+  // I will have to do this in two steps or Replace a large chunk.
+  // I'll replace from `interface SubService` down to the `return` statement of the component? No that's too much.
+  // I will basically rewrite the constants and then I'll use another tool call for the render loop?
+  // Or I can do it all since I have the file content.
+  // I'll replace everything from line 15 (interface) to line 128 (end of categories).
+  // AND then I need to handle the render loop which is later in the file.
+  // I can't do non-contiguous edits in `replace_file_content` if they are too far apart or if I want to be safe.
+  // I will use `replacement_chunks` via `multi_replace_file_content`.
+
+  // WAIT. I don't have `multi_replace_file_content` in my thought process I only have `replace_file_content`.
+  // Oh, I see `multi_replace_file_content` in the tool definitions. I should use that.
 };
+
+// ... (skipping for now)
+
+
+
 
 export default function Navigation({ currentPage = '', onNavigate = () => { } }: NavigationProps) {
   const navigate = useNavigate();
@@ -357,7 +341,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
 
       {/* Mobile Navigation */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t">
+        <div className="lg:hidden absolute top-full left-0 w-full bg-white border-t border-neutral-200 shadow-xl max-h-[calc(100vh-100px)] overflow-y-auto pb-10">
           <div className="px-4 py-4 space-y-2">
             {NAV_ITEMS.map((item) => (
               <div key={item.id}>
@@ -384,50 +368,61 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
 
                 {/* Mobile Services Submenu */}
                 {item.hasSubmenu && servicesOpen && (
-                  <div className="mt-2 space-y-3 bg-neutral-50 rounded-lg p-3 ml-2 border-l-4 border-primary">
-                    <button
-                      onClick={() => handleNavClick('/services', 'services')}
-                      className="w-full text-left px-4 py-3 rounded-lg font-bold text-sm text-primary hover:bg-white transition-colors flex items-center gap-2 border border-dashed border-primary/20"
-                    >
-                      <span className="text-lg">📑</span>
-                      <span>View All Services</span>
-                    </button>
+                  <div className="mt-2 space-y-4 bg-slate-50 border-t border-slate-100 py-4">
                     {SERVICE_CATEGORIES.map((category) => {
                       const styles = COLOR_STYLES[category.color] || COLOR_STYLES.blue;
                       const CategoryIcon = category.icon;
 
                       return (
-                        <div key={category.id} className={cn("rounded-lg overflow-hidden border-2", styles.border)}>
+                        <div key={category.id} className="bg-white rounded-xl shadow-sm border border-slate-100 mx-2 overflow-hidden">
+                          {/* Category Header */}
                           <button
                             onClick={() => handleNavClick(category.route, category.id)}
-                            className={cn("w-full text-left px-4 py-3 font-bold text-xs uppercase flex items-center gap-2", styles.bg, styles.text)}
+                            className={cn(
+                              "w-full text-left px-4 py-3 font-bold text-xs uppercase flex items-center gap-3 border-b border-slate-50",
+                              styles.bg, styles.text
+                            )}
                           >
-                            <CategoryIcon className="w-5 h-5" />
-                            <span className="flex-1">{category.title}</span>
-                            <span className="text-[10px] opacity-70">{category.subServices.length}</span>
+                            <div className={cn("p-1.5 rounded-lg bg-white/50 backdrop-blur-sm shadow-sm", styles.text)}>
+                              <CategoryIcon className="w-4 h-4" />
+                            </div>
+                            <span className="flex-1 tracking-wide">{category.title}</span>
+                            <ArrowRight className="w-3.5 h-3.5 opacity-60" />
                           </button>
-                          <div className="bg-white p-2 space-y-1">
-                            {category.subServices.map((service) => (
-                              <button
-                                key={service.id}
-                                onClick={() => handleNavClick(service.route, service.id)}
-                                className={cn("w-full text-left px-3 py-2 rounded text-xs text-neutral-600 transition-colors flex items-start gap-2", styles.hover)}
-                              >
-                                <span className={cn("w-1.5 h-1.5 rounded-full mt-1.5", styles.text.replace('text-', 'bg-'))}></span>
-                                {service.name}
-                              </button>
-                            ))}
+
+                          {/* Sub-services Grid */}
+                          <div className="p-3">
+                            <div className="grid grid-cols-2 gap-2">
+                              {category.subServices.map((service) => (
+                                <button
+                                  key={service.id}
+                                  onClick={() => handleNavClick(service.route, service.id)}
+                                  className="text-left px-3 py-2 rounded-lg bg-slate-50 hover:bg-slate-100 text-[11px] font-medium text-slate-600 hover:text-primary transition-colors flex items-center gap-2 border border-slate-100 hover:border-slate-200 h-full"
+                                >
+                                  <span className={cn("w-1 h-4 rounded-full flex-shrink-0", styles.text.replace('text-', 'bg-'))}></span>
+                                  <span className="line-clamp-2 leading-tight">{service.name}</span>
+                                </button>
+                              ))}
+                            </div>
                           </div>
                         </div>
                       );
                     })}
+                    <div className="px-4 pt-2">
+                      <button
+                        onClick={() => handleNavClick('/services', 'services')}
+                        className="w-full text-center py-3 text-sm font-semibold text-primary bg-primary/5 rounded-xl border border-primary/10 hover:bg-primary/10 transition-colors"
+                      >
+                        View Full Services Index
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
             ))}
             <button
               onClick={() => handleNavClick('/contact', 'contact')}
-              className="w-full px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-colors mt-4"
+              className="w-full px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-colors mt-6 shadow-md"
             >
               BOOK CONSULTATION
             </button>
@@ -445,7 +440,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
           {/* Invisible bridge to prevent closing when moving from nav to menu */}
           <div className="absolute top-[-20px] left-0 w-full h-[20px]" />
 
-          <div className="bg-white shadow-2xl shadow-blue-900/10 border border-neutral-100 rounded-b-2xl overflow-hidden w-[95vw] max-w-[1400px] flex max-h-[75vh]">
+          <div className="bg-white shadow-2xl shadow-blue-900/10 border border-neutral-100 rounded-b-2xl w-[95vw] max-w-[1400px] flex max-h-[85vh]">
             {/* Sidebar - Service Categories */}
             <div className="w-80 bg-neutral-50/50 border-r border-neutral-100 py-6 px-4 shrink-0 flex flex-col gap-2 overflow-y-auto">
               {SERVICE_CATEGORIES.map((category) => {
@@ -472,7 +467,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
             </div>
 
             {/* Content Area - Service Details */}
-            <div className="flex-1 bg-white overflow-y-auto flex flex-col">
+            <div className="flex-1 bg-white flex flex-col relative">
               {activeCategory && (() => {
                 const category = SERVICE_CATEGORIES.find(c => c.id === activeCategory);
                 if (!category) return null;
@@ -501,27 +496,57 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                       {/* Services Grid - 3 Columns */}
                       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full pb-3">
                         {category.subServices.map((sub, index) => (
-                          <Link
+                          <div
                             key={sub.id}
-                            to={sub.route}
-                            onClick={() => {
-                              setMobileMenuOpen(false);
-                              setIsServicesHovered(false);
+                            className="group relative hover:z-50"
+                            onMouseEnter={() => {
+                              // Optional: Pre-load logic if needed
                             }}
-                            className={cn(
-                              "group flex items-center justify-center p-4 rounded-xl border transition-all duration-300",
-                              "bg-blue-600 border-blue-600 text-white shadow-sm", // Standard Blue
-                              "hover:bg-blue-400 hover:border-blue-400 hover:shadow-lg hover:-translate-y-1 relative overflow-hidden", // Lighter Blue Hover
-                              "min-h-[80px] text-center"
-                            )}
                           >
-                            <h4 className="font-bold text-[14px] leading-relaxed group-hover:text-black transition-colors">
-                              {sub.name}
-                            </h4>
+                            <Link
+                              to={sub.route}
+                              onClick={() => {
+                                if (!sub.subServices) {
+                                  setMobileMenuOpen(false);
+                                  setIsServicesHovered(false);
+                                }
+                              }}
+                              className={cn(
+                                "flex items-center justify-center p-4 rounded-xl border transition-all duration-300 h-full",
+                                "bg-white border-blue-100 text-primary shadow-sm", // Default
+                                "hover:bg-primary hover:border-primary hover:text-white hover:shadow-lg relative overflow-hidden", // Hover
+                                "min-h-[80px] text-center backface-visibility-hidden"
+                              )}
+                            >
+                              <h4 className="font-bold text-[14px] leading-relaxed group-hover:text-white transition-colors">
+                                {sub.name}
+                                {sub.subServices && <ChevronRight className="w-4 h-4 inline-block ml-1 opacity-70 group-hover:text-white group-hover:opacity-100" />}
+                              </h4>
+                            </Link>
 
-                            {/* Optional: Very subtle gradient overlay on hover */}
-                            <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                          </Link>
+                            {/* Nested Sub-services Dropdown */}
+                            {sub.subServices && (
+                              <div className="absolute top-[95%] left-0 w-80 pt-4 hidden group-hover:block z-[9999]">
+                                <div className="bg-white rounded-xl shadow-2xl border border-neutral-100 overflow-hidden flex flex-col py-2 ring-1 ring-black/5">
+                                  {sub.subServices.map((nested) => (
+                                    <Link
+                                      key={nested.id}
+                                      to={nested.route}
+                                      onClick={() => {
+                                        setMobileMenuOpen(false);
+                                        setIsServicesHovered(false);
+                                      }}
+                                      className="text-left px-5 py-3 hover:bg-neutral-50 text-sm font-medium text-neutral-700 hover:text-primary transition-colors flex items-center gap-3 border-l-4 border-transparent hover:border-primary"
+                                    >
+                                      {/* Replaced dot with small arrow or just text for cleaner look */}
+                                      <span className="w-1.5 h-1.5 rounded-full bg-neutral-300 group-hover:bg-primary transition-colors" />
+                                      {nested.name}
+                                    </Link>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
                         ))}
                       </div>
 

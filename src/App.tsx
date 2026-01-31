@@ -160,7 +160,10 @@ function AppContent() {
           {/* ===== 5 MAIN SERVICE CATEGORY PAGES ===== */}
           <Route path="/services/business-registrations" element={<BusinessRegistrations />} />
           <Route path="/services/tax-registrations" element={<TaxRegistrationsService />} />
-          <Route path="/services/business-entity-law-compliances" element={<BusinessEntityLawCompliances />} />
+          {/* ROC / MCA Compliance Landing Page */}
+          <Route path="/services/roc-mca-compliance" element={<BusinessEntityLawCompliances />} />
+
+          {/* Business Compliances Sub-Service Routes */}
           <Route path="/services/tax-financial-compliances" element={<TaxFinancialCompliances />} />
           <Route path="/services/government-registrations-compliances" element={<GovernmentRegistrationsCompliances />} />
           <Route path="/services/audit-assurance" element={<AuditAssurance />} />

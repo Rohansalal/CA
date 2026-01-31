@@ -1,8 +1,17 @@
 import { FileText, Calculator, Shield, BookOpen, Building, FileCheck, TrendingUp, Globe, Lightbulb, ArrowRight, CheckCircle } from 'lucide-react';
 import { ServicesIndex } from './ServicesIndex';
+import SEO from './SEO';
 
 export function Services() {
-  return <ServicesIndex />;
+  return (
+    <>
+      <SEO
+        title="Our Services"
+        description="Comprehensive Chartered Accountant services including Audit, Taxation, GST, Company Registration, and Financial Advisory."
+      />
+      <ServicesIndex />
+    </>
+  );
 }
 
 // Keep the original detailed services page as backup

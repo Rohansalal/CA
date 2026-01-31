@@ -1,5 +1,6 @@
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle } from 'lucide-react';
 import { useState } from 'react';
+import SEO from './SEO';
 
 export function ContactUs() {
   const [formData, setFormData] = useState({
@@ -75,6 +76,10 @@ export function ContactUs() {
 
   return (
     <div className="bg-white">
+      <SEO
+        title="Contact Us"
+        description="Contact our expert Chartered Accountants in New Delhi for Audit, Taxation, and Advisory services. Call +91 9811105573."
+      />
       {/* Hero Section */}
       <section className="bg-gradient-to-br from-primary via-primary to-secondary text-white py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

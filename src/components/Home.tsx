@@ -6,6 +6,7 @@ import { TrustAndSocialProof } from './TrustAndSocialProof';
 import { WhyChooseUs } from "./WhyChooseUs";
 import { FeaturedInsights } from './FeaturedInsights';
 import { Testimonials } from './Testimonials';
+import SEO from './SEO';
 
 export function Home() {
   const services = [
@@ -65,6 +66,10 @@ export function Home() {
 
   return (
     <div className="bg-white">
+      <SEO
+        title="Home"
+        description="Trusted Chartered Accountants providing expert tax planning, audit, GST, and business advisory services. Your path to financial growth starts here."
+      />
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-primary via-primary to-secondary text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10">
