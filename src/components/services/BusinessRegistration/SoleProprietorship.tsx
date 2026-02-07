@@ -8,9 +8,9 @@ export function SoleProprietorship() {
 
     const handleStartRegistration = () => {
         if (isAuthenticated) {
-            navigate('/dashboard', { state: { selectedService: 'Sole Proprietorship' } });
+            navigate('/dashboard', { state: { selectedServiceSlug: 'proprietorship-registration' } });
         } else {
-            navigate('/login', { state: { returnTo: '/dashboard', selectedService: 'Sole Proprietorship' } });
+            navigate('/login', { state: { returnTo: '/dashboard', selectedServiceSlug: 'proprietorship-registration' } });
         }
     };
 
@@ -96,41 +96,7 @@ export function SoleProprietorship() {
         },
     ];
 
-    const pricing = [
-        {
-            plan: 'Essential',
-            price: '₹2,499',
-            features: [
-                'MSME (Udyam) Registration',
-                'Current Account Assistance',
-                'Business Name Advice',
-                'Digital Legal Consultation'
-            ]
-        },
-        {
-            plan: 'Professional',
-            price: '₹4,999',
-            desc: 'Most Popular',
-            features: [
-                'MSME Registration',
-                'GST Registration',
-                'Shop Act License (Basic)',
-                'Current Account Opening',
-                'Free Billing Software Trial'
-            ]
-        },
-        {
-            plan: 'All-inclusive',
-            price: '₹9,999',
-            features: [
-                'All Professional Features',
-                'Trademark Application (Filing)',
-                'Logo Design Assistance',
-                'Dedicated CA Support',
-                'First Month GST Filing'
-            ]
-        }
-    ];
+
 
     const faqs = [
         {
@@ -198,6 +164,66 @@ export function SoleProprietorship() {
                 </div>
             </section>
 
+            {/* Pricing Section */}
+            <section className="py-20">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-neutral-200">
+                        <div className="grid md:grid-cols-2">
+                            {/* Left Side - The Offer (White) */}
+                            <div className="p-8 md:p-12 bg-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-neutral-100">
+                                <h3 className="text-2xl font-bold text-gray-900 mb-6">Everything you need</h3>
+                                <div className="space-y-4">
+                                    {[
+                                        'Udyam (MSME) Registration',
+                                        'GST Registration (if active)',
+                                        'Shop & Establishment License',
+                                        'Current Bank Account Assistance',
+                                        'Professional Business Advice',
+                                        'Legal & Compliance Support'
+                                    ].map((item, i) => (
+                                        <div key={i} className="flex items-center gap-3">
+                                            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                                <CheckCircle className="w-4 h-4 text-primary" />
+                                            </div>
+                                            <span className="text-gray-600 font-medium">{item}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="mt-8 pt-8 border-t border-neutral-100">
+                                    <div className="flex items-center gap-3 text-sm text-gray-500">
+                                        <Clock className="w-4 h-4" />
+                                        <span>Delivered in 3-5 business days</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Right Side - The Price (Dark) */}
+                            <div className="p-8 md:p-12 bg-primary text-white flex flex-col justify-center items-center text-center relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                                <div className="relative z-10">
+                                    <span className="inline-block px-4 py-1.5 bg-white/10 rounded-full text-xs font-semibold tracking-wider uppercase mb-6 border border-white/20">
+                                        All Inclusive
+                                    </span>
+                                    <div className="flex items-center justify-center gap-1 mb-2">
+                                        <span className="text-6xl font-bold tracking-tight">₹2,999</span>
+                                    </div>
+                                    <p className="text-blue-100 mb-8">One-time professional fee</p>
+
+                                    <button
+                                        onClick={handleStartRegistration}
+                                        className="w-full bg-white text-primary px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2"
+                                    >
+                                        Get Started
+                                        <ArrowRight className="w-5 h-5" />
+                                    </button>
+                                    <p className="mt-4 text-xs text-blue-200">Safe & Secure Payment</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             {/* Benefits & Considerations */}
             <section className="py-16 bg-neutral-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -229,6 +255,20 @@ export function SoleProprietorship() {
                                 </div>
                                 <p className="text-neutral-600 text-sm bg-white/50 p-4 rounded-lg">
                                     If you are planning a high-risk business or looking for VC funding, consider an <strong>OPC</strong> or <strong>LLP</strong> instead.
+                                </p>
+                            </div>
+                            <div className="bg-orange-50 p-8 rounded-2xl border border-orange-200 mt-6">
+                                <div className="flex items-start gap-4 mb-6">
+                                    <HelpCircle className="w-8 h-8 text-orange-600 flex-shrink-0" />
+                                    <div>
+                                        <h3 className="text-xl text-orange-900 font-bold mb-2">Who is this for?</h3>
+                                        <p className="text-orange-800 leading-relaxed">
+                                            Sole Proprietorship is ideal for businesses that are locally restricted and do not plan to raise external capital.
+                                        </p>
+                                    </div>
+                                </div>
+                                <p className="text-neutral-600 text-sm bg-white/50 p-4 rounded-lg">
+                                    <strong>Best Suited For:</strong> Local Retailers, Freelancers, Small Consultants, and Home-based businesses.
                                 </p>
                             </div>
                         </div>
@@ -310,48 +350,7 @@ export function SoleProprietorship() {
                 </div>
             </section>
 
-            {/* Pricing Section */}
-            <section className="py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-4">Packages</h2>
-                        <p className="text-lg text-gray-600">Affordable plans for small businesses</p>
-                    </div>
-                    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                        {pricing.map((plan, index) => (
-                            <div key={index} className={`relative bg-white rounded-2xl shadow-lg border ${index === 1 ? 'border-accent shadow-xl scale-105 z-10' : 'border-neutral-200'} p-8 flex flex-col`}>
-                                {index === 1 && (
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-accent text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                                        {plan.desc}
-                                    </div>
-                                )}
-                                <h3 className="text-xl font-bold text-gray-900 mb-6">{plan.plan}</h3>
-                                <div className="mb-8">
-                                    <span className="text-4xl font-bold text-primary">{plan.price}</span>
-                                    <span className="text-gray-500"> /one-time</span>
-                                </div>
-                                <ul className="space-y-4 mb-8 flex-1">
-                                    {plan.features.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
-                                            <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" />
-                                            {feature}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <button
-                                    onClick={handleStartRegistration}
-                                    className={`w-full py-3 rounded-xl font-bold transition-all ${index === 1
-                                        ? 'bg-accent text-white hover:bg-accent/90 shadow-lg hover:shadow-accent/30'
-                                        : 'bg-primary/5 text-primary hover:bg-primary hover:text-white'
-                                        }`}
-                                >
-                                    Get Started
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
+
 
             {/* FAQs */}
             <section className="py-16">
@@ -381,11 +380,12 @@ export function SoleProprietorship() {
             {/* CTA Section */}
             <section className="py-16 bg-gradient-to-r from-primary to-secondary text-white">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-3xl md:text-5xl font-bold mb-6">Start Your Business Today</h2>
+                    <h2 className="text-3xl md:text-5xl text-white font-bold mb-6">Start Your Business Today</h2>
                     <p className="text-xl text-blue-100 mb-10">
                         Fast, affordable, and hassle-free proprietorship registration.
                     </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <br />
+                    <div className="flex flex-col sm:flex-row gap-4 justify-center mt-10">
                         <button
                             onClick={handleStartRegistration}
                             className="px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center justify-center gap-2">

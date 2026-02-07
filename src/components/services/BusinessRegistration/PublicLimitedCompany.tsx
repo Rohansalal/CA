@@ -96,43 +96,6 @@ export function PublicLimitedCompany() {
         },
     ];
 
-    const pricing = [
-        {
-            plan: 'Standard',
-            price: '₹24,999',
-            features: [
-                '3 DSC & 3 DIN',
-                'Name Approval',
-                'MoA & AoA Drafting',
-                'Incorporation Certificate',
-                'Govt Fees Excluded'
-            ]
-        },
-        {
-            plan: 'Premium',
-            price: '₹39,999',
-            desc: 'Recommended',
-            features: [
-                'All Standard Features',
-                'Govt Fees Included (upto 10L)',
-                'PAN & TAN',
-                'Bank Account Support',
-                'Commencement Certificate'
-            ]
-        },
-        {
-            plan: 'Enterprise',
-            price: '₹69,999',
-            features: [
-                'All Premium Features',
-                'GST Registration',
-                'Trademark Filing',
-                '1st Year Compliance Package',
-                'Priority Processing'
-            ]
-        }
-    ];
-
     const faqs = [
         {
             q: 'What is the minimum requirement for Public Ltd?',
@@ -202,37 +165,58 @@ export function PublicLimitedCompany() {
                 </div>
             </section>
 
-            {/* Benefits Section */}
+            {/* Benefits & Considerations */}
             <section className="py-20 bg-neutral-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-16 items-center">
+                    <div className="grid lg:grid-cols-2 gap-12">
+                        {/* Benefits */}
                         <div>
                             <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-6">Why Public Limited?</h2>
                             <p className="text-lg text-gray-600 mb-8 leading-relaxed">
                                 A Public Limited Company enjoys the status of a separate legal entity and offers the benefits of limited liability. It is the only entity that can raise funds from the public by selling its shares.
                             </p>
-                            <div className="grid sm:grid-cols-2 gap-4">
+                            <div className="space-y-3">
                                 {benefits.map((benefit, index) => (
-                                    <div key={index} className="flex items-start gap-3 bg-white p-3 rounded-lg shadow-sm border border-neutral-100">
+                                    <div key={index} className="flex items-start gap-3 bg-white p-4 rounded-lg shadow-sm">
                                         <CheckCircle className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                                        <span className="text-gray-700 text-sm font-medium">{benefit}</span>
+                                        <span className="text-neutral-700">{benefit}</span>
                                     </div>
                                 ))}
                             </div>
                         </div>
-                        <div className="bg-white p-8 lg:p-10 rounded-3xl shadow-xl border border-neutral-200 relative overflow-hidden">
-                            <div className="absolute top-0 right-0 w-24 h-24 bg-orange-100 rounded-bl-full -z-0"></div>
-                            <h3 className="text-2xl font-bold text-primary mb-6 relative z-10">Strict Compliance</h3>
-                            <div className="bg-orange-50 border-l-4 border-orange-500 p-6 rounded-r-xl mb-6 relative z-10">
-                                <div className="flex gap-4">
+
+                        {/* Considerations */}
+                        <div>
+                            <h2 className="text-3xl lg:text-4xl text-primary mb-6">Important Compliance</h2>
+
+                            <div className="bg-orange-50 p-8 rounded-2xl border border-orange-200 mb-6">
+                                <div className="flex items-start gap-4 mb-6">
                                     <AlertCircle className="w-8 h-8 text-orange-600 flex-shrink-0" />
                                     <div>
-                                        <p className="text-orange-800 font-bold text-lg">Heavy Regulations</p>
-                                        <p className="text-orange-700 text-sm mt-1 leading-relaxed">
+                                        <h3 className="text-xl text-orange-900 font-bold mb-2">Heavy Regulations</h3>
+                                        <p className="text-orange-800 leading-relaxed">
                                             Public companies are strictly regulated by the MCA and SEBI (if listed). They have to disclose more information to the public than private companies.
                                         </p>
                                     </div>
                                 </div>
+                                <p className="text-neutral-600 text-sm bg-white/50 p-4 rounded-lg">
+                                    <strong>Strict Audit:</strong> Quarterly compliances and rigorous statutory audits are mandatory.
+                                </p>
+                            </div>
+
+                            <div className="bg-blue-50 p-8 rounded-2xl border border-blue-200">
+                                <div className="flex items-start gap-4 mb-6">
+                                    <Users className="w-8 h-8 text-blue-600 flex-shrink-0" />
+                                    <div>
+                                        <h3 className="text-xl text-blue-900 font-bold mb-2">Who is this for?</h3>
+                                        <p className="text-blue-800 leading-relaxed">
+                                            Ideal for large-scale businesses planning to raise capital from the public through IPO or Private Placement.
+                                        </p>
+                                    </div>
+                                </div>
+                                <p className="text-neutral-600 text-sm bg-white/50 p-4 rounded-lg">
+                                    <strong>Best Suited For:</strong> Manufacturing Giants, Infrastructure Projects, and Established Brands.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -315,43 +299,60 @@ export function PublicLimitedCompany() {
 
             {/* Pricing Section */}
             <section className="py-20">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-4">Registration Packages</h2>
-                        <p className="text-lg text-gray-600">Professional services for complex entity registration.</p>
-                    </div>
-                    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                        {pricing.map((plan, index) => (
-                            <div key={index} className={`relative bg-white rounded-2xl shadow-lg border ${index === 1 ? 'border-accent shadow-xl scale-105 z-10' : 'border-neutral-200'} p-8 flex flex-col`}>
-                                {index === 1 && (
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-accent text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                                        {plan.desc}
-                                    </div>
-                                )}
-                                <h3 className="text-xl font-bold text-gray-900 mb-6">{plan.plan}</h3>
-                                <div className="mb-8">
-                                    <span className="text-4xl font-bold text-primary">{plan.price}</span>
-                                    <span className="text-gray-500"> + Govt Fees</span>
-                                </div>
-                                <ul className="space-y-4 mb-8 flex-1">
-                                    {plan.features.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
-                                            <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" />
-                                            {feature}
-                                        </li>
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-neutral-200">
+                        <div className="grid md:grid-cols-2">
+                            {/* Left Side - The Offer (White) */}
+                            <div className="p-8 md:p-12 bg-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-neutral-100">
+                                <h3 className="text-2xl font-bold text-gray-900 mb-6">Public Limited Setup</h3>
+                                <div className="space-y-4">
+                                    {[
+                                        'Name Reservation (RUN)',
+                                        '3 DSC & 3 DIN',
+                                        'MOA & AOA Drafting',
+                                        'Certificate of Incorporation',
+                                        'PAN, TAN & Bank Support',
+                                        'Commencement Certificate'
+                                    ].map((item, i) => (
+                                        <div key={i} className="flex items-center gap-3">
+                                            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                                <CheckCircle className="w-4 h-4 text-primary" />
+                                            </div>
+                                            <span className="text-gray-600 font-medium">{item}</span>
+                                        </div>
                                     ))}
-                                </ul>
-                                <button
-                                    onClick={handleStartRegistration}
-                                    className={`w-full py-3 rounded-xl font-bold transition-all ${index === 1
-                                        ? 'bg-accent text-white hover:bg-accent/90 shadow-lg hover:shadow-accent/30'
-                                        : 'bg-primary/5 text-primary hover:bg-primary hover:text-white'
-                                        }`}
-                                >
-                                    Get Started
-                                </button>
+                                </div>
+                                <div className="mt-8 pt-8 border-t border-neutral-100">
+                                    <div className="flex items-center gap-3 text-sm text-gray-500">
+                                        <Clock className="w-4 h-4" />
+                                        <span>Delivered in 20-30 business days</span>
+                                    </div>
+                                </div>
                             </div>
-                        ))}
+
+                            {/* Right Side - The Price (Dark) */}
+                            <div className="p-8 md:p-12 bg-primary text-white flex flex-col justify-center items-center text-center relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                                <div className="relative z-10">
+                                    <span className="inline-block px-4 py-1.5 bg-white/10 rounded-full text-xs font-semibold tracking-wider uppercase mb-6 border border-white/20">
+                                        Corporate Plan
+                                    </span>
+                                    <div className="flex items-center justify-center gap-1 mb-2">
+                                        <span className="text-6xl font-bold tracking-tight">₹39,999</span>
+                                    </div>
+                                    <p className="text-blue-100 mb-8">Professional Incorporation Fee</p>
+
+                                    <button
+                                        onClick={handleStartRegistration}
+                                        className="w-full bg-white text-primary px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2"
+                                    >
+                                        Start Registration
+                                        <ArrowRight className="w-5 h-5" />
+                                    </button>
+                                    <p className="mt-4 text-xs text-blue-200">Secure Payment • Dedicated CA</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

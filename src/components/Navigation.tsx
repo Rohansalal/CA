@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import {
   Menu, X, Phone, Mail, ChevronDown, ChevronRight, ArrowRight,
   Building2, Receipt, Scale,
-  Landmark, PieChart, Calculator
+  Landmark, PieChart, Calculator, User, LogOut, LayoutDashboard, Settings
 } from 'lucide-react';
 import { cn } from './ui/utils';
 
@@ -184,13 +185,27 @@ const COLOR_STYLES = {
 
 
 export default function Navigation({ currentPage = '', onNavigate = () => { } }: NavigationProps) {
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(SERVICE_CATEGORIES[0].id);
   const [isServicesHovered, setIsServicesHovered] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Close profile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   // Clear timeout on unmount
   useEffect(() => {
@@ -238,6 +253,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
     navigate(route);
     if (onNavigate) onNavigate(id);
     setMobileMenuOpen(false);
+    setIsProfileOpen(false);
     setActiveCategory(SERVICE_CATEGORIES[0].id);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -321,13 +337,88 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
             ))}
           </div>
 
-          {/* CTA Button */}
-          <button
-            onClick={() => handleNavClick('/contact', 'contact')}
-            className="hidden lg:block px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-lg transform hover:-translate-y-0.5"
-          >
-            BOOK CONSULTATION
-          </button>
+          {/* Auth Buttons & CTA */}
+          <div className="hidden lg:flex items-center gap-4">
+            {user ? (
+              <div className="relative" ref={profileRef}>
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center gap-2 p-1.5 rounded-full hover:bg-gray-100 transition-colors border border-transparent hover:border-gray-200"
+                >
+                  <div className="w-9 h-9 bg-primary/10 rounded-full flex items-center justify-center text-primary border border-primary/20">
+                    <User className="w-5 h-5" />
+                  </div>
+                  <ChevronDown className={cn("w-4 h-4 text-gray-500 transition-transform duration-200", isProfileOpen && "rotate-180")} />
+                </button>
+
+                {/* Profile Dropdown */}
+                {isProfileOpen && (
+                  <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="px-4 py-3 border-b border-gray-50">
+                      <p className="text-sm font-semibold text-gray-900">{user.name}</p>
+                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                    </div>
+
+                    <div className="py-1">
+                      <button
+                        onClick={() => handleNavClick('/dashboard', 'dashboard')}
+                        className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary flex items-center gap-2 transition-colors"
+                      >
+                        <LayoutDashboard className="w-4 h-4" />
+                        Dashboard
+                      </button>
+                      <button
+                        // onClick={() => handleNavClick('/profile', 'profile')} // Assuming profile page exists or placeholder
+                        className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-primary flex items-center gap-2 transition-colors opacity-50 cursor-not-allowed"
+                        disabled
+                      >
+                        <Settings className="w-4 h-4" />
+                        Settings
+                      </button>
+                    </div>
+
+                    <div className="border-t border-gray-50 py-1">
+                      <button
+                        onClick={() => {
+                          logout();
+                          setIsProfileOpen(false);
+                          navigate('/');
+                        }}
+                        className="w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 flex items-center gap-2 transition-colors"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={() => handleNavClick('/login', 'login')}
+                  className="px-4 py-2 text-sm font-semibold text-neutral-600 hover:text-primary transition-colors"
+                >
+                  Log In
+                </button>
+                <button
+                  onClick={() => handleNavClick('/register', 'register')}
+                  className="px-4 py-2 text-sm font-semibold text-primary border border-primary/20 rounded-lg hover:bg-primary/5 transition-colors"
+                >
+                  Sign Up
+                </button>
+              </div>
+            )}
+
+            <div className="h-8 w-px bg-gray-200 mx-2"></div>
+
+            <button
+              onClick={() => handleNavClick('/contact', 'contact')}
+              className="px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-lg transform hover:-translate-y-0.5"
+            >
+              BOOK CONSULTATION
+            </button>
+          </div>
 
           {/* Mobile menu button */}
           <button
@@ -420,9 +511,38 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                 )}
               </div>
             ))}
+            {/* Mobile Auth Buttons */}
+            <div className="grid grid-cols-2 gap-3 mt-6 border-t border-gray-100 pt-6">
+              {user ? (
+                <>
+                  <button
+                    onClick={() => handleNavClick('/dashboard', 'dashboard')}
+                    className="col-span-2 w-full px-4 py-3 bg-primary/5 text-primary font-semibold rounded-lg hover:bg-primary/10 transition-colors text-center"
+                  >
+                    Go to Dashboard
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => handleNavClick('/login', 'login')}
+                    className="w-full px-4 py-3 text-neutral-600 font-semibold rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-center"
+                  >
+                    Log In
+                  </button>
+                  <button
+                    onClick={() => handleNavClick('/register', 'register')}
+                    className="w-full px-4 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors text-center"
+                  >
+                    Sign Up
+                  </button>
+                </>
+              )}
+            </div>
+
             <button
               onClick={() => handleNavClick('/contact', 'contact')}
-              className="w-full px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-colors mt-6 shadow-md"
+              className="w-full px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-colors mt-4 shadow-md"
             >
               BOOK CONSULTATION
             </button>

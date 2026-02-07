@@ -160,42 +160,6 @@ export function PrivateLimitedCompany() {
         },
     ];
 
-    const pricing = [
-        {
-            plan: 'Starter',
-            price: '₹6,999',
-            features: [
-                'Name Approval (RUN)',
-                'DSC (2 Directors)',
-                'MOA & AOA Drafting',
-                'Govt Fees (Extra)'
-            ]
-        },
-        {
-            plan: 'Standard',
-            price: '₹14,999',
-            desc: 'Best Value',
-            features: [
-                'All Starter Features',
-                'Govt Fees (Upto 1L Capital)',
-                'PAN & TAN',
-                'Incorporation Certificate',
-                'Bank Account Opening'
-            ]
-        },
-        {
-            plan: 'Premium',
-            price: '₹24,999',
-            features: [
-                'All Standard Features',
-                'GST Registration',
-                'MSME Registration',
-                'First Year Compliance',
-                'Trademark Filing Support'
-            ]
-        }
-    ];
-
     const faqs = [
         {
             q: 'What is the minimum capital required?',
@@ -275,12 +239,15 @@ export function PrivateLimitedCompany() {
             </section>
 
             {/* Benefits & Considerations */}
-            <section className="py-16 bg-neutral-50">
+            <section className="py-20 bg-neutral-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid lg:grid-cols-2 gap-12">
                         {/* Benefits */}
                         <div>
-                            <h2 className="text-3xl lg:text-4xl text-primary mb-6">Why Choose Pvt Ltd?</h2>
+                            <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-6">Why Choose Pvt Ltd?</h2>
+                            <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                                Private Limited Company is the most popular corporate structure in India. It gives you Limited Liability and is preferred by Investors.
+                            </p>
                             <div className="space-y-3">
                                 {benefits.map((benefit, index) => (
                                     <div key={index} className="flex items-start gap-3 bg-white p-4 rounded-lg shadow-sm">
@@ -294,18 +261,32 @@ export function PrivateLimitedCompany() {
                         {/* Critical Considerations */}
                         <div>
                             <h2 className="text-3xl lg:text-4xl text-primary mb-6">Must Know Facts</h2>
-                            <div className="space-y-4">
-                                {criticalConsiderations.map((item, index) => (
-                                    <div key={index} className="bg-orange-50 p-6 rounded-lg border border-orange-200">
-                                        <div className="flex items-start gap-3">
-                                            <item.icon className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                                            <div>
-                                                <h3 className="text-lg text-orange-900 font-semibold mb-1">{item.title}</h3>
-                                                <p className="text-orange-800 text-sm">{item.description}</p>
-                                            </div>
+                            <div className="space-y-6">
+                                <div className="bg-orange-50 p-8 rounded-2xl border border-orange-200">
+                                    <div className="flex items-start gap-4 mb-4">
+                                        <AlertCircle className="w-8 h-8 text-orange-600 flex-shrink-0" />
+                                        <div>
+                                            <h3 className="text-xl text-orange-900 font-bold mb-2">Mandatory Audit</h3>
+                                            <p className="text-orange-800 leading-relaxed">
+                                                Statutory Audit by a CA is mandatory every year, irrespective of turnover or profit.
+                                            </p>
                                         </div>
                                     </div>
-                                ))}
+                                </div>
+                                <div className="bg-blue-50 p-8 rounded-2xl border border-blue-200">
+                                    <div className="flex items-start gap-4 mb-4">
+                                        <Building2 className="w-8 h-8 text-blue-600 flex-shrink-0" />
+                                        <div>
+                                            <h3 className="text-xl text-blue-900 font-bold mb-2">Compliance Cost</h3>
+                                            <p className="text-blue-800 leading-relaxed">
+                                                Higher compliance burden and cost compared to LLP or Proprietorship.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <p className="text-neutral-600 text-sm bg-white/50 p-4 rounded-lg mt-4">
+                                        <strong>Startup Tip:</strong> If you plan to raise funds, Pvt Ltd is the ONLY option.
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -454,44 +435,61 @@ export function PrivateLimitedCompany() {
             </section>
 
             {/* Pricing Section */}
-            <section className="py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-4">Pricing Packages</h2>
-                        <p className="text-lg text-gray-600">Choose the best plan for your startup.</p>
-                    </div>
-                    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                        {pricing.map((plan, index) => (
-                            <div key={index} className={`relative bg-white rounded-2xl shadow-lg border ${index === 1 ? 'border-accent shadow-xl scale-105 z-10' : 'border-neutral-200'} p-8 flex flex-col`}>
-                                {index === 1 && (
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-accent text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                                        {plan.desc}
-                                    </div>
-                                )}
-                                <h3 className="text-xl font-bold text-gray-900 mb-6">{plan.plan}</h3>
-                                <div className="mb-8">
-                                    <span className="text-4xl font-bold text-primary">{plan.price}</span>
-                                    {plan.price !== 'Custom' && <span className="text-gray-500"> /one-time</span>}
-                                </div>
-                                <ul className="space-y-4 mb-8 flex-1">
-                                    {plan.features.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
-                                            <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" />
-                                            {feature}
-                                        </li>
+            <section className="py-20">
+                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-neutral-200">
+                        <div className="grid md:grid-cols-2">
+                            {/* Left Side - The Offer (White) */}
+                            <div className="p-8 md:p-12 bg-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-neutral-100">
+                                <h3 className="text-2xl font-bold text-gray-900 mb-6">Complete Pvt Ltd Setup</h3>
+                                <div className="space-y-4">
+                                    {[
+                                        'Name Approval (RUN)',
+                                        'DSC (2 Directors)',
+                                        'MOA & AOA Drafting',
+                                        'Incorporation Certificate',
+                                        'PAN & TAN Allotment',
+                                        'Bank Account Opening'
+                                    ].map((item, i) => (
+                                        <div key={i} className="flex items-center gap-3">
+                                            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                                <CheckCircle className="w-4 h-4 text-primary" />
+                                            </div>
+                                            <span className="text-gray-600 font-medium">{item}</span>
+                                        </div>
                                     ))}
-                                </ul>
-                                <button
-                                    onClick={handleStartRegistration}
-                                    className={`w-full py-3 rounded-xl font-bold transition-all ${index === 1
-                                        ? 'bg-accent text-white hover:bg-accent/90 shadow-lg hover:shadow-accent/30'
-                                        : 'bg-primary/5 text-primary hover:bg-primary hover:text-white'
-                                        }`}
-                                >
-                                    Get Started
-                                </button>
+                                </div>
+                                <div className="mt-8 pt-8 border-t border-neutral-100">
+                                    <div className="flex items-center gap-3 text-sm text-gray-500">
+                                        <Clock className="w-4 h-4" />
+                                        <span>Delivered in 7-14 business days</span>
+                                    </div>
+                                </div>
                             </div>
-                        ))}
+
+                            {/* Right Side - The Price (Dark) */}
+                            <div className="p-8 md:p-12 bg-primary text-white flex flex-col justify-center items-center text-center relative overflow-hidden">
+                                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                                <div className="relative z-10">
+                                    <span className="inline-block px-4 py-1.5 bg-white/10 rounded-full text-xs font-semibold tracking-wider uppercase mb-6 border border-white/20">
+                                        Most Popular
+                                    </span>
+                                    <div className="flex items-center justify-center gap-1 mb-2">
+                                        <span className="text-6xl font-bold tracking-tight">₹14,999</span>
+                                    </div>
+                                    <p className="text-blue-100 mb-8">All inclusive (upto 1L Capital)</p>
+
+                                    <button
+                                        onClick={handleStartRegistration}
+                                        className="w-full bg-white text-primary px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2"
+                                    >
+                                        Register Now
+                                        <ArrowRight className="w-5 h-5" />
+                                    </button>
+                                    <p className="mt-4 text-xs text-blue-200">Secure Payment • Expert CA Support</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

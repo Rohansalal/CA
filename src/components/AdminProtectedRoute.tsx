@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
 import { useAdmin } from '../contexts/AdminContext';
 
 interface AdminProtectedRouteProps {
@@ -12,16 +11,16 @@ export const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = ({
   children,
   requiredRole = 'ADMIN'
 }) => {
-  const { isAuthenticated, user, loading: authLoading } = useAuth();
-  const { isAdminAuthenticated, adminUser, loading: adminLoading, verifyAdminAccess } = useAdmin();
+  const { isAdminAuthenticated, adminUser, loading, verifyAdminAccess } = useAdmin();
 
   useEffect(() => {
-    if (isAuthenticated && !isAdminAuthenticated) {
+    // Only verify if we don't have a known authenticated state yet
+    if (!isAdminAuthenticated) {
       verifyAdminAccess();
     }
-  }, [isAuthenticated, isAdminAuthenticated, verifyAdminAccess]);
+  }, [isAdminAuthenticated, verifyAdminAccess]);
 
-  if (authLoading || adminLoading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
@@ -32,27 +31,17 @@ export const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = ({
     );
   }
 
-  // STRICT CHECK 1: Must be authenticated
-  if (!isAuthenticated || !user) {
-    return <Navigate to="/admin/login" replace />;
-  }
-
-  // STRICT CHECK 2: Regular USER role cannot access admin at all
-  if (user.role === 'USER') {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  // STRICT CHECK 3: Must verify as admin
+  // STRICT CHECK: Must be authenticated as Admin
   if (!isAdminAuthenticated || !adminUser) {
     return <Navigate to="/admin/login" replace />;
   }
 
-  // STRICT CHECK 4: Verify admin role exists
+  // STRICT CHECK: Verify admin role exists
   if (!['ADMIN', 'SUPER_ADMIN'].includes(adminUser.role)) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/admin/login" replace />;
   }
 
-  // STRICT CHECK 5: Super Admin only features
+  // STRICT CHECK: Super Admin only features
   if (requiredRole === 'SUPER_ADMIN' && adminUser.role !== 'SUPER_ADMIN') {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">

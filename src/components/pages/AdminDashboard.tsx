@@ -1,7 +1,6 @@
 /// <reference types="vite/client" />
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
 import { useAdmin } from '../../contexts/AdminContext';
 import {
   BarChart3,
@@ -56,8 +55,7 @@ interface ConsultationRequest {
 }
 
 export const AdminDashboard: React.FC = () => {
-  const { user, logout } = useAuth();
-  const { adminUser } = useAdmin();
+  const { adminUser, adminLogout } = useAdmin();
   const navigate = useNavigate();
 
   const [stats, setStats] = useState<DashboardStats | null>(null);
@@ -75,19 +73,12 @@ export const AdminDashboard: React.FC = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('adminToken');
 
       if (!token) {
         setError('No authentication token');
         return;
       }
-
-      // Parallel fetching: Stats + Consultations
-      // Note: In a real app, you might want to fetch consultations only when the tab is active to save bandwidth.
-      // But for now, fetching all is fine or I can just fetch stats here and fetch consultations when tab changes.
-      // I'll stick to fetching everything for simplicity or separate it. Let's fetch consultations separately or add it here.
-      // Actually, let's fetch consultations in a separate useEffect when activeTab changes, OR just fetch it all here if payload is small.
-      // Let's fetch it here for now to ensure data is ready.
 
       const [statsRes, consultationsRes] = await Promise.all([
         fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/dashboard/stats`, {
@@ -107,7 +98,7 @@ export const AdminDashboard: React.FC = () => {
 
       if (consultationsRes.ok) {
         const consulData = await consultationsRes.json();
-        setConsultations(consulData.data || []);
+        setConsultations(consulData || []); // Check if array is direct or nested
       }
 
     } catch (err) {
@@ -118,14 +109,38 @@ export const AdminDashboard: React.FC = () => {
     }
   };
 
+  const handleDeleteConsultation = async (id: number) => {
+    if (!window.confirm('Are you sure you want to delete this consultation request?')) return;
+
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/consultations/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to delete consultation');
+
+      // Refresh data
+      await fetchDashboardData();
+    } catch (err: any) {
+      console.error(err);
+      alert('Failed to delete consultation request');
+      setLoading(false);
+    }
+  };
+
   // ... (render)
 
 
 
 
   const handleLogout = () => {
-    logout();
-    navigate('/');
+    adminLogout();
+    navigate('/admin/login');
   };
 
   if (loading) {
@@ -151,9 +166,17 @@ export const AdminDashboard: React.FC = () => {
             </div>
             <div className="flex items-center gap-4">
               <div className="text-right">
-                <p className="font-semibold text-gray-900">{user?.name}</p>
-                <p className="text-sm text-gray-600">{user?.email}</p>
+                <p className="font-semibold text-gray-900">{adminUser?.name}</p>
+                <p className="text-sm text-gray-600">{adminUser?.email}</p>
               </div>
+              <button
+                onClick={() => navigate(`/dashboard/users/profile/${adminUser?.name || 'admin'}`)}
+                className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition"
+                title="Profile"
+              >
+                <UserIcon className="w-6 h-6" />
+              </button>
+              <div className="h-8 w-px bg-gray-300 mx-1"></div>
               <button
                 onClick={handleLogout}
                 className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition flex items-center gap-2"
@@ -331,16 +354,16 @@ export const AdminDashboard: React.FC = () => {
                           <tr key={svc.id} className="bg-white hover:bg-gray-50">
                             <td className="px-6 py-4">
                               <div>
-                                <p className="font-medium text-gray-900">{svc.user.name}</p>
-                                <p className="text-xs text-gray-500">{svc.user.email}</p>
+                                <p className="font-medium text-gray-900">{svc.user?.name || 'Unknown User'}</p>
+                                <p className="text-xs text-gray-500">{svc.user?.email || ''}</p>
                               </div>
                             </td>
-                            <td className="px-6 py-4 text-gray-900">{svc.service.name}</td>
-                            <td className="px-6 py-4 text-gray-900">₹{svc.service.price}</td>
+                            <td className="px-6 py-4 text-gray-900">{svc.service?.name || 'Unknown Service'}</td>
+                            <td className="px-6 py-4 text-gray-900">₹{svc.service?.price || 0}</td>
                             <td className="px-6 py-4">
-                              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${svc.status === 'ACTIVE' ? 'bg-green-100 text-green-800' :
+                              <span className={`px-3 py-1 rounded-full text-xs font-semibold ${(svc.status === 'ACTIVE' || svc.status === 'SUCCESS') ? 'bg-green-100 text-green-800' :
                                 svc.status === 'COMPLETED' ? 'bg-blue-100 text-blue-800' :
-                                  svc.status === 'PENDING_PAYMENT' ? 'bg-yellow-100 text-yellow-800' :
+                                  (svc.status === 'PENDING_PAYMENT' || svc.status === 'CREATED') ? 'bg-yellow-100 text-yellow-800' :
                                     'bg-red-100 text-red-800'
                                 }`}>
                                 {svc.status}
@@ -389,6 +412,7 @@ export const AdminDashboard: React.FC = () => {
                         <th className="px-6 py-3 text-left font-semibold text-gray-900">Business</th>
                         <th className="px-6 py-3 text-left font-semibold text-gray-900">Services</th>
                         <th className="px-6 py-3 text-left font-semibold text-gray-900">Status</th>
+                        <th className="px-6 py-3 text-right font-semibold text-gray-900">Actions</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y">
@@ -400,7 +424,9 @@ export const AdminDashboard: React.FC = () => {
                             <td className="px-6 py-4 text-gray-600">{req.mobile}</td>
                             <td className="px-6 py-4 text-gray-600">{req.businessName || '-'}</td>
                             <td className="px-6 py-4 text-gray-600 uppercase">
-                              {req.services.map(s => s.serviceCode).join(', ')}
+                              {Array.isArray(req.services)
+                                ? req.services.map((s: any) => s.serviceCode || s).join(', ')
+                                : (typeof req.services === 'string' ? req.services : 'View Details')}
                             </td>
                             <td className="px-6 py-4">
                               <span className={`px-3 py-1 rounded-full text-xs font-semibold ${req.status === 'NEW' ? 'bg-blue-100 text-blue-800' :
@@ -411,11 +437,20 @@ export const AdminDashboard: React.FC = () => {
                                 {req.status}
                               </span>
                             </td>
+                            <td className="px-6 py-4 text-right">
+                              <button
+                                onClick={() => handleDeleteConsultation(req.id)}
+                                className="text-red-500 hover:text-red-700 p-2 hover:bg-red-50 rounded"
+                                title="Delete"
+                              >
+                                <LogOut className="w-4 h-4" /> {/* Using LogOut since Trash isn't imported, or simple text X */}
+                              </button>
+                            </td>
                           </tr>
                         ))
                       ) : (
                         <tr>
-                          <td colSpan={6} className="px-6 py-8 text-center text-gray-500">No consultation requests found.</td>
+                          <td colSpan={7} className="px-6 py-8 text-center text-gray-500">No consultation requests found.</td>
                         </tr>
                       )}
                     </tbody>

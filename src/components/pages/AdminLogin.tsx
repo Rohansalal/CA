@@ -27,14 +27,7 @@ export const AdminLogin: React.FC = () => {
       setLoading(true);
       // Use the dedicated admin login function which hits /api/admin/login
       await adminLogin(email, password);
-
-      // Sync AuthContext with the new user data
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        setUserData(JSON.parse(storedUser));
-      }
-
-      // If successful, adminLogin will set the token and user in context
+      // If successful, adminLogin sets the token effectively in AdminContext
       navigate('/admin/dashboard');
     } catch (err) {
       setError('Login failed. Please check your credentials.');

@@ -8,6 +8,7 @@ import { AdminProtectedRoute } from './components/AdminProtectedRoute';
 import { Login } from './components/pages/Login';
 import { Register } from './components/pages/Register';
 import { Dashboard } from './components/pages/Dashboard';
+import { UserProfile } from './components/pages/UserProfile';
 import { OTPVerification } from './components/pages/OTPVerification';
 import { ForgotPassword } from './components/pages/ForgotPassword';
 
@@ -15,6 +16,9 @@ import { ForgotPassword } from './components/pages/ForgotPassword';
 import { AdminLogin } from './components/pages/AdminLogin';
 import { AdminDashboard } from './components/pages/AdminDashboard';
 import { AdminUsers } from './components/pages/AdminUsers';
+import { AdminAnalytics } from './components/pages/AdminAnalytics';
+import { AdminTickets } from './components/pages/AdminTickets';
+import { AdminServices } from './components/pages/AdminServices';
 
 // Home Pages
 import { Home } from './components/Home';
@@ -23,6 +27,8 @@ import { Services } from './components/Services';
 import { Industries } from './components/Industries';
 import { Resources } from './components/Resources';
 import { ContactUs } from './components/ContactUs';
+import { PrivacyPolicy } from './components/pages/PrivacyPolicy';
+import { TermsAndConditions } from './components/pages/TermsConditions';
 
 // Business Registrations
 import { BusinessRegistrations } from './components/services/BusinessRegistration/BusinessRegistrations';
@@ -128,6 +134,14 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/dashboard/users/profile/:username"
+            element={
+              <ProtectedRoute>
+                <UserProfile />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -147,6 +161,30 @@ function AppContent() {
               </AdminProtectedRoute>
             }
           />
+          <Route
+            path="/admin/analytics"
+            element={
+              <AdminProtectedRoute>
+                <AdminAnalytics />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/tickets"
+            element={
+              <AdminProtectedRoute>
+                <AdminTickets />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/services"
+            element={
+              <AdminProtectedRoute>
+                <AdminServices />
+              </AdminProtectedRoute>
+            }
+          />
 
           {/* Main Pages */}
           <Route path="/" element={<Home />} />
@@ -155,6 +193,8 @@ function AppContent() {
           <Route path="/industries" element={<Industries />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/contact" element={<ContactUs />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/terms-conditions" element={<TermsAndConditions />} />
 
 
           {/* ===== 5 MAIN SERVICE CATEGORY PAGES ===== */}

@@ -233,13 +233,16 @@ export function PartnershipFirm() {
         </div>
       </section>
 
-      {/* Benefits & Limitations */}
-      <section className="py-16 bg-neutral-50">
+      {/* Benefits & Considerations */}
+      <section className="py-20 bg-neutral-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             {/* Benefits */}
             <div>
-              <h2 className="text-3xl lg:text-4xl text-primary mb-6">Key Benefits</h2>
+              <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-6">Why Choose Partnership?</h2>
+              <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                Partnership Firms are the easiest way to start a business with multiple owners. Low compliance and ease of formation make it popular among small businesses.
+              </p>
               <div className="space-y-3">
                 {benefits.map((benefit, index) => (
                   <div key={index} className="flex items-start gap-3 bg-white p-4 rounded-lg shadow-sm">
@@ -250,21 +253,35 @@ export function PartnershipFirm() {
               </div>
             </div>
 
-            {/* Limitations */}
+            {/* Critical Considerations */}
             <div>
-              <h2 className="text-3xl lg:text-4xl text-primary mb-6">Important Considerations</h2>
-              <div className="space-y-4">
-                {limitations.map((limit, index) => (
-                  <div key={index} className="bg-orange-50 p-6 rounded-lg border border-orange-200">
-                    <div className="flex items-start gap-3">
-                      <limit.icon className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <h3 className="text-lg text-orange-900 font-semibold mb-1">{limit.title}</h3>
-                        <p className="text-orange-800 text-sm">{limit.description}</p>
-                      </div>
-                    </div>
+              <h2 className="text-3xl lg:text-4xl text-primary mb-6">Critical Considerations</h2>
+
+              <div className="bg-orange-50 p-8 rounded-2xl border border-orange-200 mb-6">
+                <div className="flex items-start gap-4 mb-6">
+                  <AlertCircle className="w-8 h-8 text-orange-600 flex-shrink-0" />
+                  <div>
+                    <h3 className="text-xl text-orange-900 font-bold mb-2">Unlimited Liability</h3>
+                    <p className="text-orange-800 leading-relaxed">
+                      Partners are personally liable for the debts of the firm. Their personal assets can be used to pay off business debts.
+                    </p>
                   </div>
-                ))}
+                </div>
+                <p className="text-neutral-600 text-sm bg-white/50 p-4 rounded-lg">
+                  <strong>Recommendation:</strong> Use this only for low-risk businesses or family-run entities.
+                </p>
+              </div>
+
+              <div className="bg-blue-50 p-8 rounded-2xl border border-blue-200">
+                <div className="flex items-start gap-4 mb-6">
+                  <Users className="w-8 h-8 text-blue-600 flex-shrink-0" />
+                  <div>
+                    <h3 className="text-xl text-blue-900 font-bold mb-2">Who is this for?</h3>
+                    <p className="text-blue-800 leading-relaxed">
+                      Ideal for small home businesses, retail shops, and family businesses where external funding is not required.
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -411,6 +428,66 @@ export function PartnershipFirm() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section className="py-20">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-neutral-200">
+            <div className="grid md:grid-cols-2">
+              {/* Left Side - The Offer (White) */}
+              <div className="p-8 md:p-12 bg-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-neutral-100">
+                <h3 className="text-2xl font-bold text-gray-900 mb-6">Partnership Registration</h3>
+                <div className="space-y-4">
+                  {[
+                    'Partnership Deed Drafting',
+                    'Stamp Duty Advice',
+                    'Notarization Support',
+                    'PAN Card Application',
+                    'TAN Registration',
+                    'Business Setup Advice'
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-3">
+                      <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                        <CheckCircle className="w-4 h-4 text-primary" />
+                      </div>
+                      <span className="text-gray-600 font-medium">{item}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-8 pt-8 border-t border-neutral-100">
+                  <div className="flex items-center gap-3 text-sm text-gray-500">
+                    <Clock className="w-4 h-4" />
+                    <span>Draft ready in 2-3 days</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Side - The Price (Dark) */}
+              <div className="p-8 md:p-12 bg-primary text-white flex flex-col justify-center items-center text-center relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                <div className="relative z-10">
+                  <span className="inline-block px-4 py-1.5 bg-white/10 rounded-full text-xs font-semibold tracking-wider uppercase mb-6 border border-white/20">
+                    Standard Plan
+                  </span>
+                  <div className="flex items-center justify-center gap-1 mb-2">
+                    <span className="text-6xl font-bold tracking-tight">₹4,999</span>
+                  </div>
+                  <p className="text-blue-100 mb-8">Professional Fee + Govt Fees (Actuals)</p>
+
+                  <button
+                    onClick={handleStartRegistration}
+                    className="w-full bg-white text-primary px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2"
+                  >
+                    Get Started
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                  <p className="mt-4 text-xs text-blue-200">Secure Payment • Expert Legal Drafting</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

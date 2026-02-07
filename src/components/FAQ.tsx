@@ -54,9 +54,6 @@ export function FAQ() {
           <h2 className="text-4xl lg:text-5xl font-bold text-primary mb-4">
             Frequently Asked Questions
           </h2>
-          <p className="text-lg text-neutral-600 max-w-2xl mx-auto">
-            Find answers to common questions about our CA services
-          </p>
         </div>
 
         {/* FAQ List */}

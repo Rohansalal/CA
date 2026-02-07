@@ -44,7 +44,7 @@ export function AboutUs() {
     },
     {
       name: 'CA Deep Agrawal',
-      designation: 'Associate Partner',
+      designation: 'Team Member',
       qualification: 'FCA (2001)',
       experience: '25+ Years',
       description: 'Specialises in Internal audit and bank audits.',
@@ -52,7 +52,7 @@ export function AboutUs() {
     },
     {
       name: 'CA Rekha Daga',
-      designation: 'Associate Partner',
+      designation: 'Team Member',
       qualification: 'FCA',
       experience: 'Experienced',
       description: 'Specialises in GST and indirect taxation matters.',
@@ -60,7 +60,7 @@ export function AboutUs() {
     },
     {
       name: 'CA Mohit Gupta',
-      designation: 'Associate Partner',
+      designation: 'Team Member',
       qualification: 'ACA (2013)',
       experience: '12+ Years',
       description: 'Specialises in GST and indirect taxation matters.',
@@ -77,10 +77,6 @@ export function AboutUs() {
       description: 'Started as a proprietorship with a focused mission to deliver exceptional audit and assurance services to emerging local businesses.',
       footerIcon: Building,
       footerText: 'First Client Acquisition',
-      color: 'from-primary to-blue-600',
-      shadow: 'shadow-primary/20',
-      tagColor: 'bg-primary/5 text-primary border-primary/10',
-      footerColor: 'text-primary'
     },
     {
       year: '2011',
@@ -90,10 +86,6 @@ export function AboutUs() {
       description: 'Reconstituted as a partnership firm, integrating diverse expertise and expanding our service portfolio to include comprehensive corporate advisory solutions.',
       footerIcon: Briefcase,
       footerText: 'Service Portfolio Expanded',
-      color: 'from-accent to-orange-600',
-      shadow: 'shadow-accent/20',
-      tagColor: 'bg-accent/5 text-accent border-accent/10',
-      footerColor: 'text-accent'
     },
     {
       year: '2016',
@@ -103,10 +95,6 @@ export function AboutUs() {
       description: 'Recognized by the C&AG of India and entrusted with statutory audits for major Public Sector Banks, validating our technical excellence and reliability.',
       footerIcon: Award,
       footerText: 'Industry Recognition Achieved',
-      color: 'from-secondary to-slate-800',
-      shadow: 'shadow-secondary/20',
-      tagColor: 'bg-secondary/5 text-secondary border-secondary/10',
-      footerColor: 'text-secondary'
     },
     {
       year: '2019',
@@ -116,10 +104,6 @@ export function AboutUs() {
       description: 'Forged lasting relationships with leading corporates and institutions, establishing ourselves as a key strategic partner in their financial growth journey.',
       footerIcon: Handshake,
       footerText: 'Long-term Partnerships Formed',
-      color: 'from-primary to-blue-500',
-      shadow: 'shadow-primary/20',
-      tagColor: 'bg-primary/5 text-primary border-primary/10',
-      footerColor: 'text-primary'
     },
     {
       year: 'Present',
@@ -129,10 +113,6 @@ export function AboutUs() {
       description: 'Established deep specialization in complex audits, appellate representations, and strategic financial consulting across diverse industry sectors.',
       footerIcon: Lightbulb,
       footerText: 'Continuous Innovation & Growth',
-      color: 'from-accent to-orange-500',
-      shadow: 'shadow-accent/20',
-      tagColor: 'bg-accent/5 text-accent border-accent/10',
-      footerColor: 'text-accent'
     },
   ];
 
@@ -342,15 +322,15 @@ export function AboutUs() {
                     {/* Central Connector Node */}
                     <div className="absolute left-8 md:left-1/2 transform -translate-x-1/2 flex items-center justify-center z-10 my-auto h-full">
                       {/* The Dot */}
-                      <div className={`w-6 h-6 rounded-full border-4 border-slate-50 bg-white ring-2 ring-primary/20 group-hover:ring-accent/50 transition-all duration-500 scale-100 group-hover:scale-125 z-20 relative`}>
-                        <div className={`w-full h-full rounded-full bg-gradient-to-br ${item.color} opacity-80 group-hover:opacity-100`}></div>
+                      <div className={`w-6 h-6 rounded-full border-4 border-slate-50 bg-white ring-2 ring-primary/20 group-hover:ring-primary/50 transition-all duration-500 scale-100 group-hover:scale-125 z-20 relative`}>
+                        <div className={`w-full h-full rounded-full bg-primary opacity-80 group-hover:opacity-100`}></div>
                       </div>
                     </div>
 
                     {/* Connector Arm (Desktop Only) - The physical link */}
                     <div className={`hidden md:block absolute left-1/2 top-1/2 w-16 h-[2px] bg-primary/20 -translate-y-1/2 z-0 
                         ${index % 2 === 1 ? '-translate-x-full origin-right' : 'origin-left'} 
-                        group-hover:bg-accent/40 group-hover:w-20 transition-all duration-500`}>
+                        group-hover:bg-primary/40 group-hover:w-20 transition-all duration-500`}>
                       {/* Little ball at the end of the arm */}
                       <div className={`absolute top-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-primary/40 rounded-full ${index % 2 === 1 ? 'left-0' : 'right-0'}`}></div>
                     </div>
@@ -362,7 +342,7 @@ export function AboutUs() {
                         <div className={`flex flex-col ${index % 2 === 1 ? 'md:items-end' : 'md:items-start'}`}>
                           {/* Year Label */}
                           <div className="inline-block mb-2">
-                            <span className={`text-4xl font-extrabold bg-clip-text text-transparent bg-gradient-to-br ${item.color} leading-none`}>
+                            <span className="text-4xl font-extrabold text-primary leading-none">
                               {item.year}
                             </span>
                           </div>
@@ -370,7 +350,7 @@ export function AboutUs() {
                           {/* Title with Tag */}
                           <div className={`flex flex-wrap items-center gap-3 mb-4 ${index % 2 === 1 ? 'md:justify-end' : 'md:justify-start'}`}>
                             <h3 className="text-xl font-bold text-slate-800">{item.title}</h3>
-                            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${item.tagColor} uppercase tracking-wider`}>
+                            <span className="text-[10px] font-bold px-2.5 py-1 rounded-full border bg-primary/5 text-primary border-primary/10 uppercase tracking-wider">
                               {item.label}
                             </span>
                           </div>
@@ -380,7 +360,7 @@ export function AboutUs() {
                           </p>
 
                           {/* Footer Meta */}
-                          <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wide ${item.footerColor || 'text-primary'} ${index % 2 === 1 ? 'md:flex-row-reverse' : ''} bg-slate-50 px-3 py-1.5 rounded-lg`}>
+                          <div className={`flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-primary ${index % 2 === 1 ? 'md:flex-row-reverse' : ''} bg-slate-50 px-3 py-1.5 rounded-lg`}>
                             <item.footerIcon className="w-4 h-4" />
                             <span>{item.footerText}</span>
                           </div>

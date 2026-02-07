@@ -11,11 +11,13 @@ export function Footer({ onNavigate }: FooterProps) {
   const getRoutePath = (id: string): string => {
     const routeMap: Record<string, string> = {
       'home': '/',
-      'about': '/#',
-      'services': '/#',
-      'industries': '/#',
+      'about': '/about',
+      'services': '/services',
+      'industries': '/industries',
       'resources': '/resources',
       'contact': '/contact',
+      'privacy-policy': '/privacy-policy',
+      'terms-conditions': '/terms-conditions',
     };
     return routeMap[id] || '/';
   };
@@ -52,7 +54,7 @@ export function Footer({ onNavigate }: FooterProps) {
           {/* Company Info */}
           <div>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 bg-accent rounded-lg flex items-center justify-center">
+              <div className="w-11 h-11 bg-accent rounded-lg flex items-center justify-center">
                 <img src="/logo.png" alt="Logo" className="w-12 h-12 rounded-lg object-cover bg-white border-0 shadow-none hover:shadow-lg transition-shadow" />
               </div>
               <div>
@@ -167,9 +169,11 @@ export function Footer({ onNavigate }: FooterProps) {
               © 2026 Avinash Payal & Co.. All rights reserved. | ICAI Registered Firm
             </div>
             <div className="flex gap-6">
-              <button className="hover:text-accent transition-colors">Privacy Policy</button>
-              <button className="hover:text-accent transition-colors">Terms of Service</button>
-              <button className="hover:text-accent transition-colors">Disclaimer</button>
+              <div className="flex gap-6">
+                <button onClick={() => handleNavClick('privacy-policy')} className="hover:text-accent transition-colors">Privacy Policy</button>
+                <button onClick={() => handleNavClick('terms-conditions')} className="hover:text-accent transition-colors">Terms & Conditions</button>
+                <button onClick={() => handleNavClick('terms-conditions')} className="hover:text-accent transition-colors">Disclaimer</button>
+              </div>
             </div>
           </div>
         </div>

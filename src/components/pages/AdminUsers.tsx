@@ -48,7 +48,7 @@ export const AdminUsers: React.FC = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('adminToken');
       const params = new URLSearchParams({
         page: pagination.page.toString(),
         limit: pagination.limit.toString(),
@@ -66,8 +66,18 @@ export const AdminUsers: React.FC = () => {
       if (!response.ok) throw new Error('Failed to fetch users');
 
       const data = await response.json();
-      setUsers(data.users);
-      setPagination(data.pagination);
+      setUsers(data.users || []);
+      if (data.pagination) {
+        setPagination(data.pagination);
+      } else {
+        // Fallback if pagination is missing but we have count
+        const total = data.count || data.users?.length || 0;
+        setPagination(prev => ({
+          ...prev,
+          total,
+          pages: Math.ceil(total / prev.limit) || 1
+        }));
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error fetching users');
     } finally {
@@ -186,25 +196,22 @@ export const AdminUsers: React.FC = () => {
                         <td className="px-6 py-4 text-sm text-gray-600">{usr.email}</td>
                         <td className="px-6 py-4 text-sm text-gray-600">{usr.phone || 'N/A'}</td>
                         <td className="px-6 py-4 text-sm">
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            usr.role === 'SUPER_ADMIN' ? 'bg-red-100 text-red-800' :
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${usr.role === 'SUPER_ADMIN' ? 'bg-red-100 text-red-800' :
                             usr.role === 'ADMIN' ? 'bg-blue-100 text-blue-800' :
-                            'bg-gray-100 text-gray-800'
-                          }`}>
+                              'bg-gray-100 text-gray-800'
+                            }`}>
                             {usr.role}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-sm">
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            usr.isEmailVerified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                          }`}>
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${usr.isEmailVerified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            }`}>
                             {usr.isEmailVerified ? 'Yes' : 'No'}
                           </span>
                         </td>
                         <td className="px-6 py-4 text-sm">
-                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                            usr.isPhoneVerified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
-                          }`}>
+                          <span className={`px-3 py-1 rounded-full text-xs font-semibold ${usr.isPhoneVerified ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
+                            }`}>
                             {usr.isPhoneVerified ? 'Yes' : 'No'}
                           </span>
                         </td>

@@ -6,7 +6,7 @@ export function Testimonials() {
             name: 'Rajesh Kumar',
             company: 'Tech Innovations Pvt Ltd',
             role: 'CEO',
-            content: 'Avinash Payal & Co. has been instrumental in managing our complex tax structure. Their proactive approach saved us significant costs.',
+            content: 'Avinash Payal & Assosicated has been instrumental in managing our complex tax structure. Their proactive approach saved us significant costs.',
             rating: 5,
             avatar: 'RK',
         },
@@ -48,9 +48,7 @@ export function Testimonials() {
                         <span className="text-sm font-semibold text-white uppercase tracking-wide">Client Success Stories</span>
                     </div>
                     <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">What Our Clients Say</h2>
-                    <p className="text-lg text-blue-100 max-w-2xl mx-auto">
-                        Trusted by businesses across industries for excellence and reliability
-                    </p>
+
                 </div>
                 <div className="grid md:grid-cols-3 gap-6">
                     {testimonials.map((testimonial, index) => (
