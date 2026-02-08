@@ -45,15 +45,18 @@ export const Login: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary via-primary/95 to-secondary flex items-center justify-center p-4">
-      <div className="w-full max-w-[380px]">
+      <div className="w-full max-w-[380px] ">
         {/* Logo Section */}
-        <div className="text-center mb-6">
+        <div className="text-center mb-6 space-x-9">
           <h1 className="text-2xl font-bold text-white mb-1">Login</h1>
           <p className="text-neutral-100 text-sm">Professional CA Services</p>
         </div>
 
         {/* Card */}
-        <div className="bg-white rounded-xl shadow-2xl p-6">
+        <div className="bg-white rounded-xl shadow-2xl p-6 
+    w-full max-w-sm sm:max-w-md md:max-w-lg space-x-9
+    mx-auto">
+
           <h2 className="text-xl font-bold text-primary mb-5 text-center">Welcome Back</h2>
 
           {/* Service Selection Notice */}
@@ -78,20 +81,20 @@ export const Login: React.FC = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3 mt-4 py-2 px-4">
             {/* Email Field */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">
+              <label className="block text-xs font-medium text-gray-700 mb-2">
                 Email Address
               </label>
               <div className="relative group">
-                <Mail className="absolute left-3 top-2.5 w-4 h-4 text-gray-400 group-focus-within:text-primary transition-colors" />
+                <Mail className="absolute left-3 top-3.5 w-4 h-4 text-gray-400 group-focus-within:text-primary transition-colors" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@company.com"
-                  className="w-full pl-9 pr-4 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-400"
+                  className="w-full pl-9 pr-4 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-400"
                   disabled={loading}
                 />
               </div>
@@ -99,17 +102,17 @@ export const Login: React.FC = () => {
 
             {/* Password Field */}
             <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1.5">
+              <label className="block text-xs font-medium text-gray-700 mb-2">
                 Password
               </label>
               <div className="relative group">
-                <Lock className="absolute left-3 top-2.5 w-4 h-4 text-gray-400 group-focus-within:text-primary transition-colors" />
+                <Lock className="absolute right-3 top-3.5 w-4 h-4 text-gray-400 group-focus-within:text-primary transition-colors" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Enter your password"
-                  className="w-full pl-9 pr-10 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-400"
+                  className="w-full pl-4 pr-10 py-3 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all placeholder:text-gray-400"
                   disabled={loading}
                 />
                 <button
@@ -134,7 +137,7 @@ export const Login: React.FC = () => {
             <button
               type="submit"
               disabled={!isFormValid}
-              className="w-full py-2.5 bg-gradient-to-r from-primary to-secondary text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-3 bg-gradient-to-r from-primary to-secondary text-white text-sm font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>
@@ -166,7 +169,7 @@ export const Login: React.FC = () => {
         {/* Demo Info */}
         <div className="mt-6 text-center">
           <p className="text-xs text-white/50">
-            Protected by reCAPTCHA and Subject to the Precision Associates <a href="#" className="hover:text-white underline">Privacy Policy</a>
+            Protected by reCAPTCHA and Subject to the Precision Associates <a href="/privacy-policy" className="hover:text-white underline">Privacy Policy</a>
           </p>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import { Calendar, BookOpen, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
 export function FeaturedInsights() {
@@ -11,6 +12,7 @@ export function FeaturedInsights() {
             excerpt: 'Comprehensive analysis of the latest budget proposals and their impact on corporate and individual taxation.',
             image: 'https://images.unsplash.com/photo-1642522029691-029b5a432954?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
             gradient: 'from-blue-500 to-blue-600',
+            route: '/resources/budget-2026'
         },
         {
             title: 'GST Compliance Checklist for January 2026',
@@ -20,6 +22,7 @@ export function FeaturedInsights() {
             excerpt: 'Stay compliant with our monthly GST checklist covering all important due dates and filing requirements.',
             image: 'https://images.unsplash.com/photo-1709880945165-d2208c6ad2ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
             gradient: 'from-blue-500 to-blue-600',
+            route: '/resources/gst-checklist-jan-2026'
         },
         {
             title: '5 Tax Saving Strategies for Startups in 2026',
@@ -29,6 +32,7 @@ export function FeaturedInsights() {
             excerpt: 'Maximize your startup tax benefits with these proven strategies including 80IAC exemptions and more.',
             image: 'https://images.unsplash.com/photo-1642522029691-029b5a432954?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=1080',
             gradient: 'from-blue-500 to-blue-600',
+            route: '/resources/tax-saving-startups'
         },
     ];
 
@@ -107,10 +111,13 @@ export function FeaturedInsights() {
                                     {post.excerpt}
                                 </p>
 
-                                <button className="text-orange-600 font-semibold flex items-center gap-2 hover:text-orange-700 transition-all">
+                                <Link
+                                    to={post.route}
+                                    className="text-orange-600 font-semibold flex items-center gap-2 hover:text-orange-700 transition-all"
+                                >
                                     Read Full Article
                                     <ArrowRight className="w-4 h-4" />
-                                </button>
+                                </Link>
                             </div>
 
                             {/* Bottom Accent */}
@@ -121,9 +128,10 @@ export function FeaturedInsights() {
 
                 {/* CTA */}
                 <div className="text-center pb-16">
-                    <button
+                    <Link
+                        to="/resources"
                         className="inline-flex items-center gap-3 px-14 py-4
-                        bg-orange-600 text-blue-600 hover:text-blue-700 font-bold text-base
+                        bg-orange-600 text-white hover:text-white font-bold text-base
                         rounded-full shadow-md
                         hover:bg-orange-700 hover:shadow-xl
                         transition-all duration-300 ease-out
@@ -133,7 +141,7 @@ export function FeaturedInsights() {
                         <BookOpen className="w-5 h-5 opacity-90" />
                         <span className="tracking-wide">VIEW ALL INSIGHTS</span>
                         <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-                    </button>
+                    </Link>
                 </div>
             </div>
             <div>

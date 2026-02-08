@@ -29,6 +29,15 @@ import { Resources } from './components/Resources';
 import { ContactUs } from './components/ContactUs';
 import { PrivacyPolicy } from './components/pages/PrivacyPolicy';
 import { TermsAndConditions } from './components/pages/TermsConditions';
+import { AllServices } from './components/pages/AllServices';
+
+// Blog Pages
+import { Budget2026 } from './components/pages/blogs/Budget2026';
+import { GSTComplianceJan2026 } from './components/pages/blogs/GSTComplianceJan2026';
+import { ROCComplianceRequirements } from './components/pages/blogs/ROCComplianceRequirements';
+import { TaxSavingStartups } from './components/pages/blogs/TaxSavingStartups';
+import { ITRFilingGuide } from './components/pages/blogs/ITRFilingGuide';
+import { TransferPricingSMEs } from './components/pages/blogs/TransferPricingSMEs';
 
 // Business Registrations
 import { BusinessRegistrations } from './components/services/BusinessRegistration/BusinessRegistrations';
@@ -190,11 +199,20 @@ function AppContent() {
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/all-services" element={<AllServices />} />
           <Route path="/industries" element={<Industries />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path="/terms-conditions" element={<TermsAndConditions />} />
+
+          {/* Blog/Resources Routes */}
+          <Route path="/resources/budget-2026" element={<Budget2026 />} />
+          <Route path="/resources/gst-checklist-jan-2026" element={<GSTComplianceJan2026 />} />
+          <Route path="/resources/roc-compliance" element={<ROCComplianceRequirements />} />
+          <Route path="/resources/tax-saving-startups" element={<TaxSavingStartups />} />
+          <Route path="/resources/itr-filing-guide" element={<ITRFilingGuide />} />
+          <Route path="/resources/transfer-pricing-smes" element={<TransferPricingSMEs />} />
 
 
           {/* ===== 5 MAIN SERVICE CATEGORY PAGES ===== */}

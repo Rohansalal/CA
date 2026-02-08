@@ -37,13 +37,13 @@ export function Footer({ onNavigate }: FooterProps) {
     { id: 'contact', label: 'Contact Us' },
   ];
 
-  const services = [
-    'Taxation Services',
-    'GST Compliance',
-    'Audit & Assurance',
-    'Company Registration',
-    'Virtual CFO Services',
-    'Startup Advisory',
+  const footerServices = [
+    { label: 'Taxation Services', route: '/services/tax-financial-compliances' },
+    { label: 'GST Compliance', route: '/services/tax-registrations/gst-registration' },
+    { label: 'Audit & Assurance', route: '/services/audit-assurance' },
+    { label: 'Company Registration', route: '/services/business-registrations/private-limited-company' },
+    { label: 'Virtual CFO Services', route: '/services/business-compliances/book-supervision' },
+    { label: 'Startup Advisory', route: '/services/other-registrations/startup-india' },
   ];
 
   return (
@@ -103,14 +103,17 @@ export function Footer({ onNavigate }: FooterProps) {
           <div>
             <h3 className="text-xl text-white mb-6 font-display">Our Services</h3>
             <ul className="space-y-3">
-              {services.map((service, index) => (
+              {footerServices.map((service, index) => (
                 <li key={index}>
                   <button
-                    onClick={() => handleNavClick('services')}
+                    onClick={() => {
+                      navigate(service.route);
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
                     className="text-neutral-200 hover:text-accent transition-colors flex items-center gap-2 group"
                   >
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                    {service}
+                    {service.label}
                   </button>
                 </li>
               ))}

@@ -1,8 +1,10 @@
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle } from 'lucide-react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SEO from './SEO';
 
 export function ContactUs() {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -265,8 +267,11 @@ export function ContactUs() {
                 <p className="text-neutral-100 mb-6">
                   Book a complimentary 30-minute consultation with our chartered accountants to discuss your business needs.
                 </p>
-                <button className="w-full px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-xl">
-                  BOOK APPOINTMENT
+                <button
+                  onClick={() => navigate('/#consultation-form')}
+                  className="w-full px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-xl"
+                >
+                  GET EXPERT CA GUIDANCE
                 </button>
               </div>
             </div>

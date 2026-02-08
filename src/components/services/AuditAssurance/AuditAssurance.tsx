@@ -41,7 +41,7 @@ export function AuditAssurance() {
         <div className="bg-neutral-50 min-h-screen">
             <div className="bg-primary text-white py-20">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-6">Audit & Assurance Services</h1>
+                    <h1 className="text-4xl text-white md:text-5xl font-bold mb-6">Audit & Assurance Services</h1>
                     <p className="text-xl text-blue-100 max-w-3xl">
                         Reliable audit services to enhance stakeholder confidence, ensure compliance, and improve business processes.
                     </p>

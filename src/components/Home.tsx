@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { ArrowRight, TrendingUp, Shield, Users, Award, CheckCircle, Star, FileText, Calculator, Building, BarChart3, Globe, Calendar, BookOpen, Sparkles } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { FAQ } from './FAQ';
@@ -12,39 +13,45 @@ export function Home() {
   const services = [
     {
       icon: FileText,
-      title: 'Taxation Services',
+      title: 'ITR Filing',
       description: 'Expert tax planning, ITR filing, and compliance for individuals and businesses.',
       gradient: 'from-[#136da1] to-[#136da1]',
+      url: '/services/tax-compliances/itr-filing',
     },
     {
       icon: Calculator,
-      title: 'GST Services',
+      title: 'GST Registration',
       description: 'Complete GST registration, filing, compliance, and advisory solutions.',
       gradient: 'from-[#136da1] to-[#136da1]',
+      url: '/services/tax-registrations/gst-registration',
     },
     {
       icon: Shield,
-      title: 'Audit & Assurance',
+      title: 'Tax Audit',
       description: 'Statutory, internal, and tax audits with comprehensive assurance services.',
       gradient: 'from-[#136da1] to-[#136da1]',
+      url: '/services/audit-assurance/tax-audit',
     },
     {
       icon: Building,
-      title: 'Company Registration',
+      title: 'Private Limited Company',
       description: 'Seamless incorporation, registration, and statutory compliance services.',
       gradient: 'from-[#136da1] to-[#136da1]',
+      url: '/services/business-registrations/private-limited-company',
     },
     {
       icon: BarChart3,
-      title: 'Virtual CFO',
+      title: 'Book Supervision',
       description: 'Strategic financial planning and CFO services for growing businesses.',
       gradient: 'from-[#136da1] to-[#136da1]',
+      url: '/services/business-compliances/book-supervision',
     },
     {
       icon: Globe,
-      title: 'NRI Taxation',
+      title: 'MSME Registration',
       description: 'Specialized tax services for Non-Resident Indians and global taxation.',
       gradient: 'from-[#136da1] to-[#136da1]',
+      url: '/services/other-registrations/msme',
     },
   ];
 
@@ -92,8 +99,11 @@ export function Home() {
                 Precision. Compliance. Growth. We provide comprehensive financial solutions that empower your business with expert tax planning, audit, and strategic advisory services.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <button className="px-8 py-2 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2 group">
-                  BOOK CONSULTATION
+                <button
+                  onClick={() => document.getElementById('consultation-form')?.scrollIntoView({ behavior: 'smooth' })}
+                  className="px-8 py-2 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2 group"
+                >
+                  GET EXPERT CA GUIDANCE
                   <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </button>
                 <button className="px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-neutral-50 transition-all hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2">
@@ -181,18 +191,18 @@ export function Home() {
                 {/* Centered Text Content */}
                 <h3 className="text-2xl font-bold text-primary mb-4">{service.title}</h3>
                 <p className="text-base text-neutral-600 mb-6 leading-relaxed">{service.description}</p>
-                <button className="text-accent font-semibold inline-flex items-center gap-2 group-hover:gap-3 transition-all">
+                <Link to={service.url} className="text-accent font-semibold inline-flex items-center gap-2 group-hover:gap-3 transition-all">
                   Learn More
                   <ArrowRight className="w-4 h-4" />
-                </button>
+                </Link>
               </div>
             ))}
           </div>
           <div className="text-center mt-12 mb-16">
-            <button className="px-8 py-4 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center gap-2 group">
+            <Link to="/all-services" className="px-8 py-4 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center gap-2 group">
               VIEW ALL SERVICES
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -202,7 +212,9 @@ export function Home() {
       <WhyChooseUs />
 
       {/* Premium Consulting Form Section */}
-      <ConsultingFormNew />
+      <div id="consultation-form">
+        <ConsultingFormNew />
+      </div>
 
 
 
@@ -221,7 +233,7 @@ export function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button className="px-10 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-2xl transform hover:-translate-y-1 flex items-center justify-center gap-2 group">
-              BOOK FREE CONSULTATION
+              GET EXPERT CA GUIDANCE
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
             <button className="px-10 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-neutral-50 transition-all hover:shadow-2xl transform hover:-translate-y-1">
@@ -255,7 +267,7 @@ export function Home() {
         hover:bg-primary/90 transition-all duration-300 
         hover:shadow-xl transform hover:-translate-y-1 
         flex items-center justify-center gap-2 group">
-              BOOK FREE CONSULTATION
+              GET EXPERT CA GUIDANCE
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
 

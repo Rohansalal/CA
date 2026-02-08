@@ -1,5 +1,6 @@
 import { Calendar, ArrowRight, BookOpen, Download, Search } from 'lucide-react';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
 export function Resources() {
@@ -16,6 +17,7 @@ export function Resources() {
       readTime: '8 min read',
       excerpt: 'Comprehensive analysis of the latest budget proposals and their impact on corporate and individual taxation.',
       image: 'https://images.unsplash.com/photo-1642522029691-029b5a432954?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMG1lZXRpbmclMjBwcm9mZXNzaW9uYWx8ZW58MXx8fHwxNzY4NzI0MDUzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+      route: '/resources/budget-2026'
     },
     {
       title: 'GST Compliance Checklist for January 2026',
@@ -24,6 +26,7 @@ export function Resources() {
       readTime: '6 min read',
       excerpt: 'Stay compliant with our monthly GST checklist covering all important due dates and filing requirements.',
       image: 'https://images.unsplash.com/photo-1709880945165-d2208c6ad2ec?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxmaW5hbmNpYWwlMjBjYWxjdWxhdG9yJTIwZG9jdW1lbnRzfGVufDF8fHx8MTc2ODgyNTUwN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+      route: '/resources/gst-checklist-jan-2026'
     },
     {
       title: 'New ROC Compliance Requirements for Private Limited Companies',
@@ -32,6 +35,7 @@ export function Resources() {
       readTime: '10 min read',
       excerpt: 'Understanding the updated MCA regulations and annual compliance obligations for Pvt Ltd companies.',
       image: 'https://images.unsplash.com/photo-1692133226337-55e513450a32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBhY2NvdW50YW50JTIwb2ZmaWNlfGVufDF8fHx8MTc2ODc0NzA0OXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+      route: '/resources/roc-compliance'
     },
     {
       title: '5 Tax Saving Strategies for Startups in 2026',
@@ -40,6 +44,7 @@ export function Resources() {
       readTime: '7 min read',
       excerpt: 'Maximize your startup tax benefits with these proven strategies including 80IAC exemptions and more.',
       image: 'https://images.unsplash.com/photo-1759310610325-2c7cb621e5e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGhhbmRzaGFrZSUyMHRydXN0fGVufDF8fHx8MTc2ODgwOTM2Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+      route: '/resources/tax-saving-startups'
     },
     {
       title: 'ITR Filing Deadlines and Penalties: Complete Guide',
@@ -48,6 +53,7 @@ export function Resources() {
       readTime: '9 min read',
       excerpt: 'Everything you need to know about Income Tax Return filing deadlines, late fees, and consequences.',
       image: 'https://images.unsplash.com/photo-1748346918817-0b1b6b2f9bab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBvZmZpY2UlMjB0ZWFtfGVufDF8fHx8MTc2ODc4ODMwN3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+      route: '/resources/itr-filing-guide'
     },
     {
       title: 'Understanding Transfer Pricing for SMEs',
@@ -56,6 +62,7 @@ export function Resources() {
       readTime: '12 min read',
       excerpt: 'A practical guide to transfer pricing regulations and compliance for small and medium enterprises.',
       image: 'https://images.unsplash.com/photo-1642522029691-029b5a432954?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMG1lZXRpbmclMjBwcm9mZXNzaW9uYWx8ZW58MXx8fHwxNzY4NzI0MDUzfDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
+      route: '/resources/transfer-pricing-smes'
     },
   ];
 
@@ -67,9 +74,9 @@ export function Resources() {
   ];
 
   const filteredPosts = blogPosts.filter((post) => {
-    const matchesCategory = selectedCategory === 'all' || post.category === selectedCategory;
+    const matchesCategory = selectedCategory === 'all' || post.category.toLowerCase() === selectedCategory.toLowerCase();
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+      post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
 
@@ -83,7 +90,7 @@ export function Resources() {
             <p className="text-xl text-neutral-100 leading-relaxed mb-8">
               Stay informed with the latest tax updates, compliance guides, and expert insights from our chartered accountants
             </p>
-            
+
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto">
               <div className="relative">
@@ -133,11 +140,10 @@ export function Resources() {
               <button
                 key={category}
                 onClick={() => setSelectedCategory(category.toLowerCase())}
-                className={`px-6 py-2 rounded-full font-medium transition-all ${
-                  selectedCategory === category.toLowerCase()
-                    ? 'bg-primary text-white shadow-md'
-                    : 'bg-white text-neutral-700 hover:bg-neutral-100'
-                }`}
+                className={`px-6 py-2 rounded-full font-medium transition-all ${selectedCategory === category.toLowerCase()
+                  ? 'bg-primary text-white shadow-md'
+                  : 'bg-white text-neutral-700 hover:bg-neutral-100'
+                  }`}
               >
                 {category}
               </button>
@@ -180,10 +186,13 @@ export function Resources() {
                     {post.title}
                   </h3>
                   <p className="text-neutral-600 mb-4 line-clamp-3">{post.excerpt}</p>
-                  <button className="text-accent font-semibold flex items-center gap-2 group-hover:gap-3 transition-all">
+                  <Link
+                    to={post.route}
+                    className="text-accent font-semibold flex items-center gap-2 group-hover:gap-3 transition-all"
+                  >
                     Read More
                     <ArrowRight className="w-4 h-4" />
-                  </button>
+                  </Link>
                 </div>
               </article>
             ))}
