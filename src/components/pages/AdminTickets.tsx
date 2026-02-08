@@ -61,15 +61,14 @@ export const AdminTickets: React.FC = () => {
             setSubmittingReply(true);
             const token = localStorage.getItem('adminToken');
 
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tickets/reply`, {
-                method: 'POST',
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tickets/${selectedTicket.id}`, {
+                method: 'PUT',
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    ticketId: selectedTicket.id,
-                    reply: replyText,
+                    adminReply: replyText,
                     status: replyStatus
                 })
             });
