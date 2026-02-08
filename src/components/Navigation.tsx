@@ -696,7 +696,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
   Menu, X, Phone, Mail, ChevronDown, ChevronRight, ArrowRight,
-  Building2, Receipt, Scale,
+  Building2, Receipt, Scale, BookOpen,
   Landmark, PieChart, Calculator, User, LogOut, LayoutDashboard, Settings
 } from 'lucide-react';
 import { cn } from './ui/utils';

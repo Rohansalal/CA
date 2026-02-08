@@ -1,0 +1,104 @@
+╔══════════════════════════════════════════════════════════════════╗
+║                  AWS AMPLIFY 404 FIX - QUICK CARD                ║
+╚══════════════════════════════════════════════════════════════════╝
+
+🔴 PROBLEM: White screen + 404 errors on https://caavinash.in
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚡ FASTEST FIX (5 MINUTES):
+
+1️⃣  GO TO AWS AMPLIFY CONSOLE
+    https://console.aws.amazon.com/amplify/
+    
+2️⃣  CLICK: Your App → Rewrites and redirects → Edit
+
+3️⃣  ADD THIS RULE:
+    ┌────────────────────────────────────────────────────────────┐
+    │ Source:  </^[^.]+$|\.(?!(css|gif|ico|jpg|js|png|txt|svg│
+    │          |woff|woff2|ttf|map|json|webp)$)([^.]+$)/>     │
+    │ Target:  /index.html                                       │
+    │ Type:    200 (Rewrite)                                     │
+    └────────────────────────────────────────────────────────────┘
+
+4️⃣  CLICK: Save (deployment starts automatically)
+
+5️⃣  WAIT: 3-5 minutes for build to complete
+
+6️⃣  TEST: Visit https://caavinash.in/admin/login
+    ✓ Should load WITHOUT white screen
+    ✓ Should see NO 404 in console (F12)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📝 ADMIN LOGIN CREDENTIALS:
+
+    Email:    admin@precisionassociates.com
+    Password: admin123
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🧪 QUICK API TEST (Paste in Browser Console - F12):
+
+// Test 1: Login
+fetch('https://wybui613ll.execute-api.ap-south-1.amazonaws.com/prod/api/auth/admin/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    email: 'admin@precisionassociates.com',
+    password: 'admin123'
+  })
+}).then(r => r.json()).then(console.log).catch(console.error)
+
+// Expected: { "message": "Admin login successful", "token": "..." }
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🔍 VERIFY FIX WORKED:
+
+✓ Visit: https://caavinash.in                  → Homepage loads
+✓ Visit: https://caavinash.in/admin/login     → Login page loads
+✓ Visit: https://caavinash.in/about           → About page loads
+✓ Open Console (F12) → NO 404 errors
+✓ Login with admin credentials → Redirects to dashboard
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+⚠️  IF STILL GETTING 404:
+
+1. Clear browser cache (Ctrl + Shift + Delete)
+2. Try in Incognito/Private mode
+3. Wait 10 minutes (CloudFront CDN cache)
+4. Check Amplify build logs for errors
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📚 DETAILED GUIDES:
+
+→ Step-by-step: AMPLIFY_404_FIX.md
+→ Full documentation: AWS_AMPLIFY_FIX.md
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ FILES CREATED FOR YOU:
+
+✓ amplify.yml              (Build configuration)
+✓ public/_redirects        (SPA routing - already existed)
+✓ public/redirects.json    (Backup routing config)
+✓ AMPLIFY_404_FIX.md       (This fix guide)
+✓ deploy-amplify.ps1       (Deployment script)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+🎯 EXPECTED BEHAVIOR AFTER FIX:
+
+BEFORE:
+❌ https://caavinash.in/admin/login → 404 White Screen
+
+AFTER:
+✅ https://caavinash.in/admin/login → Admin Login Page
+✅ Can navigate to any route without 404
+✅ Browser refresh works on all pages
+✅ Admin login → Dashboard works perfectly
+
+╚══════════════════════════════════════════════════════════════════╝
