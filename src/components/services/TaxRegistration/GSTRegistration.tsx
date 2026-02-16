@@ -1,6 +1,7 @@
 import { Receipt, CheckCircle, FileText, Clock, ArrowRight, AlertCircle, TrendingUp, Shield, Globe, ShoppingCart, Percent } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
+import { ServicePricing } from '../ServicePricing';
 
 export function GSTRegistration() {
     const navigate = useNavigate();
@@ -459,43 +460,51 @@ export function GSTRegistration() {
             {/* Pricing Section */}
             <section className="py-16">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-4">Service Packages</h2>
-                        <p className="text-lg text-gray-600">Transparent pricing for GST registration</p>
-                    </div>
-                    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                        {pricing.map((plan, index) => (
-                            <div key={index} className={`relative bg-white rounded-2xl shadow-lg border ${index === 1 ? 'border-accent shadow-xl scale-105 z-10' : 'border-neutral-200'} p-8 flex flex-col`}>
-                                {index === 1 && (
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-accent text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                                        Best Value
-                                    </div>
-                                )}
-                                <h3 className="text-xl font-bold text-gray-900 mb-6">{plan.plan}</h3>
-                                <div className="mb-8">
-                                    <span className="text-4xl font-bold text-primary">{plan.price}</span>
-                                    <span className="text-gray-500"> /application</span>
+                    <ServicePricing
+                        serviceSlug="gst-registration"
+                        serviceName="GST Registration"
+                        fallbackContent={
+                            <>
+                                <div className="text-center mb-16">
+                                    <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-4">Service Packages</h2>
+                                    <p className="text-lg text-gray-600">Transparent pricing for GST registration</p>
                                 </div>
-                                <ul className="space-y-4 mb-8 flex-1">
-                                    {plan.features?.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
-                                            <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" />
-                                            {feature}
-                                        </li>
+                                <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                                    {pricing.map((plan, index) => (
+                                        <div key={index} className={`relative bg-white rounded-2xl shadow-lg border ${index === 1 ? 'border-accent shadow-xl scale-105 z-10' : 'border-neutral-200'} p-8 flex flex-col`}>
+                                            {index === 1 && (
+                                                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-accent text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
+                                                    Best Value
+                                                </div>
+                                            )}
+                                            <h3 className="text-xl font-bold text-gray-900 mb-6">{plan.plan}</h3>
+                                            <div className="mb-8">
+                                                <span className="text-4xl font-bold text-primary">{plan.price}</span>
+                                                <span className="text-gray-500"> /application</span>
+                                            </div>
+                                            <ul className="space-y-4 mb-8 flex-1">
+                                                {plan.features?.map((feature, idx) => (
+                                                    <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
+                                                        <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" />
+                                                        {feature}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            <button
+                                                onClick={handleStartRegistration}
+                                                className={`w-full py-3 rounded-xl font-bold transition-all ${index === 1
+                                                    ? 'bg-accent text-white hover:bg-accent/90 shadow-lg hover:shadow-accent/30'
+                                                    : 'bg-primary/5 text-primary hover:bg-primary hover:text-white'
+                                                    }`}
+                                            >
+                                                Get Started
+                                            </button>
+                                        </div>
                                     ))}
-                                </ul>
-                                <button
-                                    onClick={handleStartRegistration}
-                                    className={`w-full py-3 rounded-xl font-bold transition-all ${index === 1
-                                        ? 'bg-accent text-white hover:bg-accent/90 shadow-lg hover:shadow-accent/30'
-                                        : 'bg-primary/5 text-primary hover:bg-primary hover:text-white'
-                                        }`}
-                                >
-                                    Get Started
-                                </button>
-                            </div>
-                        ))}
-                    </div>
+                                </div>
+                            </>
+                        }
+                    />
                 </div>
             </section>
 

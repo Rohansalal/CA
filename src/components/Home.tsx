@@ -1,5 +1,6 @@
-import { Link } from 'react-router-dom';
-import { ArrowRight, TrendingUp, Shield, Users, Award, CheckCircle, Star, FileText, Calculator, Building, BarChart3, Globe, Calendar, BookOpen, Sparkles } from 'lucide-react';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { ArrowRight, TrendingUp, Shield, Users, Award, CheckCircle, Star, FileText, Calculator, Building, BarChart3, Globe, Calendar, BookOpen, Sparkles, Search } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 import { FAQ } from './FAQ';
 import { ConsultingFormNew } from './ConsultingFormNew';
@@ -10,6 +11,18 @@ import { Testimonials } from './Testimonials';
 import SEO from './SEO';
 
 export function Home() {
+  const navigate = useNavigate();
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearch = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/all-services?search=${encodeURIComponent(searchQuery)}`);
+    } else {
+      navigate('/all-services');
+    }
+  };
+
   const services = [
     {
       icon: FileText,
@@ -81,23 +94,43 @@ export function Home() {
       <section className="relative bg-gradient-to-br from-primary via-primary to-secondary text-white overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute inset-0" style={{
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v6h6V4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2v6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v6h6V4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
           }} />
         </div>
-        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 py-12 lg:py-13 relative">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="max-w-7xl mx-auto px-6 sm:px-6 lg:px-8 py-12 relative">
+          <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
             <div className="space-y-6">
               <div className="inline-block">
                 <span className="px-4 py-2 bg-accent text-white rounded-full text-sm font-semibold border border-accent/30 shadow-lg">
                   Trusted Financial Partners Since 2014
                 </span>
               </div>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl text-white font-bold leading-tight">
+              <h1 className="text-3xl sm:text-5xl lg:text-5xl xl:text-6xl text-white font-bold leading-tight">
                 Trusted Chartered Accountants for Tax, Audit & Business Growth
               </h1>
-              <p className="text-xl text-neutral-100 leading-relaxed">
+              <p className="text-lg sm:text-xl text-neutral-100 leading-relaxed">
                 Precision. Compliance. Growth. We provide comprehensive financial solutions that empower your business with expert tax planning, audit, and strategic advisory services.
               </p>
+
+              {/* Modern Search Bar */}
+              <div className="relative max-w-lg mt-8 mb-8 group">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Search className="h-5 w-5 text-gray-400 group-focus-within:text-accent transition-colors" />
+                </div>
+                <input
+                  type="text"
+                  className="block w-full pl-11 pr-4 py-4 bg-white border-0 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-xl transition-all"
+                  placeholder="Search for services (e.g. GST, ITR, Audit)..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                />
+                <div className="absolute inset-y-0 right-1 flex items-center">
+                  <button onClick={() => handleSearch()} className="p-2.5 bg-accent text-white rounded-lg hover:bg-accent/90 transition-all hover:scale-105 shadow-md">
+                    <ArrowRight className="h-5 w-5" />
+                  </button>
+                </div>
+              </div>
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={() => document.getElementById('consultation-form')?.scrollIntoView({ behavior: 'smooth' })}
@@ -119,13 +152,13 @@ export function Home() {
                 ))}
               </div>
             </div>
-            <div className="mt-x8 lg:mt-0">
+            <div className="mt-8 lg:mt-0">
               <div className="relative">
                 <div className="absolute -inset-4 bg-accent/20 rounded-2xl blur-2xl" />
                 <ImageWithFallback
                   src="https://images.unsplash.com/photo-1692133226337-55e513450a32?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxwcm9mZXNzaW9uYWwlMjBhY2NvdW50YW50JTIwb2ZmaWNlfGVufDF8fHx8MTc2ODc0NzA0OXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
                   alt="Professional Accounting Services"
-                  className="relative rounded-2xl shadow-2xl w-full h-[800px] sm:h-[800px] lg:h-[800px] object-cover"
+                  className="relative rounded-2xl shadow-2xl w-full h-[400px] sm:h-[500px] lg:h-[600px] xl:h-[700px] object-cover"
                 />
               </div>
             </div>

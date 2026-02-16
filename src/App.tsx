@@ -11,6 +11,8 @@ import { Dashboard } from './components/pages/Dashboard';
 import { UserProfile } from './components/pages/UserProfile';
 import { OTPVerification } from './components/pages/OTPVerification';
 import { ForgotPassword } from './components/pages/ForgotPassword';
+import { OrderDocuments } from './components/pages/OrderDocuments';
+import { OrderRequirements } from './components/pages/OrderRequirements';
 
 // Admin Pages
 import { AdminLogin } from './components/pages/AdminLogin';
@@ -19,6 +21,7 @@ import { AdminUsers } from './components/pages/AdminUsers';
 import { AdminAnalytics } from './components/pages/AdminAnalytics';
 import { AdminTickets } from './components/pages/AdminTickets';
 import { AdminServices } from './components/pages/AdminServices';
+import { AdminProfile } from './components/pages/AdminProfile'; // Import AdminProfile
 
 // Home Pages
 import { Home } from './components/Home';
@@ -109,7 +112,8 @@ import { PollutionControlLicense } from './components/services/OtherRegistration
 import Navigation from './components/Navigation';
 import { Footer } from './components/Footer';
 import { ScrollToTop } from './components/ScrollToTop';
-
+import CookieConsent from './components/common/CookieConsent';
+import { CrispChat } from './components/common/CrispChat';
 
 function AppContent() {
   const location = useLocation();
@@ -126,8 +130,10 @@ function AppContent() {
   const showNavigation = !['/login', '/register', '/dashboard', '/admin'].some(path => location.pathname.startsWith(path));
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-neutral-50 relative">
+      <CrispChat />
       {showNavigation && <Navigation currentPage={currentPage} onNavigate={() => { }} />}
+      {location.pathname === '/' && <CookieConsent />}
       <main>
         <Routes>
           {/* Auth Routes */}
@@ -148,6 +154,22 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <UserProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/order/:id/upload-documents"
+            element={
+              <ProtectedRoute>
+                <OrderDocuments />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/order/:id/requirements"
+            element={
+              <ProtectedRoute>
+                <OrderRequirements />
               </ProtectedRoute>
             }
           />
@@ -191,6 +213,14 @@ function AppContent() {
             element={
               <AdminProtectedRoute>
                 <AdminServices />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/profile"
+            element={
+              <AdminProtectedRoute>
+                <AdminProfile />
               </AdminProtectedRoute>
             }
           />

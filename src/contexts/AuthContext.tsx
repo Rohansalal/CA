@@ -1,11 +1,24 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+interface UserProfile {
+  businessName?: string;
+  gstNumber?: string;
+  panNumber?: string;
+  address?: string;
+  city?: string;
+  state?: string;
+  pincode?: string;
+  avatar?: string;
+}
+
 interface User {
   id: number;
   name: string;
   email: string;
   phone?: string;
   role: string;
+  profile?: UserProfile;
+  createdAt?: string;
 }
 
 interface AuthContextType {
@@ -29,18 +42,34 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   // Check if user is already logged in on mount
   useEffect(() => {
-    const token = localStorage.getItem('authToken');
-    const savedUser = localStorage.getItem('user');
-
-    if (token && savedUser) {
+    const checkAuth = async () => {
+      setLoading(true);
       try {
-        setUser(JSON.parse(savedUser));
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          // Send cookies
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          setUser(data.user);
+        } else {
+          // If not ok, clear any stale user data
+          setUser(null);
+          localStorage.removeItem('user');
+        }
       } catch (err) {
-        console.error('Error parsing saved user:', err);
-        localStorage.removeItem('authToken');
-        localStorage.removeItem('user');
+        console.error('Session verification failed:', err);
+        setUser(null);
+      } finally {
+        setLoading(false);
       }
-    }
+    };
+
+    checkAuth();
   }, []);
 
   const login = async (email: string, password: string): Promise<User | undefined> => {
@@ -54,6 +83,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
+        credentials: 'include', // Important for cookies
       });
 
       const data = await response.json();
@@ -62,8 +92,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         throw new Error(data.error || 'Login failed');
       }
 
-      // Save token and user data
-      localStorage.setItem('authToken', data.token);
+      // Save user data (no need for token, it's in cookie)
       localStorage.setItem('user', JSON.stringify(data.user));
 
       setUser(data.user);
@@ -88,6 +117,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ name, email, phone, password }),
+        credentials: 'include',
       });
 
       const data = await response.json();
@@ -96,10 +126,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         throw new Error(data.error || 'Registration failed');
       }
 
-      // Save token and user data
-      localStorage.setItem('authToken', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-
       setUser(data.user);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'Registration failed';
@@ -110,8 +137,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('authToken');
+  const logout = async () => {
+    try {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
     localStorage.removeItem('user');
     setUser(null);
     setError(null);

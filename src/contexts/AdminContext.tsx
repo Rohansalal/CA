@@ -31,31 +31,65 @@ interface AdminContextType {
 const AdminContext = createContext<AdminContextType | undefined>(undefined);
 
 export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [adminUser, setAdminUser] = useState<AdminUser | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [adminUser, setAdminUser] = useState<AdminUser | null>(() => {
+    const saved = localStorage.getItem('adminData');
+    if (saved) {
+      try {
+        const admin = JSON.parse(saved);
+        return {
+          id: admin.id,
+          userId: admin.id,
+          role: admin.role,
+          isAdmin: true,
+          name: admin.name,
+          email: admin.email,
+        };
+      } catch (e) {
+        return null;
+      }
+    }
+    return null;
+  });
+
+  const [loading, setLoading] = useState(() => !!localStorage.getItem('adminToken'));
   const [error, setError] = useState<string | null>(null);
 
   // Load admin session on mount
   useEffect(() => {
-    const token = localStorage.getItem('adminToken');
-    const savedAdmin = localStorage.getItem('adminData');
-
-    if (token && savedAdmin) {
+    const checkAdminAuth = async () => {
+      setLoading(true);
       try {
-        const userData = JSON.parse(savedAdmin);
-        setAdminUser({
-          id: userData.id,
-          userId: userData.id,
-          role: userData.role,
-          isAdmin: true,
-          name: userData.name,
-          email: userData.email,
+        const token = localStorage.getItem('adminToken');
+        const headers: HeadersInit = {};
+        if (token) headers['Authorization'] = `Bearer ${token}`;
+
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/profile`, {
+          headers,
+          credentials: 'include'
         });
+
+        if (response.ok) {
+          const data = await response.json();
+          const admin = data.admin || data;
+          setAdminUser({
+            id: admin.id,
+            userId: admin.id,
+            role: admin.role,
+            isAdmin: true,
+            name: admin.name,
+            email: admin.email,
+          });
+        }
       } catch (err) {
-        console.error('Error parsing admin data:', err);
-        localStorage.removeItem('adminToken');
-        localStorage.removeItem('adminData');
+        console.error('Admin session check failed', err);
+      } finally {
+        setLoading(false);
       }
+    };
+
+    // We can also check if adminData exists in localStorage as a hint
+    if (localStorage.getItem('adminData')) {
+      checkAdminAuth();
     }
   }, []);
 
@@ -70,7 +104,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ email, password })
+          body: JSON.stringify({ email, password }),
+          credentials: 'include'
         }
       );
 
@@ -80,9 +115,11 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         throw new Error(data.error || 'Admin login failed');
       }
 
-      // Save token and admin data (Separate from User)
-      localStorage.setItem('adminToken', data.token);
+      // Save admin data
       localStorage.setItem('adminData', JSON.stringify(data.admin));
+      if (data.token) {
+        localStorage.setItem('adminToken', data.token);
+      }
 
       setAdminUser({
         id: data.admin.id,
@@ -101,7 +138,15 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   }, []);
 
-  const adminLogout = useCallback(() => {
+  const adminLogout = useCallback(async () => {
+    try {
+      await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      });
+    } catch (err) {
+      console.error('Logout failed:', err);
+    }
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminData');
     setAdminUser(null);
@@ -111,39 +156,34 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     try {
       setLoading(true);
       const token = localStorage.getItem('adminToken');
-
-      if (!token) {
-        setAdminUser(null);
-        return false;
-      }
+      const headers: HeadersInit = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/admin/verify-token`,
+        `${import.meta.env.VITE_API_BASE_URL}/admin/profile`, // Updated verify endpoint
         {
           method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`
-          }
+          headers,
+          credentials: 'include'
         }
       );
 
       if (!response.ok) {
-        // Token invalid or expired
         adminLogout();
         return false;
       }
 
       const data = await response.json();
+      const admin = data.admin || data;
 
-      if (data.valid && data.user) {
+      if (admin) {
         setAdminUser({
-          id: data.user.id,
-          userId: data.user.id,
-          role: data.user.role,
+          id: admin.id,
+          userId: admin.id,
+          role: admin.role,
           isAdmin: true,
-          name: data.user.name,
-          email: data.user.email,
+          name: admin.name,
+          email: admin.email,
         });
         return true;
       }

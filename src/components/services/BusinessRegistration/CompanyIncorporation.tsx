@@ -1,18 +1,23 @@
 import { Building2, CheckCircle, FileText, Clock, ArrowRight, Users, Shield, TrendingUp, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
+import { PlanSelectionModal } from '../PlanSelectionModal';
+import { useState } from 'react';
 
 export function CompanyIncorporation() {
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
+  const [showPlanModal, setShowPlanModal] = useState(false);
+  const [selectedService, setSelectedService] = useState('');
 
   const handleStartRegistration = (companyType: string) => {
     if (isAuthenticated) {
-      // If logged in, go to dashboard with service selection
-      navigate('/dashboard', { state: { selectedService: 'Company Incorporation', companyType } });
+      // Open plan selection modal
+      setSelectedService(companyType);
+      setShowPlanModal(true);
     } else {
       // If not logged in, redirect to login page
-      navigate('/login', { state: { returnTo: '/dashboard', selectedService: 'Company Incorporation', companyType } });
+      navigate('/login', { state: { returnTo: '/services/company-incorporation', selectedService: companyType } });
     }
   };
   const companyTypes = [
@@ -396,6 +401,13 @@ export function CompanyIncorporation() {
           </button>
         </div>
       </section>
+
+      {/* Plan Selection Modal */}
+      <PlanSelectionModal
+        isOpen={showPlanModal}
+        onClose={() => setShowPlanModal(false)}
+        serviceName={selectedService}
+      />
     </div>
   );
 }

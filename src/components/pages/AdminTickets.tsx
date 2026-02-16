@@ -36,16 +36,19 @@ export const AdminTickets: React.FC = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('adminToken');
+
+            const headers: HeadersInit = {};
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tickets`, {
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                }
+                headers,
+                credentials: 'include'
             });
 
             if (!response.ok) throw new Error('Failed to fetch tickets');
 
             const data = await response.json();
-            setTickets(data);
+            setTickets(data.tickets || []);
         } catch (error) {
             console.error('Error:', error);
             toast.error('Failed to load tickets');
@@ -61,12 +64,15 @@ export const AdminTickets: React.FC = () => {
             setSubmittingReply(true);
             const token = localStorage.getItem('adminToken');
 
+            const headers: HeadersInit = {
+                'Content-Type': 'application/json'
+            };
+            if (token) headers['Authorization'] = `Bearer ${token}`;
+
             const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/tickets/${selectedTicket.id}`, {
                 method: 'PUT',
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json'
-                },
+                headers,
+                credentials: 'include',
                 body: JSON.stringify({
                     adminReply: replyText,
                     status: replyStatus

@@ -1,16 +1,26 @@
-import { Building2, CheckCircle, FileText, Clock, ArrowRight, TrendingUp, AlertCircle, ShoppingBag, Globe, Shield, Users } from 'lucide-react';
+import { Building2, CheckCircle, FileText, Clock, ArrowRight, TrendingUp, AlertCircle, ShoppingBag, Globe, Shield, Users, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
+import { useState } from 'react';
+import { ServicePricing } from '../ServicePricing';
 
 export function PrivateLimitedCompany() {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
 
-    const handleStartRegistration = () => {
+    // Service fetch logic moved to ServicePricing component
+
+    const handleStartRegistration = (planName?: string, price?: number) => {
+        const state = {
+            selectedService: 'Private Limited Company',
+            plan: planName, // Pass plan details if available
+            price: price
+        };
+
         if (isAuthenticated) {
-            navigate('/dashboard', { state: { selectedService: 'Private Limited Company' } });
+            navigate('/dashboard', { state });
         } else {
-            navigate('/login', { state: { returnTo: '/dashboard', selectedService: 'Private Limited Company' } });
+            navigate('/login', { state: { returnTo: '/dashboard', ...state } });
         }
     };
 
@@ -435,62 +445,68 @@ export function PrivateLimitedCompany() {
             </section>
 
             {/* Pricing Section */}
-            <section className="py-20">
-                <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-neutral-200">
-                        <div className="grid md:grid-cols-2">
-                            {/* Left Side - The Offer (White) */}
-                            <div className="p-8 md:p-12 bg-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-neutral-100">
-                                <h3 className="text-2xl font-bold text-gray-900 mb-6">Complete Pvt Ltd Setup</h3>
-                                <div className="space-y-4">
-                                    {[
-                                        'Name Approval (RUN)',
-                                        'DSC (2 Directors)',
-                                        'MOA & AOA Drafting',
-                                        'Incorporation Certificate',
-                                        'PAN & TAN Allotment',
-                                        'Bank Account Opening'
-                                    ].map((item, i) => (
-                                        <div key={i} className="flex items-center gap-3">
-                                            <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
-                                                <CheckCircle className="w-4 h-4 text-primary" />
-                                            </div>
-                                            <span className="text-gray-600 font-medium">{item}</span>
+            <section className="py-20 bg-gray-50">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <ServicePricing
+                        serviceSlug="private-limited-company"
+                        serviceName="Private Limited Company"
+                        fallbackContent={
+                            <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-neutral-200">
+                                <div className="grid md:grid-cols-2">
+                                    {/* Left Side - The Offer (White) */}
+                                    <div className="p-8 md:p-12 bg-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-neutral-100">
+                                        <h3 className="text-2xl font-bold text-gray-900 mb-6">Complete Pvt Ltd Setup</h3>
+                                        <div className="space-y-4">
+                                            {[
+                                                'Name Approval (RUN)',
+                                                'DSC (2 Directors)',
+                                                'MOA & AOA Drafting',
+                                                'Incorporation Certificate',
+                                                'PAN & TAN Allotment',
+                                                'Bank Account Opening'
+                                            ].map((item, i) => (
+                                                <div key={i} className="flex items-center gap-3">
+                                                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center">
+                                                        <CheckCircle className="w-4 h-4 text-primary" />
+                                                    </div>
+                                                    <span className="text-gray-600 font-medium">{item}</span>
+                                                </div>
+                                            ))}
                                         </div>
-                                    ))}
-                                </div>
-                                <div className="mt-8 pt-8 border-t border-neutral-100">
-                                    <div className="flex items-center gap-3 text-sm text-gray-500">
-                                        <Clock className="w-4 h-4" />
-                                        <span>Delivered in 7-14 business days</span>
+                                        <div className="mt-8 pt-8 border-t border-neutral-100">
+                                            <div className="flex items-center gap-3 text-sm text-gray-500">
+                                                <Clock className="w-4 h-4" />
+                                                <span>Delivered in 7-14 business days</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Right Side - The Price (Dark) */}
+                                    <div className="p-8 md:p-12 bg-primary text-white flex flex-col justify-center items-center text-center relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                                        <div className="relative z-10">
+                                            <span className="inline-block px-4 py-1.5 bg-white/10 rounded-full text-xs font-semibold tracking-wider uppercase mb-6 border border-white/20">
+                                                Most Popular
+                                            </span>
+                                            <div className="flex items-center justify-center gap-1 mb-2">
+                                                <span className="text-6xl font-bold tracking-tight">₹14,999</span>
+                                            </div>
+                                            <p className="text-blue-100 mb-8">All inclusive (upto 1L Capital)</p>
+
+                                            <button
+                                                onClick={() => handleStartRegistration()}
+                                                className="w-full bg-white text-primary px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2"
+                                            >
+                                                Register Now
+                                                <ArrowRight className="w-5 h-5" />
+                                            </button>
+                                            <p className="mt-4 text-xs text-blue-200">Secure Payment • Expert CA Support</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-
-                            {/* Right Side - The Price (Dark) */}
-                            <div className="p-8 md:p-12 bg-primary text-white flex flex-col justify-center items-center text-center relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-                                <div className="relative z-10">
-                                    <span className="inline-block px-4 py-1.5 bg-white/10 rounded-full text-xs font-semibold tracking-wider uppercase mb-6 border border-white/20">
-                                        Most Popular
-                                    </span>
-                                    <div className="flex items-center justify-center gap-1 mb-2">
-                                        <span className="text-6xl font-bold tracking-tight">₹14,999</span>
-                                    </div>
-                                    <p className="text-blue-100 mb-8">All inclusive (upto 1L Capital)</p>
-
-                                    <button
-                                        onClick={handleStartRegistration}
-                                        className="w-full bg-white text-primary px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1 flex items-center justify-center gap-2"
-                                    >
-                                        Register Now
-                                        <ArrowRight className="w-5 h-5" />
-                                    </button>
-                                    <p className="mt-4 text-xs text-blue-200">Secure Payment • Expert CA Support</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                        }
+                    />
                 </div>
             </section>
 
@@ -528,7 +544,7 @@ export function PrivateLimitedCompany() {
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <button
-                            onClick={handleStartRegistration}
+                            onClick={() => handleStartRegistration()}
                             className="px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center justify-center gap-2">
                             REGISTER COMPANY
                             <ArrowRight className="w-5 h-5" />

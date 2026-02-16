@@ -4,9 +4,12 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import {
   LogOut, Plus, ShoppingCart, FileText, Ticket, Settings, User,
   Upload, CreditCard, CheckCircle, Clock, XCircle, Download, Eye,
-  AlertCircle, TrendingUp, Package, Loader, Map, ChevronRight, MessageSquare, Trash2
+  AlertCircle, TrendingUp, Package, Loader, Map, ChevronRight, MessageSquare, Trash2,
+  Calendar as CalendarIcon, FileBarChart, LayoutDashboard, Menu, X, Shield, Search,
+  Zap, ShieldCheck
 } from 'lucide-react';
-
+import { DayPicker } from 'react-day-picker';
+import 'react-day-picker/dist/style.css';
 
 // API Configuration
 const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
@@ -29,11 +32,14 @@ interface Service {
 
 interface UserService {
   id: number;
+  orderId: number;
   userId: number;
   serviceId: number;
   status: string;
   createdAt: string;
   service: Service;
+  documents?: Document[];
+  price?: number;
 }
 
 interface Document {
@@ -44,6 +50,14 @@ interface Document {
   url: string;
   userServiceId?: number;
   userService?: UserService;
+  order?: {
+    id: number;
+    items: {
+      serviceName: string;
+      planType: string;
+      price: number;
+    }[];
+  };
 }
 
 interface DashboardStats {
@@ -79,62 +93,80 @@ export const Dashboard: React.FC = () => {
   const [services, setServices] = useState<Service[]>([]);
   const [userServices, setUserServices] = useState<UserService[]>([]);
   const [documents, setDocuments] = useState<Document[]>([]);
-  const [tickets, setTickets] = useState<SupportTicket[]>([]); // Added tickets state
+  const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [stats, setStats] = useState<DashboardStats>({ total: 0, active: 0, pending: 0, completed: 0 });
 
   // UI State
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'services' | 'documents' | 'tickets'>('dashboard');
-  const [selectedService, setSelectedService] = useState<Service | null>(null);
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'services' | 'documents' | 'reports' | 'calendar' | 'tickets' | 'billing'>('dashboard');
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [showProfileMenu, setShowProfileMenu] = useState(false);
+  const [reportsSearchQuery, setReportsSearchQuery] = useState('');
+  const [reportsCategoryFilter, setReportsCategoryFilter] = useState('all');
+  const [globalSearchQuery, setGlobalSearchQuery] = useState('');
+  const [showSearchResults, setShowSearchResults] = useState(false);
+
+  // Modals & Forms State
+  const [selectedService, setSelectedService] = useState<Service | any>(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showRoadmapModal, setShowRoadmapModal] = useState(false);
-  const [showTicketModal, setShowTicketModal] = useState(false); // Added ticket modal state
+  const [showTicketModal, setShowTicketModal] = useState(false);
   const [viewingRoadmapService, setViewingRoadmapService] = useState<UserService | null>(null);
   const [uploadingFile, setUploadingFile] = useState(false);
-  const [uploadServiceId, setUploadServiceId] = useState<string>(''); // For manual upload selection
-  const [newTicket, setNewTicket] = useState({ subject: '', message: '' }); // Added new ticket form state
+  const [uploadServiceId, setUploadServiceId] = useState<string>('');
+  const [newTicket, setNewTicket] = useState({ subject: '', message: '' });
   const [error, setError] = useState<string | null>(null);
+
+  // Calendar State
+  const [date, setDate] = useState<Date | undefined>(new Date());
+
+  // Plan Selection State
+  const [showPlanModal, setShowPlanModal] = useState(false);
+  const [selectedServiceForPlan, setSelectedServiceForPlan] = useState<Service | null>(null);
+  const [availablePlans, setAvailablePlans] = useState<any[]>([]);
+  const [loadingPlans, setLoadingPlans] = useState(false);
 
   // Payment State
   const [availablePaymentMethods, setAvailablePaymentMethods] = useState<any>({});
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('razorpay');
+  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>('manual_qr');
+  const [paymentProofFile, setPaymentProofFile] = useState<File | null>(null);
+
 
   useEffect(() => {
     if (!user) {
-      navigate('/login');
+      if (location.pathname !== '/login') navigate('/login');
       return;
     }
 
-    if (location.state?.selectedServiceSlug) {
-      handlePurchaseBySlug(location.state.selectedServiceSlug);
-      // Clear state so it doesn't re-trigger on refresh
-      window.history.replaceState({}, document.title);
-    } else if (location.state?.selectedService && services.length > 0) {
-      // Legacy fallback (string match)
-      const initialService = services.find(s => s.name.includes(location.state.selectedService));
-      if (initialService) {
-        handlePurchaseService(initialService);
+    const hasState = location.state?.selectedServiceSlug || location.state?.selectedService;
+
+    if (services.length > 0 && hasState) {
+      if (location.state?.selectedServiceSlug) {
+        handlePurchaseBySlug(location.state.selectedServiceSlug, location.state.selectedPlan);
+        navigate(location.pathname, { replace: true, state: {} });
+      } else if (location.state?.selectedService) {
+        const initialService = services.find(s => s.name.includes(location.state.selectedService));
+        if (initialService) {
+          handlePurchaseService(initialService);
+          navigate(location.pathname, { replace: true, state: {} });
+        }
+        setActiveTab('services');
       }
-      setActiveTab('services');
     }
 
-    fetchData();
-  }, [user, navigate]);
-
+    if (services.length === 0) {
+      fetchData();
+    }
+  }, [user, navigate, services, location.state]);
 
   const getAuthHeader = (includeIdempotencyKey = false) => {
-    const token = localStorage.getItem('authToken');
     const headers: any = {
-      'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json'
     };
-
-    // Add idempotency key for payment operations
     if (includeIdempotencyKey) {
       headers['X-Idempotency-Key'] = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     }
-
     return headers;
   };
 
@@ -145,35 +177,31 @@ export const Dashboard: React.FC = () => {
       const headers = getAuthHeader();
 
       const [servicesRes, userServicesRes, docsRes, statsRes, ticketsRes, methodsRes] = await Promise.all([
-        fetch(`${API_URL}/services/categories`, { headers }), // Fetch nested categories
-        fetch(`${API_URL}/services/my-services`, { headers }),
-        fetch(`${API_URL}/documents/my-documents`, { headers }),
-        fetch(`${API_URL}/dashboard/user`, { headers }),
-        fetch(`${API_URL}/tickets/my-tickets`, { headers }),
-        fetch(`${API_URL}/payments/methods`, { headers })
+        fetch(`${API_URL}/services/categories`, { headers, credentials: 'include' }),
+        fetch(`${API_URL}/services/my-services`, { headers, credentials: 'include' }),
+        fetch(`${API_URL}/documents/my-documents`, { headers, credentials: 'include' }),
+        fetch(`${API_URL}/dashboard/user`, { headers, credentials: 'include' }),
+        fetch(`${API_URL}/tickets/my-tickets`, { headers, credentials: 'include' }),
+        fetch(`${API_URL}/payments/methods`, { headers, credentials: 'include' })
       ]);
 
       if (servicesRes.ok) {
         const data = await servicesRes.json();
         const categoriesData = data.categories || [];
         setCategories(categoriesData);
-        // Flatten categories to get all services
         const allServices: Service[] = [];
         if (Array.isArray(categoriesData)) {
           categoriesData.forEach((cat: any) => {
             if (cat.services && Array.isArray(cat.services)) {
               cat.services.forEach((svc: any) => {
-                // Determine price: Plan price > Service base price > 0
                 let displayPrice = 0;
                 let defaultPlanId = undefined;
-
                 if (svc.plans && svc.plans.length > 0) {
                   displayPrice = svc.plans[0].price;
                   defaultPlanId = svc.plans[0].id;
                 } else if (svc.price !== undefined && svc.price !== null) {
                   displayPrice = Number(svc.price);
                 }
-
                 allServices.push({
                   id: svc.id,
                   name: svc.name,
@@ -189,16 +217,21 @@ export const Dashboard: React.FC = () => {
       }
 
       if (userServicesRes.ok) setUserServices(await userServicesRes.json());
-      if (docsRes.ok) setDocuments(await docsRes.json());
+      if (docsRes.ok) {
+        const docsData = await docsRes.json();
+        setDocuments(docsData.documents || []);
+      }
       if (statsRes.ok) {
         const statsData = await statsRes.json();
-        setStats(statsData.stats);
+        setStats(statsData.stats || { total: 0, active: 0, pending: 0, completed: 0 });
       }
-      if (ticketsRes.ok) setTickets(await ticketsRes.json());
+      if (ticketsRes.ok) {
+        const ticketsData = await ticketsRes.json();
+        setTickets(ticketsData.tickets || []);
+      }
       if (methodsRes.ok) {
         const methods = await methodsRes.json();
         setAvailablePaymentMethods(methods);
-        // Default to first active method
         if (methods.razorpay) setSelectedPaymentMethod('razorpay');
         else if (methods.stripe) setSelectedPaymentMethod('stripe');
       }
@@ -226,25 +259,56 @@ export const Dashboard: React.FC = () => {
     setShowRoadmapModal(true);
   };
 
-  const handlePurchaseBySlug = async (slug: string) => {
+  const handlePurchaseBySlug = async (slug: string, selectedPlan?: any) => {
     setLoading(true);
     try {
       const headers = getAuthHeader();
+      let body: any = { serviceSlug: slug };
+
+      if (selectedPlan && selectedPlan.id && selectedPlan.serviceId) {
+        body = {
+          serviceId: selectedPlan.serviceId,
+          planId: selectedPlan.id,
+          price: selectedPlan.price
+        };
+      } else if (selectedPlan && selectedPlan.name) {
+        try {
+          const serviceRes = await fetch(`${API_URL}/services/slug/${slug}`);
+          const serviceData = await serviceRes.json();
+          if (serviceData.service) {
+            const matchingPlan = serviceData.service.plans.find((p: any) =>
+              (p.planType && p.planType.toLowerCase() === selectedPlan.name.toLowerCase()) ||
+              (p.name && p.name.toLowerCase() === selectedPlan.name.toLowerCase())
+            );
+            if (matchingPlan) {
+              body = {
+                serviceId: serviceData.service.id,
+                planId: matchingPlan.id,
+                price: matchingPlan.discountedPrice || matchingPlan.price
+              };
+            }
+          }
+        } catch (e) {
+          console.warn("Failed to resolve plan ID from slug", e);
+        }
+      }
+
       const res = await fetch(`${API_URL}/services/select`, {
         method: 'POST',
         headers,
-        body: JSON.stringify({ serviceSlug: slug })
+        body: JSON.stringify(body),
+        credentials: 'include'
       });
 
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || 'Failed to select service');
+        if (res.status !== 400) {
+          throw new Error(err.error || 'Failed to select service');
+        }
       }
 
-      // Refresh data to show the new pending service
       await fetchData();
       setActiveTab('dashboard');
-
     } catch (err: any) {
       console.error('Auto-select error:', err);
       setError(err.message || 'Failed to select service automatically');
@@ -260,7 +324,8 @@ export const Dashboard: React.FC = () => {
       const headers = getAuthHeader();
       const res = await fetch(`${API_URL}/services/my-services/${userServiceId}`, {
         method: 'DELETE',
-        headers
+        headers,
+        credentials: 'include'
       });
       if (!res.ok) {
         const errorData = await res.json();
@@ -275,142 +340,98 @@ export const Dashboard: React.FC = () => {
     }
   };
 
+  const handleChoosePlan = async (service: Service) => {
+    setSelectedServiceForPlan(service);
+    setShowPlanModal(true);
+    setLoadingPlans(true);
 
+    try {
+      const response = await fetch(`${API_URL}/services/${service.id}/plans`, { credentials: 'include' });
+      const data = await response.json();
+      setAvailablePlans(data.plans || []);
+    } catch (error) {
+      console.error('Failed to load plans:', error);
+      alert('Failed to load plans. Please try again.');
+    } finally {
+      setLoadingPlans(false);
+    }
+  };
+
+  const handleSelectPlan = async (plan: any) => {
+    if (!selectedServiceForPlan) return;
+    setActionLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/services/select`, {
+        method: 'POST',
+        headers: getAuthHeader(),
+        body: JSON.stringify({
+          serviceId: selectedServiceForPlan.id,
+          planId: plan.id
+        }),
+        credentials: 'include'
+      });
+
+      if (!response.ok) throw new Error('Failed to select plan');
+      const data = await response.json();
+      alert(`${plan.planType} plan selected! Please upload required documents.`);
+      setShowPlanModal(false);
+      setActiveTab('dashboard');
+      await fetchData();
+    } catch (error: any) {
+      alert(error.message || 'Failed to select plan');
+    } finally {
+      setActionLoading(false);
+    }
+  };
 
   const handlePayment = async () => {
     if (!selectedService) return;
     setActionLoading(true);
 
     try {
-      const headers = getAuthHeader();
-
-      const payload: any = {};
-
-      // Smart fallback: If defaultPlanId is available, use it. 
-      // If NOT (e.g. simple service with base price), we still need to select the service.
-      if (selectedService.defaultPlanId) {
-        payload.planId = selectedService.defaultPlanId;
-      } else {
-        // Fallback: This service might not have plans, but we can't 'select' it without a plan if the backend requires one.
-        // Assuming the backend 'select' endpoint handles standard service selection via body if planId is missing but service is known context.
-        // However, based on API context, we usually select by Plan. 
-        // If no plan, we might need to rely on the backend creating a default one or handling it.
-        // For now, if "Select" fails because of no plan, we instruct user.
-        if (selectedService.price > 0 && !selectedService.defaultPlanId) {
-          // This is a direct priced service without plans
-          // HACK: In some systems, we pass serviceId directly? 
-          // Let's assumme we pass a query param or body param if supported.
-          console.warn("Service has price but no plan ID");
-        }
-      }
-
-      // 1. Create Order directly
-      const orderRes = await fetch(`${API_URL}/payments/create-order`, {
-        method: 'POST',
-        headers: getAuthHeader(true),
-        body: JSON.stringify({
-          serviceId: selectedService.id,
-          amount: selectedService.price, // Backend should verify this, but passing for now
-          provider: selectedPaymentMethod
-        })
-      });
-
-      if (!orderRes.ok) throw new Error('Failed to initiate payment');
-      const orderData = await orderRes.json();
-
-      // Check for Mock Mode
-      if (orderData.id && orderData.id.startsWith('order_mock_')) {
-        const verifyRes = await fetch(`${API_URL}/payments/verify`, {
+      let orderId = (selectedService as any).orderId;
+      if (!orderId) {
+        const orderRes = await fetch(`${API_URL}/payments/create-order`, {
           method: 'POST',
           headers: getAuthHeader(true),
           body: JSON.stringify({
-            paymentId: 'pay_mock_' + Date.now(),
-            orderId: orderData.id,
-            signature: 'mock_signature',
-            provider: 'razorpay'
-          })
+            serviceId: selectedService.id,
+            amount: selectedService.price,
+            provider: 'manual'
+          }),
+          credentials: 'include'
         });
-
-        if (!verifyRes.ok) throw new Error('Mock Payment verification failed');
-
-        setShowPaymentModal(false);
-        alert('Mock Payment successful! Service is now active.');
-        await fetchData();
-        setActiveTab('dashboard');
-        setActionLoading(false);
-        return;
+        if (!orderRes.ok) throw new Error("Failed to init order");
+        const orderData = await orderRes.json();
+        orderId = orderData.id_db || orderData.id;
       }
 
-      // Handle Razorpay
-      if (selectedPaymentMethod === 'razorpay') {
-        const options = {
-          key: orderData.key || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_S8VGOfGXpXIMJV',
-          amount: orderData.amount,
-          currency: orderData.currency,
-          name: 'Professional CA Services',
-          description: selectedService.name,
-          order_id: orderData.id,
-          handler: async function (response: any) {
-            try {
-              const verifyRes = await fetch(`${API_URL}/payments/verify`, {
-                method: 'POST',
-                headers: getAuthHeader(true),
-                body: JSON.stringify({
-                  paymentId: response.razorpay_payment_id,
-                  orderId: response.razorpay_order_id,
-                  signature: response.razorpay_signature,
-                  userServiceId: userService.id,
-                  provider: 'razorpay'
-                })
-              });
-
-              if (!verifyRes.ok) throw new Error('Payment verification failed');
-
-              setShowPaymentModal(false);
-              alert('Payment successful! Your service is now active.');
-              await fetchData();
-              setActiveTab('dashboard');
-            } catch (verifyErr: any) {
-              console.error(verifyErr);
-              alert('Payment succeeded but verification failed. Please contact support.');
-            }
-          },
-          prefill: {
-            name: user?.name,
-            email: user?.email,
-            contact: user?.phone
-          },
-          theme: {
-            color: "#3399cc"
-          },
-          modal: {
-            ondismiss: function () {
-              setShowPaymentModal(false);
-              setActionLoading(false);
-            }
-          }
-        };
-
-        const rzp1 = new (window as any).Razorpay(options);
-        rzp1.on('payment.failed', function (response: any) {
-          alert(response.error.description);
-          setActionLoading(false);
-        });
-        rzp1.open();
-      }
-      // Handle Stripe (Placeholder)
-      else if (selectedPaymentMethod === 'stripe') {
-        alert("Stripe integration is coming soon!");
-        setActionLoading(false);
+      const formData = new FormData();
+      if (!orderId) throw new Error("Order ID missing. Please refresh and try again.");
+      formData.append('orderId', orderId);
+      formData.append('method', selectedPaymentMethod === 'manual_qr' ? 'MANUAL_QR' : 'PAY_LATER');
+      if (paymentProofFile) {
+        formData.append('file', paymentProofFile);
       }
 
+      const res = await fetch(`${API_URL}/payments/manual-payment`, {
+        method: 'POST',
+        body: formData,
+        credentials: 'include'
+      });
+
+      if (!res.ok) throw new Error('Failed to submit detailed payment');
+
+      alert(selectedPaymentMethod === 'pay_later' ? 'Order placed! You can pay later.' : 'Payment proof submitted for verification!');
+      setShowPaymentModal(false);
+      await fetchData();
     } catch (err: any) {
       console.error(err);
       alert(err.message || 'Payment process failed');
+    } finally {
       setActionLoading(false);
     }
   };
-
 
   const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>, userServiceId: number) => {
     const file = event.target.files?.[0];
@@ -425,16 +446,13 @@ export const Dashboard: React.FC = () => {
 
     try {
       const formData = new FormData();
-      formData.append('file', file);
-      formData.append('userServiceId', userServiceId.toString());
+      formData.append('document', file);
+      formData.append('orderId', userServiceId.toString());
 
-      const token = localStorage.getItem('authToken');
       const response = await fetch(`${API_URL}/documents/upload`, {
         method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-        },
-        body: formData
+        body: formData,
+        credentials: 'include'
       });
 
       if (!response.ok) {
@@ -444,7 +462,6 @@ export const Dashboard: React.FC = () => {
 
       alert('Document uploaded successfully!');
       fetchData();
-
     } catch (err: any) {
       console.error(err);
       alert(err.message || 'Failed to upload document');
@@ -455,822 +472,1315 @@ export const Dashboard: React.FC = () => {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'ACTIVE': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'COMPLETED': return 'bg-green-100 text-green-800 border-green-200';
-      case 'PENDING_PAYMENT': return 'bg-yellow-100 text-yellow-800 border-yellow-200';
-      case 'CANCELLED': return 'bg-red-100 text-red-800 border-red-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
+      case 'ACTIVE': return 'bg-emerald-50 text-emerald-600 border-emerald-100';
+      case 'COMPLETED': return 'bg-blue-50 text-blue-600 border-blue-100';
+      case 'PENDING_PAYMENT': return 'bg-amber-50 text-amber-600 border-amber-100';
+      case 'PENDING_VERIFICATION': return 'bg-violet-50 text-violet-600 border-violet-100';
+      case 'NEED_DOCUMENTS': return 'bg-[#ee7228]/10 text-[#ee7228] border-[#ee7228]/20';
+      case 'CANCELLED': return 'bg-red-50 text-red-600 border-red-100';
+      default: return 'bg-gray-50 text-gray-600 border-gray-100';
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'ACTIVE': return <Clock className="w-4 h-4" />;
-      case 'COMPLETED': return <CheckCircle className="w-4 h-4" />;
-      case 'PENDING_PAYMENT': return <AlertCircle className="w-4 h-4" />;
-      case 'CANCELLED': return <XCircle className="w-4 h-4" />;
-      default: return <Package className="w-4 h-4" />;
+      case 'ACTIVE':
+      case 'COMPLETED': return <CheckCircle className="w-3.5 h-3.5" />;
+      case 'PENDING_VERIFICATION': return <Clock className="w-3.5 h-3.5" />;
+      case 'NEED_DOCUMENTS': return <Upload className="w-3.5 h-3.5" />;
+      case 'PENDING_PAYMENT': return <AlertCircle className="w-3.5 h-3.5" />;
+      case 'CANCELLED': return <XCircle className="w-3.5 h-3.5" />;
+      default: return <Package className="w-3.5 h-3.5" />;
     }
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center font-outfit">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading your dashboard...</p>
+          <div className="relative w-24 h-24 mx-auto mb-8">
+            <div className="absolute inset-0 border-4 border-[#136da1]/10 rounded-full"></div>
+            <div className="absolute inset-0 border-4 border-[#136da1] border-t-transparent rounded-full animate-spin"></div>
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Shield className="w-8 h-8 text-[#136da1] animate-pulse" />
+            </div>
+          </div>
+          <h2 className="text-xl font-black text-gray-900 mb-2 tracking-tight">Accessing CA Workspace</h2>
+          <p className="text-gray-400 font-bold uppercase text-[10px] tracking-[0.2em]">Secure Connection • Encrypted</p>
         </div>
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-gray-100">
-      <header className="bg-white shadow-md border-b border-gray-200 sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-primary text-white rounded-full flex items-center justify-center font-bold text-xl shadow-lg">
-                {user?.name?.charAt(0) || 'U'}
-              </div>
-              <div>
-                <h1 className="text-2xl font-bold text-gray-900">
-                  Welcome, {user?.name}!
-                </h1>
-                <p className="text-gray-500 text-sm">{user?.email}</p>
-              </div>
-            </div>
+  // Derived Data for Views
+  const reportDocuments = documents.filter(doc =>
+    doc.fileName.toLowerCase().includes('report') ||
+    doc.fileName.toLowerCase().includes('final')
+  );
 
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => navigate(`/dashboard/users/profile/${user?.name || 'user'}`)}
-                className="p-2 text-gray-500 hover:bg-gray-100 rounded-lg transition" title="Profile">
-                <User className="w-5 h-5" />
-              </button>
-              <div className="h-8 w-px bg-gray-300 mx-1"></div>
-              <button
-                onClick={handleLogout}
-                className="px-4 py-2 bg-red-50 text-red-600 border border-red-200 rounded-lg hover:bg-red-100 transition flex items-center gap-2 font-medium"
-              >
-                <LogOut className="w-4 h-4" />
-                Logout
-              </button>
+  const NavItem = ({ id, label, icon: Icon }: { id: typeof activeTab, label: string, icon: any }) => (
+    <button
+      onClick={() => { setActiveTab(id); setMobileMenuOpen(false); }}
+      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 font-bold mb-1 group
+        ${activeTab === id
+          ? 'bg-white text-black shadow-sm border border-gray-100'
+          : 'text-gray-900 hover:text-black hover:bg-gray-50'
+        }`}
+    >
+      <div className={`p-1.5 rounded-lg transition-colors ${activeTab === id ? 'bg-primary text-black' : 'bg-gray-100 text-gray-400 group-hover:bg-[#E2E8F0] group-hover:text-primary'}`}>
+        <Icon className="w-4 h-4" />
+      </div>
+      <span className="text-sm">{label}</span>
+      {activeTab === id && (
+        <div className="w-1 h-4 bg-primary rounded-full ml-auto shadow-[0_0_8px_rgba(19,109,161,0.5)]"></div>
+      )}
+    </button>
+  );
+
+  return (
+    <div className="min-h-screen bg-[#F1F5F9] flex font-outfit overflow-hidden">
+      {/* Sidebar - Desktop (Persistent) */}
+      <aside className="hidden lg:flex w-72 bg-white border-r border-gray-200 flex-col shrink-0 h-screen overflow-hidden">
+        <div className="h-20 flex items-center px-8 bg-white border-b border-gray-100 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-to-tr from-[#136da1] to-[#0b1f3a] rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/10">
+              <Shield className="w-4 h-4 text-black" />
+            </div>
+            <div>
+              <span className="text-black font-black text-sm tracking-tight block leading-none mb-0.5">CA PORTAL</span>
+              <span className="text-gray-400 text-[8px] font-black uppercase tracking-[0.1em]">Premium Workspace</span>
             </div>
           </div>
         </div>
-      </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <nav className="flex-1 p-6 overflow-y-auto custom-scrollbar">
+          <div className="space-y-8">
+            <div>
+              <p className="px-4 text-[10px] font-black text-black/40 uppercase tracking-[0.2em] mb-4">Core Panel</p>
+              <NavItem id="dashboard" label="Overview" icon={LayoutDashboard} />
+              <NavItem id="billing" label="Billing & Services" icon={CreditCard} />
+              <NavItem id="calendar" label="Compliance" icon={CalendarIcon} />
+            </div>
 
-        {error && (
-          <div className="mb-6 bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg flex items-center gap-2">
-            <AlertCircle className="w-5 h-5" />
-            {error}
-            <button onClick={fetchData} className="ml-auto text-sm font-semibold underline hover:text-red-800">Retry</button>
+            <div>
+              <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Resources</p>
+              <NavItem id="services" label="Browse Services" icon={Package} />
+              <NavItem id="documents" label="Documents" icon={FileText} />
+              <NavItem id="reports" label="Shared Reports" icon={FileBarChart} />
+            </div>
+
+            <div>
+              <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Assistance</p>
+              <NavItem id="tickets" label="Ask an Expert" icon={MessageSquare} />
+            </div>
           </div>
-        )}
+        </nav>
 
-        <div className="bg-white rounded-xl shadow-lg mb-8 overflow-hidden border border-gray-200 sticky top-24 z-20">
-          <div className="flex border-b border-gray-200 overflow-x-auto">
-            {[
-              { id: 'dashboard', label: 'Dashboard', icon: TrendingUp },
-              { id: 'services', label: 'Browse Services', icon: ShoppingCart },
-              { id: 'documents', label: 'Documents', icon: FileText },
-              { id: 'tickets', label: 'Support', icon: Ticket },
-            ].map((tab) => (
+        <div className="p-6 border-t border-gray-100 bg-white shrink-0">
+          <div className="bg-gray-50 rounded-2xl p-4 mb-4 border border-gray-200 hover:border-primary/30 transition-all group cursor-pointer" onClick={() => navigate(`/dashboard/users/profile/${user?.name?.replace(/\s+/g, '-').toLowerCase() || 'user'}`)}>
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white border border-gray-200 rounded-xl flex items-center justify-center font-black text-black shadow-sm group-hover:text-black group-hover:bg-primary transition-all">
+                {user?.name?.charAt(0) || 'U'}
+              </div>
+              <div className="overflow-hidden">
+                <p className="text-black font-black text-xs truncate">{user?.name}</p>
+                <p className="text-gray-500 text-[10px] font-bold truncate">Premium Client</p>
+              </div>
+            </div>
+          </div>
+          <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl w-full transition-all group font-black text-xs uppercase tracking-widest">
+            <LogOut className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+            <span>Secure Exit</span>
+          </button>
+        </div>
+      </aside>
+
+
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+        {/* Top Header */}
+        <header className="bg-white border-b border-gray-100 h-20 md:h-24 px-6 md:px-12 flex items-center justify-between shrink-0 sticky top-0 z-40 transition-all">
+          <div className="flex items-center gap-4 md:gap-6">
+            <button onClick={() => setMobileMenuOpen(true)} className="lg:hidden p-2 bg-white hover:bg-gray-50 rounded-xl transition-colors border border-gray-100 shadow-sm">
+              <Menu className="w-5 h-5 md:w-6 md:h-6 text-[#0b1f3a]" />
+            </button>
+            <div className="flex flex-col">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-1.5 h-1.5 bg-[#ee7228] rounded-full"></div>
+                <span className="text-[10px] font-black text-[#ee7228] uppercase tracking-[0.2em]">Secure Node</span>
+              </div>
+              <h1 className="text-2xl font-black text-[#0b1f3a] tracking-tight capitalize leading-none">
+                {activeTab === 'dashboard' ? 'Overview' : activeTab.replace('-', ' ')}
+              </h1>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 md:gap-8">
+            <div className="hidden md:flex items-center relative px-6 py-3 bg-gray-50 rounded-2xl border border-gray-100 text-gray-400 text-sm gap-4 w-72 lg:w-96 group focus-within:bg-white focus-within:ring-2 focus-within:ring-primary/10 focus-within:border-primary/20 transition-all shadow-inner">
+              <Search className="w-4 h-4 text-gray-400 group-focus-within:text-primary transition-colors" />
+              <input
+                type="text"
+                placeholder="Quick find services or docs..."
+                className="bg-transparent border-none outline-none w-full text-[#0b1f3a] font-bold placeholder:text-gray-400 placeholder:font-medium"
+                value={globalSearchQuery}
+                onChange={(e) => {
+                  setGlobalSearchQuery(e.target.value);
+                  setShowSearchResults(e.target.value.length > 0);
+                }}
+                onFocus={() => globalSearchQuery.length > 0 && setShowSearchResults(true)}
+              />
+
+              {/* Search Results Dropdown */}
+              {showSearchResults && globalSearchQuery && (
+                <>
+                  <div className="fixed inset-0 z-[90]" onClick={() => setShowSearchResults(false)}></div>
+                  <div className="absolute top-[calc(100%+12px)] left-0 right-0 bg-white rounded-2xl shadow-2xl border border-gray-100 py-4 max-h-[400px] overflow-y-auto z-[100] animate-in fade-in slide-in-from-top-2 duration-200">
+                    <div className="px-6 pb-2 mb-2 border-b border-gray-50 flex justify-between items-center">
+                      <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Matched Intelligences</span>
+                      <button onClick={() => setShowSearchResults(false)}><X className="w-3 h-3 text-gray-300 hover:text-gray-600" /></button>
+                    </div>
+
+                    {(() => {
+                      const query = globalSearchQuery.toLowerCase();
+
+                      const filteredServices = services.filter(s =>
+                        s.name.toLowerCase().includes(query) ||
+                        s.description.toLowerCase().includes(query)
+                      );
+
+                      const categoryMatchedServices = categories
+                        .filter(c => c.name.toLowerCase().includes(query))
+                        .flatMap(c => (c.services || []).map(s => ({ ...s, categoryName: c.name })))
+                        .filter(s => !filteredServices.find(fs => fs.id === s.id));
+
+                      const combined = [
+                        ...filteredServices.map(s => ({ ...s, categoryName: categories.find(c => (c.services || []).some(cs => cs.id === s.id))?.name })),
+                        ...categoryMatchedServices
+                      ];
+
+                      if (combined.length === 0) {
+                        return (
+                          <div className="px-6 py-8 text-center">
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">No nodes found matching your query</p>
+                          </div>
+                        );
+                      }
+
+                      return combined.map(service => (
+                        <button
+                          key={service.id}
+                          onClick={() => {
+                            handleChoosePlan(service);
+                            setGlobalSearchQuery('');
+                            setShowSearchResults(false);
+                          }}
+                          className="w-full px-6 py-4 hover:bg-gray-50 text-left transition-colors flex items-center justify-between group"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 group-hover:bg-primary group-hover:text-black transition-colors">
+                              <Package className="w-4 h-4" />
+                            </div>
+                            <div>
+                              <p className="text-sm font-black text-[#0b1f3a]">{service.name}</p>
+                              {service.categoryName && (
+                                <p className="text-[8px] font-black text-primary uppercase tracking-widest mt-0.5">{service.categoryName}</p>
+                              )}
+                            </div>
+                          </div>
+                          <div className="opacity-0 group-hover:opacity-100 transition-opacity">
+                            <ChevronRight className="w-4 h-4 text-primary" />
+                          </div>
+                        </button>
+                      ));
+                    })()}
+                  </div>
+                </>
+              )}
+            </div>
+
+            <div className="relative">
               <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id as any)}
-                className={`flex-1 min-w-[150px] px-6 py-4 font-semibold transition flex items-center justify-center gap-2 whitespace-nowrap ${activeTab === tab.id
-                  ? 'text-primary border-b-3 border-primary bg-blue-50'
-                  : 'text-gray-600 hover:text-primary hover:bg-gray-50'
-                  }`}
+                onClick={() => setShowProfileMenu(!showProfileMenu)}
+                className="flex items-center gap-4 p-1.5 bg-white hover:bg-gray-50 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all pr-4 group"
               >
-                <tab.icon className="w-5 h-5" />
-                {tab.label}
+                <div className="w-11 h-11 bg-gradient-to-br from-[#136da1] to-[#0b1f3a] rounded-[14px] flex items-center justify-center text-black font-black shadow-lg shadow-blue-500/10 group-hover:scale-105 transition-transform">
+                  {user?.name?.charAt(0) || 'U'}
+                </div>
+                <div className="hidden sm:block text-left">
+                  <p className="text-[11px] font-black text-[#0b1f3a] leading-none mb-1 uppercase tracking-wider">{user?.name?.split(' ')[0]}</p>
+                  <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">Active Client</p>
+                </div>
+                <div className="hidden lg:block w-px h-6 bg-gray-100 mx-1"></div>
+                <ChevronRight className={`hidden lg:block w-4 h-4 text-gray-300 transition-transform duration-300 ${showProfileMenu ? 'rotate-90' : ''}`} />
               </button>
-            ))}
+
+              {showProfileMenu && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setShowProfileMenu(false)}></div>
+                  <div className="absolute right-0 mt-3 w-72 bg-white rounded-3xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] border border-gray-100 z-50 py-5 overflow-hidden animate-in fade-in zoom-in-95 duration-200 origin-top-right">
+                    <div className="px-8 py-5 border-b border-gray-50 mb-3 bg-white">
+                      <p className="font-black text-gray-900 truncate tracking-tight">{user?.name}</p>
+                      <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest truncate mt-1">{user?.email}</p>
+                    </div>
+                    <div className="px-3 space-y-1">
+                      <button onClick={() => { navigate(`/dashboard/users/profile/${user?.name?.replace(/\s+/g, '-').toLowerCase() || 'user'}`); setShowProfileMenu(false); }} className="w-full flex items-center gap-4 px-5 py-3.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary rounded-2xl transition-all group font-bold">
+                        <div className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                          <User className="w-4 h-4" />
+                        </div>
+                        <span>Identity Profile</span>
+                      </button>
+                      <button onClick={() => { setShowRoadmapModal(true); setShowProfileMenu(false); }} className="w-full flex items-center gap-4 px-5 py-3.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary rounded-2xl transition-all group font-bold">
+                        <div className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                          <Shield className="w-4 h-4" />
+                        </div>
+                        <span>Security Check</span>
+                      </button>
+                      <button onClick={() => { setActiveTab('tickets'); setShowProfileMenu(false); }} className="w-full flex items-center gap-4 px-5 py-3.5 text-sm text-gray-600 hover:bg-gray-50 hover:text-primary rounded-2xl transition-all group font-bold">
+                        <div className="w-8 h-8 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400 group-hover:bg-primary/10 group-hover:text-primary transition-colors">
+                          <Settings className="w-4 h-4" />
+                        </div>
+                        <span>Preferences</span>
+                      </button>
+                    </div>
+                    <div className="mt-5 pt-3 border-t border-gray-100 px-3">
+                      <button onClick={handleLogout} className="w-full flex items-center gap-4 px-5 py-4 text-sm text-red-500 hover:bg-red-50 rounded-2xl transition-all font-black uppercase tracking-widest text-[10px]">
+                        <LogOut className="w-4 h-4" />
+                        <span>Sign Out Workspace</span>
+                      </button>
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
+        </header>
 
-          <div className="p-8">
+        {/* Scrollable Content Container */}
+        <main className="flex-1 overflow-y-auto p-4 md:p-14 custom-scrollbar bg-[#F1F5F9]/50">
+          <div className="max-w-7xl mx-auto">
+            {error && (
+              <div className="mb-10 bg-red-50 border border-red-100 text-red-700 px-8 py-5 rounded-[2rem] flex items-center gap-4 shadow-xl shadow-red-500/5 animate-in slide-in-from-top-4 duration-500">
+                <div className="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center text-black shrink-0">
+                  <AlertCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="font-black text-sm">Synchronisation Error</p>
+                  <p className="text-xs text-red-500/70 font-medium">{error}</p>
+                </div>
+                <button onClick={fetchData} className="ml-auto px-6 py-2.5 bg-[#0b1f3a] text-black rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg hover:scale-105 transition-all">Retry Link</button>
+              </div>
+            )}
+
+            {/* DASHBOARD VIEW CONTENT */}
             {activeTab === 'dashboard' && (
-              <div className="space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl p-6 text-white shadow-lg transform hover:-translate-y-1 transition-all">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-blue-100 text-sm font-medium">Active Services</p>
-                        <p className="text-4xl font-bold mt-2">{stats.active}</p>
-                      </div>
-                      <div className="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
-                        <ShoppingCart className="w-8 h-8 text-white" />
-                      </div>
-                    </div>
-                  </div>
+              <div className="space-y-8 md:space-y-12 pb-16">
+                {/* Greeting Section */}
+                <div className="relative overflow-hidden rounded-[2rem] bg-white p-6 md:p-16 text-black shadow-xl border border-gray-100">
+                  <div className="absolute top-0 right-0 w-[400px] md:w-[600px] h-[400px] md:h-[600px] bg-primary/5 rounded-full -mr-40 md:-mr-80 -mt-40 md:-mt-80 blur-[130px]"></div>
+                  <div className="absolute bottom-0 left-0 w-64 md:w-96 h-64 md:h-96 bg-orange-500/5 rounded-full -ml-20 md:-ml-40 -mb-20 md:-mb-40 blur-[110px]"></div>
 
-                  <div className="bg-gradient-to-br from-green-500 to-green-600 rounded-xl p-6 text-white shadow-lg transform hover:-translate-y-1 transition-all">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-green-100 text-sm font-medium">Completed</p>
-                        <p className="text-4xl font-bold mt-2">{stats.completed}</p>
+                  <div className="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 md:gap-12 items-center">
+                    <div className="lg:col-span-8 space-y-6 md:space-y-8">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-gray-100 rounded-full text-[9px] font-bold uppercase tracking-widest text-gray-400 shadow-sm">
+                        <span className="relative flex h-1.5 w-1.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                        </span>
+                        Verified Digital Node
                       </div>
-                      <div className="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
-                        <CheckCircle className="w-8 h-8 text-white" />
-                      </div>
+                      <h2 className="text-2xl md:text-6xl font-black tracking-tight leading-[1.2] md:leading-[1.05] text-[#0b1f3a]">
+                        Excellence In <br />
+                        <span className="text-[#136da1]">Accounting Governance</span>
+                      </h2>
+                      <p className="text-gray-500 font-medium max-w-xl text-sm md:text-base leading-relaxed">
+                        Deploy your professional assets, monitor compliance metrics, and collaborate with your elite CA squad through our encrypted decentralized workspace.
+                      </p>
                     </div>
-                  </div>
 
-                  <div className="bg-gradient-to-br from-purple-500 to-purple-600 rounded-xl p-6 text-white shadow-lg transform hover:-translate-y-1 transition-all">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-purple-100 text-sm font-medium">Total Services</p>
-                        <p className="text-4xl font-bold mt-2">{stats.total}</p>
-                      </div>
-                      <div className="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
-                        <Package className="w-8 h-8 text-white" />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-xl p-6 text-white shadow-lg transform hover:-translate-y-1 transition-all">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-orange-100 text-sm font-medium">Documents</p>
-                        <p className="text-4xl font-bold mt-2">{documents.length}</p>
-                      </div>
-                      <div className="p-3 bg-white/20 rounded-lg backdrop-blur-sm">
-                        <FileText className="w-8 h-8 text-white" />
-                      </div>
+                    <div className="lg:col-span-4 flex flex-col sm:flex-row gap-3">
+                      <button onClick={() => setActiveTab('services')} className="flex-1 group p-4 bg-primary text-black rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl shadow-blue-500/10 hover:bg-[#0b1f3a] hover:text-black transition-all flex items-center justify-between overflow-hidden relative">
+                        <span className="relative z-10">Initiate Service</span>
+                        <div className="w-8 h-8 bg-black/10 rounded-lg flex items-center justify-center transition-colors">
+                          <Plus className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                        </div>
+                      </button>
+                      <button onClick={() => setActiveTab('tickets')} className="flex-1 p-4 bg-gray-50 border border-gray-100 text-[#0b1f3a] rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-gray-100 transition-all flex items-center justify-between group">
+                        <span>Direct Support</span>
+                        <div className="w-8 h-8 bg-white rounded-lg flex items-center justify-center shadow-sm group-hover:text-primary transition-colors">
+                          <MessageSquare className="w-4 h-4" />
+                        </div>
+                      </button>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-white rounded-xl border border-gray-200 shadow-md overflow-hidden">
-                  <div className="bg-gradient-to-r from-primary to-secondary p-6">
-                    <h3 className="text-2xl font-bold text-white">Your Services</h3>
-                    <p className="text-white/80 mt-1">Manage and track your CA services</p>
+
+                {/* Stats Cards Section */}
+                <div className="space-y-6">
+                  <div className="flex items-center gap-3">
+                    <div className="w-1 h-6 bg-[#ee7228] rounded-full"></div>
+                    <h3 className="text-lg font-black text-[#0b1f3a] uppercase tracking-wider">Performance Analytics</h3>
                   </div>
 
-                  <div className="p-6">
-                    {userServices.length > 0 ? (
-                      <div className="space-y-4">
-                        {userServices.map((userService) => (
-                          <div
-                            key={userService.id}
-                            className="bg-white rounded-xl p-6 border border-gray-200 hover:shadow-lg transition duration-300 relative group"
-                          >
-                            <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                              <div className="flex-1">
-                                <div className="flex items-center gap-3 mb-2">
-                                  <h4 className="text-lg font-bold text-gray-900 line-clamp-1">
-                                    {userService.service?.name}
-                                  </h4>
-                                  <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(userService.status)}`}>
-                                    {getStatusIcon(userService.status)}
-                                    {userService.status}
-                                  </span>
-                                </div>
-                                <p className="text-gray-600 text-sm mb-3">
-                                  {userService.service?.description}
-                                </p>
-                                <div className="flex items-center gap-4 text-xs text-gray-500">
-                                  <span>ID: #{userService.id}</span>
-                                  <span>Started: {new Date(userService.createdAt).toLocaleDateString()}</span>
-                                </div>
-                              </div>
-
-                              <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto items-center">
-                                {userService.status === 'PENDING_PAYMENT' && (
-                                  <>
-                                    <button
-                                      onClick={() => {
-                                        const originalService = services.find(s => s.id === userService.serviceId);
-                                        if (originalService) handlePurchaseService(originalService);
-                                        else alert("Please contact support to complete this payment manually.");
-                                      }}
-                                      className="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition text-sm font-medium flex items-center justify-center gap-2 shadow-sm"
-                                    >
-                                      <CreditCard className="w-4 h-4" />
-                                      Complete Payment
-                                    </button>
-                                    <button
-                                      onClick={() => handleDeleteService(userService.id)}
-                                      className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition border border-red-200"
-                                      title="Remove Service"
-                                    >
-                                      <Trash2 className="w-4 h-4" />
-                                    </button>
-                                  </>
-                                )}
-
-                                <button
-                                  onClick={() => handleViewRoadmap(userService)}
-                                  className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition text-sm font-medium flex items-center justify-center gap-2 shadow-sm"
-                                >
-                                  <Map className="w-4 h-4" />
-                                  Track Progress
-                                </button>
-
-                                {userService.status === 'ACTIVE' && (
-                                  <label className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition text-sm font-medium flex items-center justify-center gap-2 cursor-pointer shadow-sm hover:shadow-md">
-                                    {uploadingFile ? <Loader className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                                    Upload Docs
-                                    <input
-                                      type="file"
-                                      className="hidden"
-                                      onChange={(e) => handleFileUpload(e, userService.id)}
-                                      accept=".pdf,.jpg,.jpeg,.png"
-                                      disabled={uploadingFile}
-                                    />
-                                  </label>
-                                )}
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    ) : (
-                      <div className="text-center py-16 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
-                        <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <Package className="w-8 h-8 text-primary" />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {[
+                      { label: 'Active Projects', value: stats?.active ?? 0, icon: ShoppingCart, color: 'from-blue-500 to-[#136da1]' },
+                      { label: 'Completed Files', value: stats?.completed ?? 0, icon: CheckCircle, color: 'from-emerald-500 to-emerald-600' },
+                      { label: 'Shared Reports', value: reportDocuments.length, icon: FileBarChart, color: 'from-purple-500 to-purple-600' },
+                      { label: 'Pending Action', value: userServices.filter(s => s?.status === 'NEED_DOCUMENTS').length, icon: Upload, color: 'from-[#ee7228] to-orange-600' },
+                    ].map((stat, i) => (
+                      <div key={i} className="group bg-white rounded-[2rem] p-6 md:p-7 border border-gray-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 flex flex-col items-center text-center">
+                        <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${stat.color} p-4 text-black shadow-lg flex items-center justify-center group-hover:scale-110 transition-transform mb-6`}>
+                          <stat.icon className="w-6 h-6" />
                         </div>
-                        <h4 className="text-lg font-semibold text-gray-900">No services yet</h4>
-                        <p className="text-gray-600 mb-6">Select a service to get started with your CA journey</p>
-                        <button
-                          onClick={() => setActiveTab('services')}
-                          className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition font-medium shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
-                        >
-                          Browse Services
-                        </button>
+                        <div>
+                          <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.2em] mb-2">{stat.label}</p>
+                          <h3 className="text-3xl font-black text-[#0b1f3a] tracking-tighter">{(stat.value ?? 0).toString().padStart(2, '0')}</h3>
+                        </div>
                       </div>
-                    )}
+                    ))}
+                  </div>
+                </div>
+
+                {/* Recent Activity List */}
+                <div className="space-y-8">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-1 h-6 bg-[#136da1] rounded-full"></div>
+                      <h3 className="text-lg font-black text-[#0b1f3a] uppercase tracking-wider">Recent Activity</h3>
+                    </div>
+                    <button onClick={() => setActiveTab('billing')} className="px-6 py-2.5 bg-white border border-gray-200 text-[#0b1f3a] rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-50 transition-all shadow-sm">Detailed Ledger</button>
+                  </div>
+
+                  {userServices.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {userServices.slice(0, 6).map(svc => (
+                        <div key={svc.id} className="bg-white rounded-[2.5rem] border border-gray-100 p-8 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col group h-full">
+                          <div className="flex justify-between items-start mb-6">
+                            <div className={`px-4 py-1.5 rounded-full text-[9px] font-black border ${getStatusColor(svc.status)} uppercase tracking-widest`}>
+                              {svc.status.replace('_', ' ')}
+                            </div>
+                            <span className="text-[10px] font-bold text-gray-400">{new Date(svc.createdAt).toLocaleDateString()}</span>
+                          </div>
+
+                          <h4 className="text-lg font-black text-[#0b1f3a] mb-3 tracking-tight group-hover:text-primary transition-colors">{svc.service?.name}</h4>
+                          <p className="text-sm text-gray-400 font-medium mb-8 leading-relaxed line-clamp-2">{svc.service?.description}</p>
+
+                          <div className="mt-auto pt-6 border-t border-gray-50 flex gap-3">
+                            {svc.status === 'NEED_DOCUMENTS' && (
+                              <label className="flex-1 text-center py-4 bg-primary text-black rounded-2xl text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-[#0b1f3a] hover:text-black transition-all shadow-lg shadow-blue-500/10 active:scale-95">
+                                Upload File
+                                <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, svc.orderId)} accept=".pdf,.png,.jpg" />
+                              </label>
+                            )}
+                            {svc.status === 'PENDING_PAYMENT' && (
+                              <button
+                                onClick={() => { setSelectedService({ ...svc.service, orderId: svc.orderId, price: svc.price }); setShowPaymentModal(true); }}
+                                className="flex-1 py-4 bg-[#ee7228] text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#0b1f3a] hover:text-black transition-all shadow-lg shadow-orange-500/20 active:scale-95">
+                                Pay Dues
+                              </button>
+                            )}
+                            <button
+                              onClick={() => handleViewRoadmap(svc)}
+                              className="w-12 h-12 bg-gray-50 text-gray-400 rounded-2xl hover:bg-primary hover:text-black transition-all flex items-center justify-center shrink-0 border border-gray-100"
+                              title="View Roadmap"
+                            >
+                              <Map className="w-5 h-5" />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteService(svc.id)}
+                              className="w-12 h-12 bg-red-50 text-red-500 rounded-2xl hover:bg-red-500 hover:text-black transition-all flex items-center justify-center shrink-0 border border-red-100"
+                              title="Delete Service"
+                            >
+                              <Trash2 className="w-5 h-5" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center py-20 bg-white rounded-[3rem] border border-dashed border-gray-200">
+                      <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mb-6 border border-gray-100">
+                        <Package className="w-8 h-8 text-gray-300" />
+                      </div>
+                      <h4 className="text-lg font-black text-[#0b1f3a] mb-2">Vault is Empty</h4>
+                      <p className="text-gray-400 font-bold uppercase text-[9px] tracking-widest mb-8">Start your first service to see activity records</p>
+                      <button onClick={() => setActiveTab('services')} className="px-10 py-4 bg-primary text-black rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-500/20 hover:bg-[#0b1f3a] transition-all">Select Service</button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+
+            {/* CALENDAR VIEW */}
+            {activeTab === 'calendar' && (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-gray-200 p-8 flex flex-col items-center justify-center">
+                  <DayPicker
+                    mode="single"
+                    selected={date}
+                    onSelect={setDate}
+                    className="p-4"
+                    modifiersClassNames={{
+                      selected: 'bg-primary text-black hover:bg-primary',
+                      today: 'text-primary font-bold'
+                    }}
+                  />
+                </div>
+                <div className="space-y-6">
+                  <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+                    <h3 className="font-bold text-gray-900 mb-4 flex items-center gap-2">
+                      <Clock className="w-5 h-5 text-primary" /> Upcoming Deadlines
+                    </h3>
+                    <div className="space-y-4">
+                      {/* Mock Data - In real app, derived from UserServices logic */}
+                      <div className="flex gap-4 items-start p-3 bg-red-50 rounded-xl border border-red-100">
+                        <div className="text-center min-w-[3rem]">
+                          <span className="block text-xs font-bold text-red-600 uppercase">Feb</span>
+                          <span className="block text-xl font-bold text-red-800">28</span>
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-gray-900 text-sm">GST Return Filing</h4>
+                          <p className="text-xs text-gray-500">Regular Monthly Filing</p>
+                        </div>
+                      </div>
+                      <div className="flex gap-4 items-start p-3 bg-blue-50 rounded-xl border border-blue-100">
+                        <div className="text-center min-w-[3rem]">
+                          <span className="block text-xs font-bold text-blue-600 uppercase">Mar</span>
+                          <span className="block text-xl font-bold text-blue-800">15</span>
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-gray-900 text-sm">Advance Tax Payment</h4>
+                          <p className="text-xs text-gray-500">Q4 Installment</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-gradient-to-br from-primary to-blue-600 rounded-2xl p-6 text-black">
+                    <h3 className="font-bold text-black mb-2">Need a Reminder?</h3>
+                    <p className="text-black/80 text-sm mb-4">We'll notify you about important compliance dates for your active services.</p>
+                    <button className="w-full py-2 bg-white/20 hover:bg-white/30 text-black rounded-lg text-sm font-semibold transition border border-white/30">
+                      Sync with Google Calendar
+                    </button>
                   </div>
                 </div>
               </div>
             )}
 
+            {/* SERVICES VIEW */}
             {activeTab === 'services' && (
-              <div className="space-y-12">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900">Available Services</h3>
-                    <p className="text-sm text-gray-600 mt-1">Professional CA services for your business</p>
-                  </div>
-                  <div className="px-4 py-2 bg-blue-50 text-primary rounded-full text-sm font-semibold self-start md:self-auto">
-                    {services.length} Services Available
-                  </div>
-                </div>
-
-                {categories.length > 0 ? (
-                  categories.map((category) => (
-                    <div key={category.id} className="border-b border-gray-100 pb-8 last:border-0 last:pb-0">
-                      <div className="mb-6">
-                        <h4 className="text-xl font-bold text-gray-800 flex items-center gap-2">
-                          <TrendingUp className="w-5 h-5 text-primary" />
-                          {category.name}
-                        </h4>
-                        <p className="text-sm text-gray-500 ml-7">{category.description}</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {services.length > 0 ? (
+                  services.map(service => (
+                    <div key={service.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col group">
+                      <div className="h-32 bg-gradient-to-br from-gray-900 to-gray-800 p-6 flex flex-col justify-end relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
+                        <h4 className="text-black font-bold text-lg relative z-10">{service.name}</h4>
                       </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {category.services && category.services.map((serviceRaw: any) => {
-                          // The raw service from backend might have nested plans, we need to adapt it 
-                          // to match the 'Service' interface structure we use for display (with price)
-                          let displayPrice = 0;
-                          let defaultPlanId = undefined;
-
-                          if (serviceRaw.plans && serviceRaw.plans.length > 0) {
-                            displayPrice = serviceRaw.plans[0].price;
-                            defaultPlanId = serviceRaw.plans[0].id;
-                          } else if (serviceRaw.price !== undefined && serviceRaw.price !== null) {
-                            displayPrice = Number(serviceRaw.price);
-                          }
-
-                          const service = {
-                            ...serviceRaw,
-                            price: displayPrice,
-                            defaultPlanId: defaultPlanId
-                          };
-
-                          return (
-                            <div
-                              key={service.id}
-                              className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-2xl transition duration-300 border border-gray-100 group flex flex-col h-full"
-                            >
-                              <div className="bg-gradient-to-r from-primary to-secondary p-6 text-white relative overflow-hidden">
-                                <div className="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-full -mr-10 -mt-10 blur-xl"></div>
-                                <h4 className="text-xl font-bold mb-2 relative z-10">{service.name}</h4>
-                                <p className="text-sm opacity-90 line-clamp-2 relative z-10">{service.description}</p>
-                              </div>
-
-                              <div className="p-6 flex-1 flex flex-col">
-                                <div className="mb-6 flex-1">
-                                  <div className="flex items-baseline gap-1">
-                                    <span className="text-3xl font-bold text-gray-900">₹{Number(service.price).toLocaleString()}</span>
-                                    <span className="text-sm text-gray-500">/ service</span>
-                                  </div>
-                                  <ul className="mt-4 space-y-2 text-sm text-gray-600">
-                                    <li className="flex items-center gap-2">
-                                      <CheckCircle className="w-4 h-4 text-green-500" /> Professional Consultation
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                      <CheckCircle className="w-4 h-4 text-green-500" /> Document Verification
-                                    </li>
-                                    <li className="flex items-center gap-2">
-                                      <CheckCircle className="w-4 h-4 text-green-500" /> Application Filing
-                                    </li>
-                                  </ul>
-                                </div>
-
-                                <button
-                                  onClick={() => handlePurchaseService(service)}
-                                  className="w-full py-3 bg-white border-2 border-primary text-primary hover:bg-primary hover:text-white rounded-lg transition font-semibold flex items-center justify-center gap-2 group-hover:shadow-md"
-                                >
-                                  <CreditCard className="w-5 h-5" />
-                                  Purchase Now
-                                </button>
-                              </div>
-                            </div>
-                          );
-                        })}
+                      <div className="p-6 flex-1 flex flex-col">
+                        <p className="text-gray-600 text-sm mb-6 flex-1">{service.description}</p>
+                        <div className="flex items-center justify-between mb-6">
+                          {Number(service.price) > 0 && (
+                            <span className="text-2xl font-bold text-gray-900">₹{Number(service.price).toLocaleString()}</span>
+                          )}
+                        </div>
+                        <button
+                          onClick={() => handleChoosePlan(service)}
+                          className="w-full py-3 border-2 border-primary text-primary font-bold rounded-xl hover:bg-primary hover:text-black transition flex items-center justify-center gap-2"
+                        >
+                          <ShoppingCart className="w-5 h-5" /> Choose Plan
+                        </button>
                       </div>
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-20">
-                    <div className="animate-pulse flex flex-col items-center">
-                      <div className="h-4 w-48 bg-gray-200 rounded mb-4"></div>
-                      <div className="h-3 w-32 bg-gray-200 rounded"></div>
-                    </div>
-                    <p className="text-gray-500 mt-4">Loading services or no services available...</p>
-                  </div>
+                  <div className="col-span-full text-center py-20 text-gray-500">Loading services...</div>
                 )}
               </div>
             )}
 
+            {/* DOCUMENTS VIEW */}
             {activeTab === 'documents' && (
-              <div>
-                <div className="mb-6 flex flex-col md:flex-row md:items-end justify-between gap-4">
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">My Documents</h3>
-                    <p className="text-gray-600">Securely stored documents for your applications</p>
-                  </div>
-
-                  <div className="bg-white p-4 rounded-xl border border-blue-100 shadow-sm flex flex-col sm:flex-row gap-3 items-end sm:items-center">
-                    <div className="w-full sm:w-64">
-                      <label className="block text-xs font-semibold text-gray-700 mb-1">Select Service to Upload</label>
+              <div className="space-y-6">
+                <div className="bg-white p-6 rounded-2xl border border-gray-200">
+                  <div className="flex flex-col md:flex-row justify-between gap-4">
+                    <div>
+                      <h3 className="font-bold text-gray-900 text-xl">All Documents</h3>
+                      <p className="text-sm text-gray-500">Manage your uploaded files and receipts.</p>
+                    </div>
+                    <div className="flex gap-2">
                       <select
-                        className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary focus:border-primary outline-none"
+                        className="px-4 py-2 border border-gray-300 rounded-lg text-sm bg-gray-50 focus:ring-2 focus:ring-primary outline-none"
                         value={uploadServiceId}
                         onChange={(e) => setUploadServiceId(e.target.value)}
                       >
-                        <option value="">-- Select Active Service --</option>
-                        {userServices.filter(us => us.status === 'ACTIVE' || us.status === 'COMPLETED').map(us => (
-                          <option key={us.id} value={us.id}>
-                            {us.service?.name} (ID: #{us.id})
-                          </option>
+                        <option value="">Select Service to Upload</option>
+                        {userServices.filter(s => s.status !== 'CANCELLED').map(s => (
+                          <option key={s.id} value={s.id}>{s.service.name}</option>
                         ))}
                       </select>
+                      <label className={`px-4 py-2 bg-black text-black rounded-lg text-sm font-medium flex items-center gap-2 cursor-pointer
+                           ${!uploadServiceId || uploadingFile ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-800'}`}>
+                        {uploadingFile ? <Loader className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                        <span>Upload</span>
+                        <input type="file" className="hidden" disabled={!uploadServiceId || uploadingFile} onChange={(e) => handleFileUpload(e, parseInt(uploadServiceId))} accept=".pdf,.png,.jpg" />
+                      </label>
                     </div>
-                    <label className={`px-4 py-2 rounded-lg text-white text-sm font-medium flex items-center gap-2 cursor-pointer transition shadow-md whitespace-nowrap
-                        ${!uploadServiceId || uploadingFile ? 'bg-gray-400 cursor-not-allowed' : 'bg-primary hover:bg-primary/90'}`}>
-                      {uploadingFile ? <Loader className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                      Upload Document
-                      <input
-                        type="file"
-                        className="hidden"
-                        onChange={(e) => {
-                          if (uploadServiceId) {
-                            handleFileUpload(e, parseInt(uploadServiceId));
-                          }
-                        }}
-                        disabled={!uploadServiceId || uploadingFile}
-                        accept=".pdf,.jpg,.jpeg,.png"
-                      />
-                    </label>
                   </div>
                 </div>
 
                 {documents.length > 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {documents.map((doc) => (
-                      <div
-                        key={doc.id}
-                        className="bg-white rounded-lg border border-gray-200 p-4 hover:shadow-lg transition relative group"
-                      >
-                        {/* Service Tag Badge */}
-                        {doc.userService?.service?.name && (
-                          <div className="absolute top-0 right-0 bg-blue-600 text-white text-[10px] uppercase font-bold px-2 py-1 rounded-bl-lg rounded-tr-lg shadow-sm z-10">
-                            {doc.userService.service.name}
-                          </div>
-                        )}
-
-                        <div className="absolute top-8 right-3 opacity-0 group-hover:opacity-100 transition">
-                          <button className="p-1 hover:bg-gray-100 rounded text-gray-500"><Settings className="w-4 h-4" /></button>
-                        </div>
-
-                        <div className="flex items-center gap-4 mb-4 mt-2">
-                          <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                            <FileText className="w-6 h-6 text-primary" />
-                          </div>
-                          <div className="overflow-hidden">
-                            <h4 className="font-semibold text-gray-900 truncate" title={doc.fileName}>{doc.fileName}</h4>
-                            <span className="text-xs text-gray-500 uppercase">{doc.fileType.split('/')[1] || 'FILE'}</span>
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <div className="text-xs text-gray-500">
-                            {doc.userServiceId && (
-                              <div className="flex items-center gap-1 mb-1 text-gray-400">
-                                <Package className="w-3 h-3" /> <span>Service ID: #{doc.userServiceId}</span>
+                  <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
+                    <table className="w-full text-sm text-left">
+                      <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-200">
+                        <tr>
+                          <th className="px-6 py-4">Name</th>
+                          <th className="px-6 py-4">Service</th>
+                          <th className="px-6 py-4">Investment</th>
+                          <th className="px-6 py-4">Date</th>
+                          <th className="px-6 py-4 text-right">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-100">
+                        {documents.map(doc => (
+                          <tr key={doc.id} className="hover:bg-gray-50 transition">
+                            <td className="px-6 py-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 bg-blue-50 text-primary rounded flex items-center justify-center">
+                                  <FileText className="w-4 h-4" />
+                                </div>
+                                <span className="font-medium text-gray-900">{doc.fileName}</span>
                               </div>
-                            )}
-                            Uploaded: {new Date(doc.uploadedAt).toLocaleDateString()}
-                          </div>
-
-                          <div className="flex gap-2">
-                            <a
-                              href={doc.url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="flex-1 text-xs px-3 py-2 bg-primary text-white rounded hover:bg-primary/90 transition flex items-center justify-center gap-1"
-                            >
-                              <Download className="w-3 h-3" /> Download
-                            </a>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+                            </td>
+                            <td className="px-6 py-4">
+                              <div className="flex flex-col">
+                                <span className="font-black text-[#0b1f3a] text-sm">
+                                  {doc.userService?.service?.name || doc.order?.items?.[0]?.serviceName || 'General'}
+                                </span>
+                                {(doc.order?.items?.[0]?.planType || (doc.userService as any)?.planType) && (
+                                  <span className="text-[9px] font-black text-primary uppercase tracking-widest mt-1 inline-flex items-center gap-1">
+                                    <div className="w-1 h-1 rounded-full bg-primary animate-pulse" />
+                                    {doc.order?.items?.[0]?.planType || (doc.userService as any)?.planType} Plan
+                                  </span>
+                                )}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4">
+                              <span className="font-black text-[#0b1f3a]">
+                                {Number(doc.order?.items?.[0]?.price || doc.userService?.price || 0) > 0 && `₹${Number(doc.order?.items?.[0]?.price || doc.userService?.price || 0).toLocaleString('en-IN')}`}
+                              </span>
+                            </td>
+                            <td className="px-6 py-4 text-gray-500">
+                              {new Date(doc.uploadedAt).toLocaleDateString()}
+                            </td>
+                            <td className="px-6 py-4 text-right">
+                              <a href={doc.url} target="_blank" rel="noreferrer" className="text-primary hover:text-black font-medium text-xs border border-primary/20 px-3 py-1 rounded-md hover:bg-primary hover:border-primary transition">
+                                Download
+                              </a>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
                 ) : (
-                  <div className="text-center py-16 bg-gray-50 rounded-xl border-2 border-dashed border-gray-200">
-                    <FileText className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">No Documents Yet</h3>
-                    <p className="text-gray-600 mb-6">Select a service above to upload your first document.</p>
-                  </div>
+                  <div className="text-center py-20 text-gray-400">No documents found.</div>
                 )}
               </div>
             )}
 
-            {activeTab === 'tickets' && (
-              <div>
-                <div className="flex justify-between items-center mb-6">
-                  <div>
-                    <h3 className="text-2xl font-bold text-gray-900 mb-2">My Support Tickets</h3>
-                    <p className="text-gray-600">View and manage your support requests</p>
+            {activeTab === 'reports' && (
+              <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
+                {/* Elite Reports Header */}
+                <div className="relative overflow-hidden rounded-[3rem] bg-[#0b1f3a] p-10 md:p-14 text-black shadow-2xl border border-blue-900/50">
+                  <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/20 rounded-full -mr-40 -mt-40 blur-[120px]"></div>
+
+                  <div className="relative z-10 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-10">
+                    <div className="max-w-2xl">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-full text-[9px] font-bold uppercase tracking-[0.2em] text-emerald-400 mb-6">
+                        <Shield className="w-3 h-3" /> Secure Audit Repository
+                      </div>
+                      <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">Financial Intelligence <span className="text-primary">& Reports</span></h2>
+                      <p className="text-blue-100/60 font-medium text-black leading-relaxed">
+                        Access your certified audit reports, tax assessments, and compliance filings. All documents are digitally signed and verified by our partner firm.
+                      </p>
+                    </div>
+
+                    <br />
+
+                    <div className="flex flex-wrap gap-4 w-full lg:w-auto">
+                      <div className="flex-1 lg:flex-none relative">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                        <input
+                          type="text"
+                          placeholder="Search identifier..."
+                          className="w-full lg:w-64 h-14 pl-12 pr-6 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl outline-none focus:ring-2 focus:ring-primary/50 transition-all font-bold text-sm placeholder:text-gray-500"
+                          value={reportsSearchQuery}
+                          onChange={(e) => setReportsSearchQuery(e.target.value)}
+                        />
+                      </div>
+                      <select
+                        className="h-14 px-6 bg-white/10 backdrop-blur-md border border-white/10 rounded-2xl outline-none focus:ring-2 focus:ring-primary/50 transition-all font-black text-[10px] uppercase tracking-widest text-black cursor-pointer"
+                        value={reportsCategoryFilter}
+                        onChange={(e) => setReportsCategoryFilter(e.target.value)}
+                      >
+                        <option value="all" className="bg-[#0b1f3a]">All Modules</option>
+                        <option value="audit" className="bg-[#0b1f3a]">Financial Audit</option>
+                        <option value="tax" className="bg-[#0b1f3a]">Taxation</option>
+                        <option value="compliance" className="bg-[#0b1f3a]">Compliance</option>
+                      </select>
+                    </div>
                   </div>
-                  <button
-                    onClick={() => setShowTicketModal(true)}
-                    className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition font-medium flex items-center gap-2 shadow-lg">
-                    <Plus className="w-5 h-5" />
-                    Create Support Ticket
-                  </button>
                 </div>
 
-                {tickets.length > 0 ? (
-                  <div className="space-y-4">
-                    {tickets.map((ticket) => (
-                      <div key={ticket.id} className="bg-white border border-gray-200 rounded-xl p-6 hover:shadow-md transition">
-                        <div className="flex justify-between items-start mb-4">
+                {/* Filtered Content Grid */}
+                {(() => {
+                  const filtered = reportDocuments.filter(doc => {
+                    const matchesSearch = doc.fileName.toLowerCase().includes(reportsSearchQuery.toLowerCase());
+                    const matchesCat = reportsCategoryFilter === 'all' ||
+                      doc.fileName.toLowerCase().includes(reportsCategoryFilter) ||
+                      (doc.userService?.service?.name || '').toLowerCase().includes(reportsCategoryFilter);
+                    return matchesSearch && matchesCat;
+                  });
+
+                  return filtered.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                      {filtered.map((report) => (
+                        <div key={report.id} className="group bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col min-h-[400px] relative overflow-hidden">
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-primary/10 transition-colors"></div>
+
+                          <div className="relative z-10 flex flex-col h-full">
+                            {/* Card Header */}
+                            <div className="flex justify-between items-start mb-10">
+                              <div className="w-16 h-16 bg-gray-50 rounded-2xl flex items-center justify-center border border-gray-100 group-hover:bg-[#0b1f3a] group-hover:border-[#0b1f3a] transition-all duration-500 relative">
+                                <FileBarChart className="w-7 h-7 text-[#0b1f3a] group-hover:text-primary transition-colors" />
+                                <div className="absolute -top-2 -right-2 px-2 py-0.5 bg-red-500 text-black text-[8px] font-black rounded-lg shadow-lg">PDF</div>
+                              </div>
+                              <div className="text-right">
+                                <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Protocol ID</p>
+                                <p className="text-xs font-black text-[#0b1f3a]">REF-{report.id.toString().padStart(6, '0')}</p>
+                              </div>
+                            </div>
+
+                            {/* Title & Context */}
+                            <div className="flex-1 mb-8">
+                              <h4 className="text-xl font-black text-[#0b1f3a] tracking-tight mb-3 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+                                {report.fileName.replace(/\.[^/.]+$/, "").split('-').join(' ')}
+                              </h4>
+                              <div className="space-y-3">
+                                <div className="flex items-center gap-3">
+                                  <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                                  <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Certified Audit Node</span>
+                                </div>
+                                <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 group-hover:bg-blue-50/50 group-hover:border-blue-100 transition-colors">
+                                  <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">Assigned Service</p>
+                                  <p className="text-[11px] font-black text-[#0b1f3a] truncate">
+                                    {report.userService?.service?.name || report.order?.items?.[0]?.serviceName || 'Global Settlement'}
+                                  </p>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Footer */}
+                            <div className="pt-6 border-t border-gray-50 flex items-center justify-between">
+                              <div className="space-y-1">
+                                <div className="flex items-center gap-2 text-gray-400">
+                                  <CalendarIcon className="w-3 h-3" />
+                                  <span className="text-[11px] font-bold">
+                                    {new Date(report.uploadedAt).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' })}
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-2 text-gray-300">
+                                  <Shield className="w-3 h-3" />
+                                  <span className="text-[9px] font-black uppercase tracking-widest">2.4 MB • Encrypted</span>
+                                </div>
+                              </div>
+
+                              <a
+                                href={report.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="px-6 py-3.5 bg-[#0b1f3a] text-black rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-blue-500/10 hover:bg-primary hover:text-black hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+                              >
+                                <Download className="w-3.5 h-3.5" /> Retrieve
+                              </a>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="bg-white rounded-[3rem] p-24 border border-dashed border-gray-200 text-center shadow-inner relative overflow-hidden">
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.03]">
+                        <FileBarChart className="w-96 h-96" />
+                      </div>
+                      <div className="relative z-10">
+                        <div className="w-24 h-24 bg-gray-50 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 border border-gray-100 shadow-sm">
+                          <Search className="w-10 h-10 text-gray-200" />
+                        </div>
+                        <h4 className="text-2xl font-black text-[#0b1f3a] tracking-tight mb-3">No Reports Matched</h4>
+                        <p className="text-sm text-gray-400 font-bold uppercase tracking-widest max-w-sm mx-auto leading-relaxed">
+                          We couldn't find any reports matching your current filter criteria. Check your spelling or reset the module filter.
+                        </p>
+                        <button
+                          onClick={() => { setReportsSearchQuery(''); setReportsCategoryFilter('all'); }}
+                          className="mt-10 px-8 py-4 bg-blue-500 text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-primary hover:text-black transition-all"
+                        >
+                          Clear All Filters
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* Audit Firm Note */}
+                <div className="bg-emerald-50/50 rounded-[2rem] p-8 border border-emerald-100/50 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
+                  <div className="w-12 h-12 bg-white rounded-xl shadow-sm flex items-center justify-center shrink-0 border border-emerald-100">
+                    <Shield className="w-6 h-6 text-emerald-500" />
+                  </div>
+                  <div>
+                    <h5 className="text-[11px] font-black text-emerald-800 uppercase tracking-widest mb-1">Regulatory Notice</h5>
+                    <p className="text-xs text-emerald-700/70 font-bold leading-relaxed">
+                      All reports generated within this workspace are legally compliant with MCA and Income Tax Department guidelines. Electronic signatures are verified against UDIN standards.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+
+            {
+              activeTab === 'billing' && (
+                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
+                  <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-10">
+                      <div>
+                        <h3 className="text-2xl font-black text-[#0b1f3a] tracking-tight">Billing & Subscriptions</h3>
+                        <p className="text-sm text-gray-400 font-bold uppercase tracking-widest mt-1">Full transaction history and service status</p>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full md:w-auto">
+                        {/* Paid Services Card */}
+                        <div className="group relative bg-[#0b1f3a] rounded-[2rem] p-6 md:p-8 overflow-hidden shadow-2xl transition-all duration-500 hover:scale-[1.02]">
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full -mr-16 -mt-16 blur-3xl"></div>
+                          <div className="flex items-center gap-5 relative z-10">
+                            <div className="w-14 h-14 bg-emerald-500/10 rounded-2xl flex items-center justify-center text-emerald-400 shrink-0 shadow-inner">
+                              <CheckCircle className="w-7 h-7" />
+                            </div>
+                            <div>
+                              <p className="text-[9px] font-black text-emerald-500/60 uppercase tracking-[0.2em] mb-1.5">Paid Services</p>
+                              <div className="flex flex-col">
+                                <span className="text-3xl font-black text-black leading-none mb-2">{userServices.filter(s => s.status === 'ACTIVE' || s.status === 'COMPLETED').length.toString().padStart(2, '0')}</span>
+                                <span className="text-[11px] font-bold text-black/40 italic">Investment: ₹{userServices.filter(s => s.status === 'ACTIVE' || s.status === 'COMPLETED').reduce((acc, curr) => acc + (curr.price || 0), 0).toLocaleString()}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Pending Services Card */}
+                        <div className="group relative bg-white rounded-[2rem] p-6 md:p-8 overflow-hidden shadow-xl border border-gray-100 transition-all duration-500 hover:scale-[1.02]">
+                          <div className="absolute top-0 right-0 w-32 h-32 bg-[#ee7228]/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+                          <div className="flex items-center gap-5 relative z-10">
+                            <div className="w-14 h-14 bg-orange-50 rounded-2xl flex items-center justify-center text-[#ee7228] shrink-0">
+                              <Clock className="w-7 h-7" />
+                            </div>
+                            <div>
+                              <p className="text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-1.5">Pending Services</p>
+                              <div className="flex flex-col">
+                                <span className="text-3xl font-black text-[#0b1f3a] leading-none mb-2">{userServices.filter(s => s.status === 'PENDING_PAYMENT' || s.status === 'PENDING_VERIFICATION' || s.status === 'NEED_DOCUMENTS').length.toString().padStart(2, '0')}</span>
+                                <span className="text-[11px] font-bold text-gray-400 italic">Dues: ₹{userServices.filter(s => s.status === 'PENDING_PAYMENT').reduce((acc, curr) => acc + (curr.price || 0), 0).toLocaleString()}</span>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+
+                    <br />
+                    <br />
+
+                    {/* Main Tableservices block  */}
+                    <div className="overflow-x-auto -mx-8">
+                      <table className="w-full text-left border-collapse min-w-[1000px]">
+                        <thead>
+                          <tr className="border-b border-gray-50">
+                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Service Insight</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Purchase Date</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Investment</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Service Status</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Payment Node</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-50">
+                          {userServices.map(svc => (
+                            <tr key={svc.id} className="group hover:bg-gray-50/50 transition-colors">
+                              <td className="px-8 py-6">
+                                <div className="flex flex-col">
+                                  <span className="text-sm font-black text-[#0b1f3a] group-hover:text-primary transition-colors">{svc.service?.name}</span>
+                                  <span className="text-[10px] font-bold text-gray-400 uppercase mt-1">ID: #{svc.orderId}</span>
+                                </div>
+                              </td>
+                              <td className="px-8 py-6">
+                                <span className="text-sm text-gray-500 font-medium">{new Date(svc.createdAt).toLocaleDateString()}</span>
+                              </td>
+                              <td className="px-8 py-6">
+                                <span className="text-sm font-black text-[#0b1f3a]">₹{Number(svc.price || 0).toLocaleString()}</span>
+                              </td>
+                              <td className="px-8 py-6">
+                                <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[9px] font-black border ${getStatusColor(svc.status)} uppercase tracking-widest`}>
+                                  {getStatusIcon(svc.status)}
+                                  {svc.status.replace('_', ' ')}
+                                </div>
+                              </td>
+                              <td className="px-8 py-6">
+                                {['ACTIVE', 'COMPLETED', 'PENDING_VERIFICATION'].includes(svc.status) ? (
+                                  <div className="flex flex-col">
+                                    <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Linked / Paid</span>
+                                    <span className="text-[9px] font-bold text-gray-400 mt-0.5">Verified Transaction</span>
+                                  </div>
+                                ) : (
+                                  <div className="flex flex-col">
+                                    <span className="text-[10px] font-black text-amber-600 uppercase tracking-widest">Awaiting Link</span>
+                                    <span className="text-[9px] font-bold text-gray-400 mt-0.5">Pending Settlement</span>
+                                  </div>
+                                )}
+                              </td>
+                              <td className="px-8 py-6 text-right">
+                                <div className="flex items-center justify-end gap-2">
+                                  {svc.status === 'PENDING_PAYMENT' && (
+                                    <button
+                                      onClick={() => { setSelectedService({ ...svc.service, orderId: svc.orderId, price: svc.price }); setShowPaymentModal(true); }}
+                                      className="p-2.5 bg-[#ee7228] text-white rounded-xl hover:bg-[#0b1f3a] transition-all shadow-lg shadow-orange-500/10 active:scale-95"
+                                      title="Complete Payment"
+                                    >
+                                      <CreditCard className="w-4 h-4" />
+                                    </button>
+                                  )}
+                                  <button
+                                    onClick={() => handleViewRoadmap(svc)}
+                                    className="p-2.5 bg-gray-50 text-gray-400 rounded-xl hover:bg-primary hover:text-black transition-all active:scale-95 border border-gray-100"
+                                    title="Trace Roadmap"
+                                  >
+                                    <Map className="w-4 h-4" />
+                                  </button>
+                                  <button
+                                    onClick={() => handleDeleteService(svc.id)}
+                                    className="p-2.5 bg-red-50 text-red-400 rounded-xl hover:bg-red-500 hover:text-white transition-all active:scale-95 border border-red-100"
+                                    title="Retract Service"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {userServices.length === 0 && (
+                      <div className="text-center py-24 bg-gray-50/20 rounded-[3rem] border border-dashed border-gray-200">
+                        <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center mx-auto mb-8 border border-gray-100 shadow-sm">
+                          <CreditCard className="w-10 h-10 text-gray-200" />
+                        </div>
+                        <h4 className="text-xl font-black text-[#0b1f3a] mb-2 tracking-tight">Ledger Silent</h4>
+                        <p className="text-gray-400 font-bold uppercase text-[10px] tracking-widest max-w-xs mx-auto leading-relaxed">No transactions found. Purchase a service to activate billing.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )
+            }
+
+
+            <br />
+
+            {/* TICKETS VIEW */}
+            {activeTab === 'tickets' && (
+              <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-20">
+                {/* Professional Support Header */}
+                <div className="bg-white rounded-3xl p-6 md:p-12 border border-gray-100 shadow-sm relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl"></div>
+
+                  <div className="relative z-10 flex flex-col lg:flex-row justify-between items-center gap-6 lg:gap-8">
+                    <div className="max-w-xl text-center lg:text-left">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-[#136da1] rounded-full text-[10px] font-bold uppercase tracking-wider mb-3 md:mb-4">
+                        <MessageSquare className="w-3 h-3" /> Expert Assistance
+                      </div>
+                      <h2 className="text-2xl md:text-4xl font-black text-[#0b1f3a] tracking-tight mb-3 md:mb-4 leading-tight">Communication <span className="text-primary">Portal</span></h2>
+                      <p className="text-gray-500 font-medium text-xs md:text-sm leading-relaxed">
+                        Connect directly with our senior partners and chartered accountants. Our team is committed to providing precise, timely responses to your business queries.
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => setShowTicketModal(true)}
+                      className="px-6 md:px-8 py-3.5 md:py-4 bg-blue-400 text-[#136da1] rounded-2xl font-bold text-[10px] md:text-xs uppercase tracking-widest shadow-lg hover:bg-primary transition-all flex items-center justify-center gap-3 active:scale-95"
+                    >
+                      <Plus className="w-4 h-4" />
+                      Create Request
+                    </button>
+                  </div>
+                </div>
+
+                {/* Status Overview Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {[
+                    { label: 'Pending Response', count: (Array.isArray(tickets) ? tickets : []).filter(t => t.status === 'OPEN').length, icon: Clock, color: 'text-amber-500', bg: 'bg-amber-50' },
+                    { label: 'Resolved Tickets', count: (Array.isArray(tickets) ? tickets : []).filter(t => t.status === 'RESOLVED').length, icon: CheckCircle, color: 'text-emerald-500', bg: 'bg-emerald-50' },
+                    { label: 'Service Level', value: 'Prime', icon: Shield, color: 'text-[#136da1]', bg: 'bg-blue-50' }
+                  ].map((stat, idx) => (
+                    <div key={idx} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-5">
+                      <div className={`w-12 h-12 ${stat.bg} ${stat.color} rounded-xl flex items-center justify-center shrink-0`}>
+                        <stat.icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{stat.label}</p>
+                        <p className="text-xl font-black text-[#0b1f3a]">{stat.count ?? stat.value}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Ticket List */}
+                <div className="space-y-6">
+                  {(Array.isArray(tickets) ? tickets : []).map(ticket => (
+                    <div key={ticket.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden transition-all hover:border-primary/20 hover:shadow-md">
+                      <div className="p-6 md:p-8">
+                        <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-6">
                           <div>
-                            <div className="flex items-center gap-3">
-                              <span className="text-gray-500 text-sm">#{ticket.id}</span>
-                              <h4 className="text-lg font-bold text-gray-900">{ticket.subject}</h4>
-                              <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${ticket.status === 'OPEN' ? 'bg-blue-100 text-blue-700' :
-                                ticket.status === 'RESOLVED' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
-                                }`}>
+                            <div className="flex items-center gap-3 mb-2">
+                              <span className={`px-2.5 py-0.5 text-[8px] font-black rounded uppercase tracking-widest ${ticket.status === 'OPEN' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
                                 {ticket.status}
                               </span>
+                              <span className="text-[10px] font-bold text-gray-400">ID: #{ticket.id}</span>
                             </div>
-                            <p className="text-gray-500 text-xs mt-1">
-                              Created: {new Date(ticket.createdAt).toLocaleString()}
-                            </p>
+                            <h4 className="text-lg font-black text-[#0b1f3a] tracking-tight">{ticket.subject}</h4>
+                          </div>
+                          <div className="flex items-center gap-2 text-[10px] font-bold text-gray-400 uppercase bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+                            <CalendarIcon className="w-3 h-3" />
+                            {new Date(ticket.createdAt).toLocaleDateString()}
                           </div>
                         </div>
 
-                        <div className="bg-gray-50 p-4 rounded-lg mb-4">
-                          <p className="text-gray-700 text-sm">{ticket.message}</p>
-                        </div>
-
-                        {ticket.adminReply && (
-                          <div className="bg-blue-50 p-4 rounded-lg border border-blue-100">
-                            <div className="flex items-center gap-2 mb-2">
-                              <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center">
-                                <User className="w-3 h-3 text-white" />
+                        {/* Dialogue Section */}
+                        <div className="space-y-6">
+                          {/* User Message */}
+                          <div className="flex gap-3 md:gap-4">
+                            <div className="w-8 h-8 bg-gray-100 rounded-lg flex items-center justify-center font-black text-[10px] text-gray-500 shrink-0 border border-gray-100 italic">
+                              {user?.name?.charAt(0) || 'U'}
+                            </div>
+                            <div className="flex-1">
+                              <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1.5">Your Query</p>
+                              <div className="bg-gray-50 p-4 md:p-5 rounded-2xl rounded-tl-none border border-gray-100">
+                                <p className="text-xs md:text-sm text-gray-600 leading-relaxed">{ticket.message}</p>
                               </div>
-                              <span className="text-sm font-bold text-blue-900">Admin Reply</span>
                             </div>
-                            <p className="text-blue-800 text-sm">{ticket.adminReply}</p>
                           </div>
-                        )}
+
+                          {/* Expert Reply */}
+                          {ticket.adminReply && (
+                            <div className="flex gap-4">
+                              <div className="w-8 h-8 bg-[#0b1f3a] rounded-lg flex items-center justify-center shrink-0 shadow-lg shadow-blue-900/10">
+                                <Shield className="w-4 h-4 text-primary" />
+                              </div>
+                              <div className="flex-1">
+                                <p className="text-[9px] font-black text-[#136da1] uppercase tracking-widest mb-1.5 flex items-center gap-2">
+                                  CA Official Response
+                                  <div className="w-1 h-1 bg-primary rounded-full animate-pulse"></div>
+                                </p>
+                                <div className="bg-blue-50/50 p-5 rounded-2xl rounded-tl-none border border-blue-100/50">
+                                  <p className="text-sm text-[#0b1f3a] font-bold leading-relaxed">{ticket.adminReply}</p>
+                                </div>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {(!Array.isArray(tickets) || tickets.length === 0) && (
+                    <div className="flex flex-col items-center justify-center py-20 bg-gray-50/50 rounded-3xl border border-dashed border-gray-200">
+                      <div className="w-20 h-20 bg-white rounded-2xl flex items-center justify-center mb-6 border border-gray-100 shadow-sm">
+                        <MessageSquare className="w-8 h-8 text-gray-200" />
+                      </div>
+                      <h4 className="text-lg font-black text-[#0b1f3a] mb-1">No Active Tickets</h4>
+                      <p className="text-gray-400 font-bold uppercase text-[9px] tracking-widest">Your communication history is empty</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )
+            }
+          </div>
+        </main>
+
+        {/* RETAINED MODALS */}
+        {
+          showPaymentModal && selectedService && (
+            <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+              <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl relative shadow-orange-500/10 overflow-hidden">
+                <div className="p-8">
+                  <div className="flex justify-between items-center mb-8 border-b border-gray-50 pb-6">
+                    <div>
+                      <h3 className="text-2xl font-black text-[#0b1f3a] tracking-tight">Financial Checkout</h3>
+                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Order Ref: #{selectedService.orderId}</p>
+                    </div>
+                    <button onClick={() => setShowPaymentModal(false)} className="p-2 hover:bg-gray-50 rounded-xl transition-colors"><XCircle className="w-6 h-6 text-gray-300" /></button>
+                  </div>
+
+                  <div className="mb-8 p-6 bg-[#0b1f3a] rounded-3xl text-black shadow-xl shadow-blue-900/10">
+                    <p className="text-[10px] font-black text-blue-300 uppercase tracking-widest mb-2">Service Allocation</p>
+                    <p className="text-lg font-black tracking-tight">{selectedService.name}</p>
+                    <div className="mt-6 pt-6 border-t border-blue-800/50 flex justify-between items-end">
+                      <span className="text-[10px] font-black text-blue-300 uppercase tracking-widest">Investment</span>
+                      <p className="text-3xl font-black">₹{Number(selectedService.price).toLocaleString()}</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4 mb-8">
+                    <label className={`block p-5 rounded-3xl border-2 transition-all cursor-pointer ${selectedPaymentMethod === 'manual_qr' ? 'border-[#ee7228] bg-orange-50/30' : 'border-gray-100 hover:border-gray-200'}`}>
+                      <div className="flex items-center gap-4">
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selectedPaymentMethod === 'manual_qr' ? 'border-[#ee7228] bg-[#ee7228]' : 'border-gray-300'}`}>
+                          {selectedPaymentMethod === 'manual_qr' && <CheckCircle className="w-4 h-4 text-black" />}
+                        </div>
+                        <div>
+                          <span className="text-sm font-black text-[#0b1f3a] uppercase tracking-widest">Bank QR Protocol</span>
+                          <p className="text-[9px] font-bold text-gray-400 mt-0.5 uppercase tracking-widest">Instant scan & proof upload</p>
+                        </div>
+                        <input type="radio" checked={selectedPaymentMethod === 'manual_qr'} onChange={() => setSelectedPaymentMethod('manual_qr')} className="hidden" />
+                      </div>
+                      {selectedPaymentMethod === 'manual_qr' && (
+                        <div className="mt-6 pl-10 animate-fade-in">
+                          <div className="p-4 bg-white rounded-2xl border-2 border-orange-100 border-dashed">
+                            <input type="file" onChange={(e) => setPaymentProofFile(e.target.files?.[0] || null)} className="w-full text-[10px] font-black uppercase text-gray-400 cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-[#ee7228] file:text-black hover:file:bg-[#0b1f3a] transition-all" />
+                          </div>
+                        </div>
+                      )}
+                    </label>
+                    <label className={`block p-5 rounded-3xl border-2 transition-all cursor-pointer ${selectedPaymentMethod === 'pay_later' ? 'border-[#136da1] bg-blue-50/30' : 'border-gray-100 hover:border-gray-200'}`}>
+                      <div className="flex items-center gap-4">
+                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selectedPaymentMethod === 'pay_later' ? 'border-[#136da1] bg-[#136da1]' : 'border-gray-300'}`}>
+                          {selectedPaymentMethod === 'pay_later' && <CheckCircle className="w-4 h-4 text-black" />}
+                        </div>
+                        <div>
+                          <span className="text-sm font-black text-[#0b1f3a] uppercase tracking-widest">Post-Settlement</span>
+                          <p className="text-[9px] font-bold text-gray-400 mt-0.5 uppercase tracking-widest">Commit now, remit later</p>
+                        </div>
+                        <input type="radio" checked={selectedPaymentMethod === 'pay_later'} onChange={() => setSelectedPaymentMethod('pay_later')} className="hidden" />
+                      </div>
+                    </label>
+                  </div>
+
+                  <button onClick={handlePayment} disabled={actionLoading} className=" py-5 bg-blue-500 text-black font-black text-[12px] uppercase tracking-[0.2em] rounded-[2rem] hover:bg-[#0b1f3a] transition-all shadow-xl shadow-orange-500/20 active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-3">
+                    {actionLoading ? <Loader className="animate-spin w-4 h-4" /> : <Shield className="w-4 h-4" />}
+                    {selectedPaymentMethod === 'pay_later' ? 'Authorize Order' : 'Submit Remittance'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )
+        }
+
+        {
+          showTicketModal && (
+            <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+              <div className="bg-white rounded-[2.5rem] max-w-lg w-full p-10 shadow-2xl">
+                <div className="mb-8">
+                  <h3 className="text-2xl font-black text-[#0b1f3a] tracking-tight">Initiate Support Node</h3>
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Standard response time: &lt; 24 hours</p>
+                </div>
+                <div className="space-y-6">
+                  <div>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block ml-4">Subject Descriptor</label>
+                    <input type="text" placeholder="Brief overview of inquiry..." className="w-full p-4 bg-gray-50 border-2 border-gray-50 rounded-2xl outline-none focus:border-primary focus:bg-white transition-all font-medium text-sm" value={newTicket.subject} onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 block ml-4">Detailed Intelligence</label>
+                    <textarea placeholder="Elaborate on your requirement or issue..." className="w-full p-4 bg-gray-50 border-2 border-gray-50 rounded-2xl outline-none focus:border-primary focus:bg-white transition-all font-medium text-sm h-40 resize-none" value={newTicket.message} onChange={(e) => setNewTicket({ ...newTicket, message: e.target.value })} />
+                  </div>
+                  <div className="flex gap-4 pt-4">
+                    <button onClick={() => setShowTicketModal(false)} className="flex-1 py-5 border-2 border-gray-100 rounded-2xl font-black text-[10px] uppercase tracking-widest text-gray-400 hover:bg-gray-50 transition-all"> Cancel</button>
+                    <button onClick={async () => {
+                      if (!newTicket.subject || !newTicket.message) return alert('Input required fields');
+                      setActionLoading(true);
+                      try {
+                        const res = await fetch(`${API_URL}/tickets`, { method: 'POST', headers: getAuthHeader(), body: JSON.stringify(newTicket), credentials: 'include' });
+                        if (!res.ok) throw new Error('Network failure');
+                        const data = await res.json();
+                        setTickets([data.ticket, ...tickets]);
+                        setShowTicketModal(false);
+                        setNewTicket({ subject: '', message: '' });
+                      } catch (e) { alert('Transmission failed'); } finally { setActionLoading(false); }
+                    }} className="flex-1 py-5 bg-[#0b1f3a] text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-blue-900/10 hover:bg-[#ee7228] transition-all">Send Message</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        }
+
+        {
+          showPlanModal && selectedServiceForPlan && (
+            <div className="fixed inset-0 bg-white flex items-center justify-center z-[100] p-4">
+              <div className="bg-white rounded-[3rem] max-w-6xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl border border-gray-100">
+                <div className="p-8 md:p-12 border-b flex justify-between items-center bg-gray-50/50">
+                  <div>
+                    <h3 className="text-3xl font-black text-[#0b1f3a] tracking-tight">Strategy Selection</h3>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Module: {selectedServiceForPlan.name}</p>
+                  </div>
+                  <button onClick={() => setShowPlanModal(false)} className="p-3 hover:bg-gray-100 rounded-2xl transition-all"><X className="w-6 h-6 text-gray-400" /></button>
+                </div>
+                <div className="p-8 md:p-12 overflow-y-auto bg-white">
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+                    {loadingPlans ? (
+                      <div className="col-span-full py-20 flex flex-col items-center gap-4">
+                        <Loader className="animate-spin w-10 h-10 text-primary" />
+                        <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Fetching Available Configurations...</p>
+                      </div>
+                    ) : availablePlans.map(plan => (
+                      <div key={plan.id} className="group bg-white rounded-[2.5rem] border border-gray-100 p-8 hover:border-primary hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 flex flex-col h-full">
+                        <div className="mb-8">
+                          <span className="inline-block px-4 py-1.5 bg-gray-50 text-[#0b1f3a] rounded-full text-[9px] font-black uppercase tracking-widest mb-4 group-hover:bg-primary group-hover:text-black transition-colors">{plan.planType}</span>
+                          <div className="flex items-baseline gap-1">
+                            <span className="text-4xl font-black text-[#0b1f3a]">₹{Number(plan.discountedPrice || plan.price).toLocaleString()}</span>
+                            {plan.discountedPrice && plan.discountedPrice < plan.price && (
+                              <span className="text-sm text-gray-300 line-through font-bold">₹{Number(plan.price).toLocaleString()}</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex-1 space-y-4 mb-10">
+                          {plan.scopes?.map((s: any, i: number) => (
+                            <div key={i} className="flex gap-3 text-sm">
+                              {s.isIncluded ? (
+                                <div className="w-5 h-5 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
+                                  <CheckCircle className="w-3 h-3 text-emerald-500" />
+                                </div>
+                              ) : (
+                                <div className="w-5 h-5 rounded-full bg-gray-50 flex items-center justify-center shrink-0">
+                                  <XCircle className="w-3 h-3 text-gray-200" />
+                                </div>
+                              )}
+                              <span className={`text-[11px] font-bold ${s.isIncluded ? 'text-gray-600' : 'text-gray-300'}`}>{s.title}</span>
+                            </div>
+                          ))}
+                        </div>
+                        <button onClick={() => handleSelectPlan(plan)} className="w-full py-4 bg-[#0b1f3a] text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[#ee7228] transition-all shadow-lg hover:shadow-orange-500/20 active:scale-95">Commit Tier</button>
                       </div>
                     ))}
                   </div>
-                ) : (
-                  <div className="text-center py-16 bg-gray-50 rounded-xl border border-gray-200">
-                    <Ticket className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">No Tickets Yet</h3>
-                    <p className="text-gray-600 mb-6">Need help? Create a new support ticket.</p>
+                </div>
+              </div>
+            </div>
+          )
+        }
+
+        {
+          showRoadmapModal && viewingRoadmapService && (
+            <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[100] p-4 backdrop-blur-sm">
+              <div className="bg-white rounded-[2.5rem] max-w-xl w-full p-10 shadow-2xl">
+                <div className="flex justify-between items-center mb-10">
+                  <div>
+                    <h3 className="text-2xl font-black text-[#0b1f3a] tracking-tight">Service Lifecycle</h3>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Real-time status tracking</p>
                   </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
-      </main>
-
-      {/* Payment Modal */}
-      {showPaymentModal && selectedService && (
-        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl transform transition-all scale-100 opacity-100">
-            <div className="bg-gradient-to-r from-primary to-secondary p-6 text-white rounded-t-2xl relative">
-              <button
-                onClick={() => setShowPaymentModal(false)}
-                className="absolute top-4 right-4 text-white/80 hover:text-white transition"
-              >
-                <XCircle className="w-6 h-6" />
-              </button>
-              <h3 className="text-2xl font-bold">Secure Checkout</h3>
-              <p className="text-white/80 mt-1 flex items-center gap-2">
-                <Shield className="w-4 h-4" /> 256-bit SSL Encrypted
-              </p>
-            </div>
-
-            <div className="p-6">
-              <div className="mb-6">
-                <h4 className="font-bold text-gray-900 text-lg mb-1">{selectedService.name}</h4>
-                <p className="text-sm text-gray-600">{selectedService.description}</p>
-              </div>
-
-              <div className="bg-gray-50 rounded-xl p-4 mb-6 border border-gray-100">
-                <div className="flex justify-between items-center mb-2 text-sm">
-                  <span className="text-gray-600">Subtotal</span>
-                  <span className="font-semibold text-gray-900">₹{Number(selectedService.price).toLocaleString()}</span>
+                  <button onClick={() => setShowRoadmapModal(false)}><XCircle className="w-8 h-8 text-gray-100 hover:text-gray-200 transition-colors" /></button>
                 </div>
-                <div className="flex justify-between items-center mb-4 text-sm">
-                  <span className="text-gray-600">GST (18%)</span>
-                  <span className="font-semibold text-gray-900">₹{Math.round(Number(selectedService.price) * 0.18).toLocaleString()}</span>
-                </div>
-                <div className="border-t border-gray-200 pt-3 flex justify-between items-center">
-                  <span className="font-bold text-gray-900 text-lg">Total</span>
-                  <span className="text-2xl font-bold text-primary">
-                    ₹{Math.round(Number(selectedService.price) * 1.18).toLocaleString()}
-                  </span>
-                </div>
-              </div>
-
-              {/* Payment Method Selection */}
-              <div className="mb-6">
-                <p className="block text-sm font-medium text-gray-700 mb-2">Select Payment Method</p>
-                <div className="space-y-2">
-                  {availablePaymentMethods.razorpay && (
-                    <label className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition ${selectedPaymentMethod === 'razorpay' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-gray-300'}`}>
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        checked={selectedPaymentMethod === 'razorpay'}
-                        onChange={() => setSelectedPaymentMethod('razorpay')}
-                        className="text-primary focus:ring-primary"
-                      />
-                      <span className="font-medium text-gray-900">Razorpay</span>
-                    </label>
-                  )}
-                  {availablePaymentMethods.stripe && (
-                    <label className={`flex items-center gap-3 p-3 rounded-lg border cursor-pointer transition ${selectedPaymentMethod === 'stripe' ? 'border-primary bg-primary/5' : 'border-gray-200 hover:border-gray-300'}`}>
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        checked={selectedPaymentMethod === 'stripe'}
-                        onChange={() => setSelectedPaymentMethod('stripe')}
-                        className="text-primary focus:ring-primary"
-                      />
-                      <span className="font-medium text-gray-900">Stripe</span>
-                    </label>
-                  )}
-                  {(!availablePaymentMethods.razorpay && !availablePaymentMethods.stripe) && (
-                    <p className="text-sm text-red-500">No payment methods available. Please contact admin.</p>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowPaymentModal(false)}
-                  className="flex-1 px-6 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition font-medium"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handlePayment}
-                  disabled={actionLoading || (!availablePaymentMethods.razorpay && !availablePaymentMethods.stripe)}
-                  className="flex-1 px-6 py-3 bg-green-600 text-white rounded-xl hover:bg-green-700 transition font-medium flex items-center justify-center gap-2 shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
-                >
-                  {actionLoading ? (
-                    <Loader className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <>
-                      <CreditCard className="w-5 h-5" />
-                      Pay Now
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Create Ticket Modal */}
-      {
-        showTicketModal && (
-          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl max-w-lg w-full shadow-xl">
-              <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-                <h3 className="text-xl font-bold text-gray-900">Create Support Ticket</h3>
-                <button onClick={() => setShowTicketModal(false)} className="text-gray-400 hover:text-gray-600">
-                  <XCircle className="w-6 h-6" />
-                </button>
-              </div>
-              <div className="p-6 space-y-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Subject</label>
-                  <input
-                    type="text"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition"
-                    placeholder="Briefly describe your issue"
-                    value={newTicket.subject}
-                    onChange={(e) => setNewTicket({ ...newTicket, subject: e.target.value })}
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Message</label>
-                  <textarea
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent outline-none transition h-32 resize-none"
-                    placeholder="Provide details about your issue..."
-                    value={newTicket.message}
-                    onChange={(e) => setNewTicket({ ...newTicket, message: e.target.value })}
-                  ></textarea>
-                </div>
-                <div className="flex gap-3 pt-2">
-                  <button
-                    onClick={() => setShowTicketModal(false)}
-                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 text-sm">
-                    Cancel
-                  </button>
-                  <button
-                    onClick={async () => {
-                      if (!newTicket.subject.trim() || !newTicket.message.trim()) {
-                        alert('Please fill in all fields');
-                        return;
-                      }
-                      try {
-                        setActionLoading(true);
-                        const response = await fetch(`${API_URL}/tickets`, {
-                          method: 'POST',
-                          headers: getAuthHeader(),
-                          body: JSON.stringify(newTicket)
-                        });
-
-                        if (!response.ok) throw new Error('Failed to create ticket');
-
-                        const createdTicket = await response.json();
-                        setTickets([createdTicket, ...tickets]);
-                        setShowTicketModal(false);
-                        setNewTicket({ subject: '', message: '' });
-                        alert('Ticket created successfully!');
-                      } catch (e) {
-                        console.error(e);
-                        alert('Failed to create ticket');
-                      } finally {
-                        setActionLoading(false);
-                      }
-                    }}
-                    disabled={actionLoading}
-                    className="flex-1 px-4 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary/90 text-sm flex items-center justify-center gap-2">
-                    {actionLoading ? <Loader className="w-4 h-4 animate-spin" /> : 'Submit Ticket'}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )
-      }
-
-      {/* Roadmap Modal */}
-      {
-        showRoadmapModal && viewingRoadmapService && (
-          <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-            <div className="bg-white rounded-2xl max-w-2xl w-full shadow-2xl transform transition-all scale-100 opacity-100 max-h-[90vh] overflow-y-auto">
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 p-6 text-white rounded-t-2xl relative sticky top-0 z-10">
-                <button
-                  onClick={() => setShowRoadmapModal(false)}
-                  className="absolute top-4 right-4 text-white/80 hover:text-white transition"
-                >
-                  <XCircle className="w-6 h-6" />
-                </button>
-                <h3 className="text-2xl font-bold">Service Roadmap</h3>
-                <p className="text-white/80 mt-1 flex items-center gap-2">
-                  <Map className="w-4 h-4" /> {viewingRoadmapService.service.name}
-                </p>
-              </div>
-
-              <div className="p-8">
-                {viewingRoadmapService.service.roadmap && viewingRoadmapService.service.roadmap.length > 0 ? (
-                  <div className="relative">
-                    {/* Vertical Line */}
-                    <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-
-                    <div className="space-y-8">
-                      {viewingRoadmapService.service.roadmap.map((step, index) => {
-                        const isCompleted = index < 2; // Mock status: assume first 2 steps done for demo
-                        const isCurrent = index === 2;
-
-                        return (
-                          <div key={index} className="relative flex items-start gap-6 group">
-                            {/* Step Indicator */}
-                            <div className={`w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl border-4 z-10 relative bg-white transition-all duration-300 
-                                ${isCompleted ? 'border-green-500 text-green-600' : isCurrent ? 'border-blue-500 text-blue-600 shadow-lg scale-110' : 'border-gray-300 text-gray-400'}`}>
-                              {isCompleted ? <CheckCircle className="w-8 h-8" /> : step.step}
-                            </div>
-
-                            {/* Content */}
-                            <div className={`flex-1 bg-white rounded-xl p-5 border transition-all duration-300
-                                ${isCurrent ? 'border-blue-200 shadow-md ring-1 ring-blue-100' : 'border-gray-200 hover:border-gray-300'}`}>
-                              <div className="flex justify-between items-start mb-2">
-                                <h4 className={`text-lg font-bold ${isCompleted ? 'text-green-800' : isCurrent ? 'text-blue-800' : 'text-gray-700'}`}>
-                                  {step.title}
-                                </h4>
-                                <span className={`text-xs px-2 py-1 rounded-full font-medium
-                                    ${isCompleted ? 'bg-green-100 text-green-700' : isCurrent ? 'bg-blue-100 text-blue-700' : 'bg-gray-100 text-gray-500'}`}>
-                                  {isCompleted ? 'Completed' : isCurrent ? 'In Progress' : 'Pending'}
-                                </span>
-                              </div>
-                              <p className="text-gray-600">{step.description}</p>
-                            </div>
-                          </div>
-                        );
-                      })}
+                <div className="space-y-10">
+                  <div className="flex items-start gap-6 relative">
+                    <div className="absolute left-[23px] top-12 bottom-[-40px] w-0.5 bg-gray-100"></div>
+                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 shadow-lg ${viewingRoadmapService.status === 'COMPLETED' ? 'bg-emerald-500 text-black shadow-emerald-500/20' : 'bg-primary text-black shadow-primary/20 animate-pulse'}`}>
+                      {viewingRoadmapService.status === 'COMPLETED' ? <CheckCircle className="w-6 h-6" /> : <Clock className="w-6 h-6" />}
+                    </div>
+                    <div>
+                      <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Current State</h4>
+                      <p className="text-xl font-black text-[#0b1f3a] tracking-tight">{viewingRoadmapService.status.replace('_', ' ')}</p>
+                      <p className="text-xs font-bold text-gray-400 mt-2 max-w-[300px]">Our operational team is active on this node. Updates are pushed synchronously with manual verification.</p>
                     </div>
                   </div>
-                ) : (
-                  <div className="text-center py-12">
-                    <div className="bg-gray-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-4">
-                      <Map className="w-10 h-10 text-gray-400" />
-                    </div>
-                    <h4 className="text-lg font-bold text-gray-800">No Roadmap Available</h4>
-                    <p className="text-gray-500">A detailed roadmap for this service is being prepared.</p>
+                  <div className="pt-10 border-t border-gray-50">
+                    <button onClick={() => setShowRoadmapModal(false)} className="w-full py-5 bg-gray-50 border-2 border-gray-100 rounded-2xl font-black text-[10px] uppercase tracking-widest text-[#0b1f3a] hover:bg-gray-100 transition-all">Close Lifecycle View</button>
                   </div>
-                )}
-              </div>
-
-              <div className="p-6 bg-gray-50 border-t border-gray-200 rounded-b-2xl">
-                <button
-                  onClick={() => setShowRoadmapModal(false)}
-                  className="w-full py-3 bg-white border border-gray-300 text-gray-700 font-medium rounded-xl hover:bg-gray-100 transition"
-                >
-                  Close
-                </button>
+                </div>
               </div>
             </div>
-          </div>
-        )
-      }
+          )
+        }
 
-      {/* Upload Loading Overlay */}
-      {
-        uploadingFile && (
-          <div className="fixed bottom-6 right-6 bg-white rounded-xl shadow-2xl p-4 border border-gray-200 z-50 animate-bounce-in">
-            <div className="flex items-center gap-3">
-              <Loader className="w-6 h-6 animate-spin text-primary" />
+        {
+          uploadingFile && (
+            <div className="fixed bottom-10 right-10 bg-[#0b1f3a] text-black rounded-3xl shadow-2xl px-8 py-5 z-50 animate-bounce-in flex items-center gap-4 border border-blue-800">
+              <Loader className="animate-spin text-primary w-5 h-5" />
               <div>
-                <p className="text-sm font-bold text-gray-900">Uploading Document...</p>
-                <p className="text-xs text-gray-500">Please do not close this window</p>
+                <p className="text-[10px] font-black uppercase tracking-widest">Protocol Upload</p>
+                <p className="text-[9px] font-bold text-blue-300 mt-0.5">Encrypting & Storing Intelligence...</p>
               </div>
             </div>
-          </div>
-        )
-      }
+          )
+        }
+        {/* Sidebar - Mobile (Slide-over) */}
+        {mobileMenuOpen && (
+          <>
+            <div className="fixed inset-0 bg-black/60 z-[998] lg:hidden backdrop-blur-sm transition-opacity" onClick={() => setMobileMenuOpen(false)} />
+            <aside className="fixed inset-y-0 left-0 bg-white w-72 z-[999] flex flex-col border-r border-gray-200 animate-in slide-in-from-left duration-500 shadow-2xl">
+              <div className="h-20 flex items-center justify-between px-6 bg-white border-b border-gray-100 shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 bg-gradient-to-tr from-[#136da1] to-[#0b1f3a] rounded-xl flex items-center justify-center">
+                    <Shield className="w-4 h-4 text-black" />
+                  </div>
+                  <span className="text-[#0b1f3a] font-black text-sm tracking-tight">CA PORTAL</span>
+                </div>
+                <button onClick={() => setMobileMenuOpen(false)} className="p-2 hover:bg-gray-100 rounded-lg">
+                  <X className="w-5 h-5 text-gray-400" />
+                </button>
+              </div>
+              <nav className="flex-1 p-6 overflow-y-auto">
+                <div className="space-y-8">
+                  <div>
+                    <p className="px-4 text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Core Panel</p>
+                    <NavItem id="dashboard" label="Overview" icon={LayoutDashboard} />
+                    <NavItem id="billing" label="Billing & Services" icon={CreditCard} />
+                    <NavItem id="calendar" label="Compliance" icon={CalendarIcon} />
+                  </div>
+                  <div>
+                    <p className="px-4 text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Resources</p>
+                    <NavItem id="services" label="Browse Services" icon={Package} />
+                    <NavItem id="documents" label="Documents" icon={FileText} />
+                    <NavItem id="reports" label="Shared Reports" icon={FileBarChart} />
+                  </div>
+                  <div>
+                    <p className="px-4 text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Support</p>
+                    <NavItem id="tickets" label="Ask an Expert" icon={MessageSquare} />
+                  </div>
+                </div>
+              </nav>
+              <div className="p-6 border-t border-gray-100 bg-white">
+                <div className="bg-white rounded-2xl p-4 mb-4 border border-gray-100 shadow-sm flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center font-black text-[#0b1f3a]">
+                    {user?.name?.charAt(0) || 'U'}
+                  </div>
+                  <div className="overflow-hidden">
+                    <p className="text-black font-black text-xs truncate">{user?.name}</p>
+                    <p className="text-gray-400 text-[9px] font-bold">Workspace User</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => { handleLogout(); setMobileMenuOpen(false); }}
+                  className="w-full py-3 bg-red-50 text-red-600 rounded-xl font-black text-[10px] uppercase tracking-widest hover:bg-red-100 transition-colors flex items-center justify-center gap-2"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  Logout
+                </button>
+              </div>
+            </aside>
+          </>
+        )}
+      </div>
     </div>
   );
 };
-
-// Missing Icon Component
-function Shield({ className }: { className?: string }) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={className}
-    >
-      <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10" />
-    </svg>
-  );
-}

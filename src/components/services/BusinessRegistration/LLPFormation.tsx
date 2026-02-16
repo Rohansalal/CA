@@ -1,6 +1,7 @@
 import { Users, CheckCircle, FileText, Clock, ArrowRight, Shield, Globe, Award, HelpCircle, AlertCircle, Wallet } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../../contexts/AuthContext';
+import { ServicePricing } from '../ServicePricing';
 
 export function LLPFormation() {
   const navigate = useNavigate();
@@ -281,91 +282,96 @@ export function LLPFormation() {
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-neutral-200">
-            <div className="grid md:grid-cols-2">
-              {/* Left Side - The Offer (White) */}
-              <div className="p-8 md:p-12 bg-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-neutral-100">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Complete LLP Setup</h3>
-                <div className="space-y-4">
-                  {[
-                    'Name Approval (RUN-LLP)',
-                    'DSC (2 Designated Partners)',
-                    'LLP Deed Drafting',
-                    'Incorporation (FiLLiP)',
-                    'PAN & TAN Allotment',
-                    'Form 3 Filing'
-                  ].map((item, i) => (
-                    <div key={i} className="flex items-center gap-3 p-3 rounded-lg hover:bg-neutral-50 transition-colors border border-transparent hover:border-neutral-100">
-                      <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <CheckCircle className="w-5 h-5 text-primary" />
-                      </div>
-                      <span className="text-gray-700 font-medium text-lg">{item}</span>
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <ServicePricing
+            serviceSlug="llp-registration"
+            serviceName="LLP Registration"
+            fallbackContent={
+              <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-neutral-200">
+                <div className="grid md:grid-cols-2">
+                  {/* Left Side - The Offer (White) */}
+                  <div className="p-8 md:p-12 bg-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-neutral-100">
+                    <h3 className="text-2xl font-bold text-gray-900 mb-6">Complete LLP Setup</h3>
+                    <div className="space-y-4">
+                      {[
+                        'Name Approval (RUN-LLP)',
+                        'DSC (2 Designated Partners)',
+                        'LLP Deed Drafting',
+                        'Incorporation (FiLLiP)',
+                        'PAN & TAN Allotment',
+                        'Form 3 Filing'
+                      ].map((item, i) => (
+                        <div key={i} className="flex items-center gap-3 p-3 rounded-lg hover:bg-neutral-50 transition-colors border border-transparent hover:border-neutral-100">
+                          <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                            <CheckCircle className="w-5 h-5 text-primary" />
+                          </div>
+                          <span className="text-gray-700 font-medium text-lg">{item}</span>
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                <div className="mt-8 pt-8 border-t border-neutral-100">
-                  <div className="flex items-center gap-3 text-sm text-gray-500">
-                    <Clock className="w-4 h-4" />
-                    <span>Delivered in 15-20 business days</span>
+                    <div className="mt-8 pt-8 border-t border-neutral-100">
+                      <div className="flex items-center gap-3 text-sm text-gray-500">
+                        <Clock className="w-4 h-4" />
+                        <span>Delivered in 15-20 business days</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Side - The Price (Unique Premium Design) */}
+                  <div className="relative p-8 md:p-14 bg-gradient-to-b from-[#1e3a8a] to-[#172554] text-white flex flex-col justify-center items-center text-center overflow-hidden">
+                    {/* Decorative Background Elements */}
+                    <div className="absolute top-0 right-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none"></div>
+
+                    <div className="relative z-10 w-full max-w-sm mx-auto">
+                      <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full text-xs font-bold tracking-wider uppercase mb-8 border border-white/20 backdrop-blur-md shadow-lg">
+                        <Award className="w-4 h-4 text-yellow-400" />
+                        Most Popular Choice
+                      </div>
+
+                      <div className="relative mb-10">
+                        <div className="relative flex flex-col items-center">
+                          <span className="text-lg text-blue-200 font-medium mb-3 tracking-wide">Complete Incorporation</span>
+                          <div className="flex items-start justify-center text-6xl md:text-7xl font-extrabold tracking-tight text-white drop-shadow-lg">
+                            <span className="text-3xl mt-2 opacity-80 font-semibold mr-2">₹</span>
+                            12,999
+                          </div>
+                          <div className="mt-6 flex items-center justify-center gap-2 text-sm font-medium text-emerald-100 bg-emerald-500/20 px-4 py-1.5 rounded-full border border-emerald-500/30">
+                            <CheckCircle className="w-4 h-4 text-emerald-400" />
+                            <span>Incl. Govt Fees (Capital &lt; 1L)</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={handleStartRegistration}
+                        className="group relative w-full bg-white text-blue-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:shadow-white/20 transform hover:-translate-y-1 overflow-hidden"
+                      >
+                        <div className="flex items-center justify-center gap-3 relative z-10">
+                          Register LLP Now
+                          <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-orange-500" />
+                        </div>
+                      </button>
+
+                      <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-blue-200/90 font-medium">
+                        <div className="flex items-center gap-1.5">
+                          <Shield className="w-4 h-4 text-blue-300" />
+                          Secure & Confidential
+                        </div>
+                        <div className="hidden sm:block w-1 h-1 bg-blue-500 rounded-full" />
+                        <div className="flex items-center gap-1.5">
+                          <Wallet className="w-4 h-4 text-blue-300" />
+                          EMI Available
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
-
-              {/* Right Side - The Price (Dark) */}
-              {/* Right Side - The Price (Unique Premium Design) */}
-              <div className="relative p-8 md:p-14 bg-gradient-to-b from-[#1e3a8a] to-[#172554] text-white flex flex-col justify-center items-center text-center overflow-hidden">
-                {/* Decorative Background Elements */}
-                <div className="absolute top-0 right-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl -ml-16 -mb-16 pointer-events-none"></div>
-
-                <div className="relative z-10 w-full max-w-sm mx-auto">
-                  <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 rounded-full text-xs font-bold tracking-wider uppercase mb-8 border border-white/20 backdrop-blur-md shadow-lg">
-                    <Award className="w-4 h-4 text-yellow-400" />
-                    Most Popular Choice
-                  </div>
-
-                  <div className="relative mb-10">
-                    <div className="relative flex flex-col items-center">
-                      <span className="text-lg text-blue-200 font-medium mb-3 tracking-wide">Complete Incorporation</span>
-                      <div className="flex items-start justify-center text-6xl md:text-7xl font-extrabold tracking-tight text-white drop-shadow-lg">
-                        <span className="text-3xl mt-2 opacity-80 font-semibold mr-2">₹</span>
-                        12,999
-                      </div>
-                      <div className="mt-6 flex items-center justify-center gap-2 text-sm font-medium text-emerald-100 bg-emerald-500/20 px-4 py-1.5 rounded-full border border-emerald-500/30">
-                        <CheckCircle className="w-4 h-4 text-emerald-400" />
-                        <span>Incl. Govt Fees (Capital &lt; 1L)</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={handleStartRegistration}
-                    className="group relative w-full bg-white text-blue-900 px-8 py-4 rounded-xl font-bold text-lg hover:bg-blue-50 transition-all shadow-xl hover:shadow-2xl hover:shadow-white/20 transform hover:-translate-y-1 overflow-hidden"
-                  >
-                    <div className="flex items-center justify-center gap-3 relative z-10">
-                      Register LLP Now
-                      <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform text-orange-500" />
-                    </div>
-                  </button>
-
-                  <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-blue-200/90 font-medium">
-                    <div className="flex items-center gap-1.5">
-                      <Shield className="w-4 h-4 text-blue-300" />
-                      Secure & Confidential
-                    </div>
-                    <div className="hidden sm:block w-1 h-1 bg-blue-500 rounded-full" />
-                    <div className="flex items-center gap-1.5">
-                      <Wallet className="w-4 h-4 text-blue-300" />
-                      EMI Available
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
+            }
+          />
         </div>
       </section>
 

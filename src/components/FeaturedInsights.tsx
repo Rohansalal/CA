@@ -139,7 +139,7 @@ export function FeaturedInsights() {
                         group mx-auto"
                     >
                         <BookOpen className="w-5 h-5 opacity-90" />
-                        <span className="tracking-wide">VIEW ALL INSIGHTS</span>
+                        <span className="tracking-wide text-black">VIEW ALL INSIGHTS</span>
                         <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
                     </Link>
                 </div>

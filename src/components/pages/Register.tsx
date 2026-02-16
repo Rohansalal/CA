@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { User, Mail, Phone, Lock, AlertCircle, Loader, Check } from 'lucide-react';
 
@@ -14,6 +14,13 @@ export const Register: React.FC = () => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const { register, loading, error, clearError } = useAuth();
   const navigate = useNavigate();
+
+  const location = useLocation();
+  const returnTo = location.state?.returnTo || '/dashboard';
+  const selectedService = location.state?.selectedService;
+  const selectedServiceSlug = location.state?.selectedServiceSlug;
+  const companyType = location.state?.companyType;
+  const selectedPlan = location.state?.selectedPlan;
 
   const [validations, setValidations] = useState({
     passwordLength: false,
@@ -46,7 +53,9 @@ export const Register: React.FC = () => {
 
     try {
       await register(name, email, phone, password);
-      navigate('/dashboard');
+      navigate(returnTo, {
+        state: { selectedService, selectedServiceSlug, companyType, selectedPlan }
+      });
     } catch (err) {
       console.error('Registration error:', err);
     }
@@ -63,7 +72,7 @@ export const Register: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary via-primary/95 to-secondary flex items-center justify-center p-4 py-12">
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-lg">
         {/* Logo Section */}
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-white mb-2">Precision Associates</h1>
@@ -85,17 +94,17 @@ export const Register: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Full Name */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                <User className="w-4 h-4 text-primary" />
                 Full Name
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
                 <input
                   type="text"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="John Doe"
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                  placeholder="Enter Name"
+                  className="w-full pl-4 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
                   disabled={loading}
                 />
               </div>
@@ -103,17 +112,17 @@ export const Register: React.FC = () => {
 
             {/* Email */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                <Mail className="w-4 h-4 text-primary" />
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="you@example.com"
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                  className="w-full pl-4 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
                   disabled={loading}
                 />
               </div>
@@ -121,17 +130,17 @@ export const Register: React.FC = () => {
 
             {/* Phone */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                <Phone className="w-4 h-4 text-primary" />
                 Phone Number
               </label>
               <div className="relative">
-                <Phone className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
                 <input
                   type="tel"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value.replace(/[^0-9]/g, '').slice(0, 10))}
                   placeholder="9876543210"
-                  className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                  className="w-full pl-4 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
                   disabled={loading}
                 />
               </div>
@@ -139,17 +148,17 @@ export const Register: React.FC = () => {
 
             {/* Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                <Lock className="w-4 h-4 text-primary" />
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-12 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                  className="w-full pl-4 pr-12 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
                   disabled={loading}
                 />
                 <button
@@ -158,7 +167,7 @@ export const Register: React.FC = () => {
                   className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
                   disabled={loading}
                 >
-                  {showPassword ? '👁️' : '👁️‍🗨️'}
+                  <Lock className="w-5 h-5" />
                 </button>
               </div>
               {/* Password Validation */}
@@ -172,17 +181,17 @@ export const Register: React.FC = () => {
 
             {/* Confirm Password */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
+                <Lock className="w-4 h-4 text-primary" />
                 Confirm Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
                 <input
                   type={showConfirmPassword ? 'text' : 'password'}
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-10 pr-12 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
+                  className="w-full pl-4 pr-12 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
                   disabled={loading}
                 />
                 <button
@@ -191,7 +200,7 @@ export const Register: React.FC = () => {
                   className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600"
                   disabled={loading}
                 >
-                  {showConfirmPassword ? '👁️' : '👁️‍🗨️'}
+                  <Lock className="w-5 h-5" />
                 </button>
               </div>
               <div className="mt-2 text-xs">

@@ -27,8 +27,9 @@ interface GrowthData {
 interface ServiceAnalytics {
     id: number;
     name: string;
-    price: number;
+    totalRevenue: number;
     totalPurchases: number;
+    planBreakdown: Record<string, number>;
     statusBreakdown: Record<string, number>;
 }
 
@@ -257,9 +258,9 @@ export const AdminAnalytics: React.FC = () => {
                         <thead className="bg-slate-50 text-slate-600 font-medium">
                             <tr>
                                 <th className="px-6 py-4">Service Name</th>
-                                <th className="px-6 py-4">Price</th>
+                                <th className="px-6 py-4">Sales by Plan</th>
                                 <th className="px-6 py-4">Total Sales</th>
-                                <th className="px-6 py-4">Est. Revenue</th>
+                                <th className="px-6 py-4">Total Revenue</th>
                                 <th className="px-6 py-4">Status Breakdown</th>
                             </tr>
                         </thead>
@@ -267,14 +268,28 @@ export const AdminAnalytics: React.FC = () => {
                             {serviceData.map((service) => (
                                 <tr key={service.id} className="hover:bg-slate-50 transition">
                                     <td className="px-6 py-4 font-medium text-slate-900">{service.name}</td>
-                                    <td className="px-6 py-4 text-slate-600">₹{service.price.toLocaleString()}</td>
+
+                                    <td className="px-6 py-4">
+                                        <div className="flex flex-wrap gap-1 text-xs">
+                                            {Object.entries(service.planBreakdown || {}).length > 0 ? (
+                                                Object.entries(service.planBreakdown || {}).map(([plan, count]) => (
+                                                    <span key={plan} className="px-2 py-1 rounded bg-purple-50 text-purple-700 border border-purple-100">
+                                                        {plan}: {count}
+                                                    </span>
+                                                ))
+                                            ) : (
+                                                <span className="text-gray-400 italic">No plan data</span>
+                                            )}
+                                        </div>
+                                    </td>
+
                                     <td className="px-6 py-4 text-slate-600">{service.totalPurchases}</td>
                                     <td className="px-6 py-4 text-emerald-600 font-medium">
-                                        ₹{(service.price * service.totalPurchases).toLocaleString()}
+                                        ₹{(service.totalRevenue || 0).toLocaleString()}
                                     </td>
                                     <td className="px-6 py-4">
                                         <div className="flex gap-2 text-xs">
-                                            {Object.entries(service.statusBreakdown).map(([status, count]) => (
+                                            {Object.entries(service.statusBreakdown || {}).map(([status, count]) => (
                                                 count > 0 && (
                                                     <span key={status} className={`px-2 py-1 rounded-full ${status === 'COMPLETED' ? 'bg-green-100 text-green-700' :
                                                         status === 'ACTIVE' ? 'bg-blue-100 text-blue-700' :

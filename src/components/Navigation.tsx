@@ -295,7 +295,7 @@
 //             <img
 //               src="/logo.png"
 //               alt="Company Logo"
-//               className="w-16 h-15 bg-transparent"
+//               className="w-12 h-12 sm:w-16 sm:h-16 bg-transparent"
 //             />
 //             <div className="flex flex-col items-center">
 //               <div className="text-xl font-bold text-primary font-display leading-tight">Avinash Payal & Associates</div>
@@ -696,8 +696,8 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import {
   Menu, X, Phone, Mail, ChevronDown, ChevronRight, ArrowRight,
-  Building2, Receipt, Scale, BookOpen,
-  Landmark, PieChart, Calculator, User, LogOut, LayoutDashboard, Settings
+  Building2, Receipt, Scale,
+  Landmark, PieChart, Calculator, User, BookOpen, LogOut, LayoutDashboard, Settings
 } from 'lucide-react';
 import { cn } from './ui/utils';
 
@@ -829,21 +829,6 @@ const SERVICE_CATEGORIES: ServiceCategory[] = [
       { id: 'pollution-control', name: 'Pollution Control (NOC)', route: '/services/other-registrations/pollution-control' },
     ]
   },
-  {
-    id: 'insights',
-    title: 'Resources & Blogs',
-    route: '/resources',
-    icon: BookOpen,
-    color: 'blue',
-    subServices: [
-      { id: 'budget-2026', name: 'Budget 2026 Analysis', route: '/resources/budget-2026' },
-      { id: 'gst-compliance', name: 'GST Jan 2026 Checklist', route: '/resources/gst-checklist-jan-2026' },
-      { id: 'roc-compliance', name: 'ROC Compliance Guide', route: '/resources/roc-compliance' },
-      { id: 'tax-saving', name: 'Tax Saving For Startups', route: '/resources/tax-saving-startups' },
-      { id: 'itr-guide', name: 'ITR Filing Complete Guide', route: '/resources/itr-filing-guide' },
-      { id: 'transfer-pricing', name: 'Transfer Pricing for SMEs', route: '/resources/transfer-pricing-smes' },
-    ]
-  },
 ];
 
 const NAV_ITEMS = [
@@ -851,7 +836,7 @@ const NAV_ITEMS = [
   { id: 'about', label: 'About Us', route: '/about' },
   { id: 'services', label: 'Services', hasSubmenu: true, route: '#' },
   { id: 'industries', label: 'Industries', route: '/industries' },
-  { id: 'resources', label: 'Blogs', hasSubmenu: true, route: '/resources' },
+  { id: 'resources', label: 'Blogs', route: '/resources' },
   { id: 'contact', label: 'Contact Us', route: '/contact' },
 ];
 
@@ -1109,29 +1094,29 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
       {/* MAIN NAVIGATION BAR */}
       {/* ============================================================ */}
       <div className="max-w-[95vw] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20">
+        <div className="flex justify-between items-center h-20 sm:h-24 lg:h-28">
           {/* Logo Section */}
           <button
             onClick={() => handleNavClick('/', 'home')}
-            className="flex items-center gap-3 hover:opacity-80 transition-opacity flex-shrink-0"
+            className="flex items-center gap-2 sm:gap-3 hover:opacity-80 transition-opacity flex-shrink-0"
           >
             <img
               src="/logo.png"
               alt="Company Logo"
-              className="w-16 h-15 bg-transparent"
+              className="w-10 h-10 sm:w-16 sm:h-16 bg-transparent"
             />
-            <div className="flex flex-col items-center">
-              <div className="text-xl font-bold text-primary font-display leading-tight">
+            <div className="flex flex-col items-start gap-0.5">
+              <div className="text-xs sm:text-lg md:text-xl lg:text-lg xl:text-xl 2xl:text-2xl font-bold text-primary font-display leading-none">
                 Avinash Payal & Associates
               </div>
-              <div className="text-lg font-semibold text-primary font-display leading-tight">
+              <div className="text-[10px] sm:text-sm md:text-base lg:text-xs xl:text-sm 2xl:text-base font-medium text-primary/90 font-display leading-tight tracking-wide">
                 Chartered Accountants
               </div>
             </div>
           </button>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
+          <div className="hidden lg:flex items-center gap-4 lg:gap-6 xl:gap-8 2xl:gap-12">
             {NAV_ITEMS.map((item) => (
               <div
                 key={item.id}
@@ -1144,7 +1129,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                     if (item.route && item.route !== '#') handleNavClick(item.route, item.id);
                   }}
                   className={cn(
-                    "text-sm font-medium transition-colors relative flex items-center gap-1.5 py-2",
+                    "text-sm lg:text-base font-medium transition-colors relative flex items-center gap-1.5 py-2",
                     currentPage === item.id
                       ? 'text-primary'
                       : 'text-neutral-700 hover:text-primary'
@@ -1267,7 +1252,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                   navigate('/#consultation-form');
                 }
               }}
-              className="px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-lg transform hover:-translate-y-0.5"
+              className="px-3 py-1.5 lg:px-4 lg:py-2 xl:px-6 xl:py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-lg transform hover:-translate-y-0.5 text-xs lg:text-sm xl:text-base whitespace-nowrap"
             >
               GET EXPERT CA GUIDANCE
             </button>

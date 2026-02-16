@@ -55,7 +55,7 @@ export function Footer({ onNavigate }: FooterProps) {
           <div>
             <div className="flex items-center gap-3 mb-6">
               <div className="w-11 h-11 bg-accent rounded-lg flex items-center justify-center">
-                <img src="/logo.png" alt="Logo" className="w-12 h-12 rounded-lg object-cover bg-white border-0 shadow-none hover:shadow-lg transition-shadow" />
+                <img src="/logo.png" alt="Logo" className="w-full h-full rounded-lg object-cover bg-white border-0 shadow-none hover:shadow-lg transition-shadow" />
               </div>
               <div>
                 <div className="text-xl font-bold text-white font-display">Avinash Payal & Associates</div>
@@ -171,10 +171,11 @@ export function Footer({ onNavigate }: FooterProps) {
             <div>
               © 2026 Avinash Payal & Co.. All rights reserved. | ICAI Registered Firm
             </div>
-            <div className="flex gap-6">
-              <div className="flex gap-6">
+            <div className="flex gap-6 flex-wrap justify-center">
+              <div className="flex gap-6 flex-wrap justify-center">
                 <button onClick={() => handleNavClick('privacy-policy')} className="hover:text-accent transition-colors">Privacy Policy</button>
                 <button onClick={() => handleNavClick('terms-conditions')} className="hover:text-accent transition-colors">Terms & Conditions</button>
+                <button onClick={() => window.dispatchEvent(new CustomEvent('openCookieSettings'))} className="hover:text-accent transition-colors">Cookie Policy</button>
                 <button onClick={() => handleNavClick('terms-conditions')} className="hover:text-accent transition-colors">Disclaimer</button>
               </div>
             </div>
