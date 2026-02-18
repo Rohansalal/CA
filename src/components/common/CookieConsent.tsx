@@ -15,11 +15,11 @@ const CookieConsent: React.FC = () => {
     const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
     useEffect(() => {
-        const storedConsent = localStorage.getItem('cookie-consent');
-        if (!storedConsent) {
-            const timer = setTimeout(() => setIsVisible(true), 1500);
-            return () => clearTimeout(timer);
-        }
+        // const storedConsent = localStorage.getItem('cookie-consent');
+        // if (!storedConsent) {
+        const timer = setTimeout(() => setIsVisible(true), 1500);
+        return () => clearTimeout(timer);
+        // }
     }, []);
 
     const showToast = (type: 'success' | 'error', message: string) => {
@@ -69,7 +69,7 @@ const CookieConsent: React.FC = () => {
                 // Fail silently for user, as local preference is saved
             }
 
-            setIsVisible(false);
+            // setIsVisible(false);
             showToast('success', '✓ Preferences saved');
         } catch (error) {
             console.error('Cookie consent error:', error);

@@ -133,7 +133,7 @@ function AppContent() {
     <div className="min-h-screen bg-neutral-50 relative">
       <CrispChat />
       {showNavigation && <Navigation currentPage={currentPage} onNavigate={() => { }} />}
-      {location.pathname === '/' && <CookieConsent />}
+      {/* {location.pathname === '/' && <CookieConsent />} */}
       <main>
         <Routes>
           {/* Auth Routes */}
