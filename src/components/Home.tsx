@@ -112,7 +112,7 @@ export function Home() {
                 Precision. Compliance. Growth. We provide comprehensive financial solutions that empower your business with expert tax planning, audit, and strategic advisory services.
               </p>
 
-              <div className="relative max-w-lg mt-8 mb-8 group z-20">
+              {/* <div className="relative max-w-lg mt-8 mb-8 group z-20">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                   <Search className="h-5 w-5  text-gray-500 group-focus-within:text-accent transition-colors" />
                 </div>
@@ -133,7 +133,7 @@ export function Home() {
                     <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
-              </div>
+              </div> */}
               <br />
               <div className="flex flex-col sm:flex-row gap-4">
                 <button

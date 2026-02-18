@@ -555,7 +555,7 @@ export function ConsultingFormNew() {
                   </li>
                   <li className="flex gap-2">
                     <span className="text-orange-500 font-bold">•</span>
-                    <span>10+ Years of Industry Experience</span>
+                    <span>21+ Years of Industry Experience</span>
                   </li>
                   <li className="flex gap-2">
                     <span className="text-orange-500 font-bold">•</span>

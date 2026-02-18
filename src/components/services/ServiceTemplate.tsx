@@ -310,6 +310,8 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                             </p>
                         </div>
 
+                        <br />
+                        <br />
                         <div className="relative">
                             {/* Desktop Connected Line */}
                             <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -z-0 -translate-y-1/2"></div>

@@ -135,7 +135,7 @@ export function Footer({ onNavigate }: FooterProps) {
               <div className="flex items-center gap-3">
                 <Phone className="w-5 h-5 text-accent flex-shrink-0" />
                 <a href="tel:+911234567890" className="text-neutral-200 hover:text-accent transition-colors text-sm">
-                  +91  9811105573
+                  +91  8300656377
                 </a>
               </div>
               <div className="flex items-center gap-3">

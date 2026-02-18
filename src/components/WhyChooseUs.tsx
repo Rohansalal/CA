@@ -11,7 +11,7 @@
 //         },
 //         {
 //             icon: TrendingUp,
-//             title: '10+ Years of Industry Experience',
+//             title: '21+ Years of Industry Experience',
 //             description: 'Decade-long track record of delivering exceptional financial services',
 //             color: 'from-blue-500 to-blue-600',
 //         },
@@ -147,7 +147,7 @@ export function WhyChooseUs() {
         },
         {
             icon: TrendingUp,
-            title: '10+ Years Experience',
+            title: '21+ Years Experience',
             description: 'Proven track record in financial growth.',
         },
         {

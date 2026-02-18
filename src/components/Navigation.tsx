@@ -1085,7 +1085,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
             </div>
             <div className="flex items-center gap-2">
               <span className="text-accent">✓</span>
-              <span>ICAI Registered | 10+ Years Experience</span>
+              <span>ICAI Registered | 21+ Years Experience</span>
             </div>
           </div>
         </div>
@@ -1104,10 +1104,10 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
             <img
               src="/logo.png"
               alt="Company Logo"
-              className="w-10 h-10 sm:w-16 sm:h-16 bg-transparent"
+              className="w-12 h-12 sm:w-20 sm:h-20 bg-transparent"
             />
             <div className="flex flex-col items-start gap-0.5">
-              <div className="text-xs sm:text-lg md:text-xl lg:text-lg xl:text-xl 2xl:text-2xl font-bold text-primary font-display leading-none">
+              <div className="text-sm sm:text-xl md:text-2xl lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-primary font-display leading-none uppercase">
                 Avinash Payal & Associates
               </div>
               <div className="text-[10px] sm:text-sm md:text-base lg:text-xs xl:text-sm 2xl:text-base font-medium text-primary/90 font-display leading-tight tracking-wide">
