@@ -112,25 +112,29 @@ export function Home() {
                 Precision. Compliance. Growth. We provide comprehensive financial solutions that empower your business with expert tax planning, audit, and strategic advisory services.
               </p>
 
-              {/* Modern Search Bar */}
-              <div className="relative max-w-lg mt-8 mb-8 group">
+              <div className="relative max-w-lg mt-8 mb-8 group z-20">
                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <Search className="h-5 w-5 text-gray-400 group-focus-within:text-accent transition-colors" />
+                  <Search className="h-5 w-5  text-gray-500 group-focus-within:text-accent transition-colors" />
                 </div>
                 <input
                   type="text"
-                  className="block w-full pl-11 pr-4 py-4 bg-white border-0 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white/50 shadow-xl transition-all"
+                  className="block w-full pl-11 pr-4 py-4 bg-white/95 backdrop-blur-sm border border-white/20 rounded-2xl text-gray-900 placeholder-gray-900 focus:outline-none focus:ring-2 focus:ring-accent/50 focus:bg-white shadow-2xl transition-all duration-300"
                   placeholder="Search for services (e.g. GST, ITR, Audit)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
                 />
-                <div className="absolute inset-y-0 right-1 flex items-center">
-                  <button onClick={() => handleSearch()} className="p-2.5 bg-accent text-white rounded-lg hover:bg-accent/90 transition-all hover:scale-105 shadow-md">
-                    <ArrowRight className="h-5 w-5" />
+                <div className="absolute inset-y-0 right-2 flex items-center pt-1.5 pb 1.5 constent-center">
+                  <button
+                    onClick={() => handleSearch()}
+                    className="p-3 bg-gradient-to-r from-accent to-orange text-black rounded-xl hover:shadow-lg hover:shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 font-medium"
+                  >
+                    Search
+                    <ArrowRight className="h-4 w-4" />
                   </button>
                 </div>
               </div>
+              <br />
               <div className="flex flex-col sm:flex-row gap-4">
                 <button
                   onClick={() => document.getElementById('consultation-form')?.scrollIntoView({ behavior: 'smooth' })}

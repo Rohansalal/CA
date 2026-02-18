@@ -47,6 +47,8 @@ export interface ServiceContent {
     // New Content Fields
     descriptionTitle?: string;
     descriptionContent?: string;
+    process?: { step: string, title: string, description: string }[];
+    testimonials?: { name: string, role?: string, review: string, rating: number }[];
 }
 
 interface ServiceTemplateProps {
@@ -121,6 +123,8 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                             </div>
                         )}
 
+                        <br />
+                        <br />
                         <div className="mt-10">
                             <button
                                 onClick={() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' })}
@@ -133,34 +137,54 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                 </div>
             </section>
 
-            {/* About / Description Section - Moved Here */}
-            {(content.descriptionTitle || content.descriptionContent) && (
-                <section className="py-20 bg-white relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="max-w-4xl mx-auto">
-                            <div className="bg-slate-50/50 rounded-3xl p-8 md:p-12 border border-slate-100 text-center relative">
-                                {/* Decorative quote/icon background */}
-                                <div className="absolute top-6 left-8 opacity-5">
-                                    <FileText className="w-24 h-24" />
-                                </div>
+            <br />
+            <br />
+            <br />
+            <br />
 
+            {/* About / Description Section - Moved Here */}
+            {/* About / Description Section (Modern & Clean) */}
+            {(content.descriptionTitle || content.descriptionContent) && (
+                <section className="py-24 lg:py-32 bg-white relative overflow-hidden">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="flex flex-col md:flex-row items-start gap-12 lg:gap-24">
+                            {/* Left: Title & Visual */}
+                            <div className="w-full md:w-1/3 sticky top-24">
                                 {content.descriptionTitle && (
                                     <>
-                                        <h2 className="text-3xl font-bold text-gray-900 mb-6 relative z-10">{content.descriptionTitle}</h2>
-                                        <div className="h-1.5 w-24 bg-primary mx-auto mb-8 rounded-full relative z-10"></div>
+                                        <div className="inline-block p-3 bg-blue-50 rounded-2xl mb-6">
+                                            <FileText className="w-8 h-8 text-primary" />
+                                        </div>
+                                        <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight mb-4 font-display">
+                                            {content.descriptionTitle}
+                                        </h2>
+                                        <div className="h-1.5 w-20 bg-accent rounded-full"></div>
                                     </>
                                 )}
+                            </div>
+
+                            {/* Right: Content */}
+                            <div className="w-full md:w-2/3">
                                 {content.descriptionContent && (
-                                    <p className="text-lg text-gray-700 leading-relaxed relative z-10 font-medium tracking-wide">
-                                        {content.descriptionContent}
-                                    </p>
+                                    <div className="prose prose-xl text-gray-600 leading-loose font-light tracking-wide">
+                                        <p>
+                                            {content.descriptionContent}
+                                        </p>
+                                    </div>
                                 )}
                             </div>
                         </div>
                     </div>
                 </section>
             )}
+
+            <br />
+            <br />
+            <br />
+            <br />
+
+            {/* Application Process Section */}
+
 
             {/* Service Types / Categories (Optional) */}
             {content.types && (
@@ -194,10 +218,13 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                 </section>
             )}
 
+            <br />
+            <br />
+            <br />
+            <br />
 
-
-            {/* --- PLANS SECTION (Key Request: All 4 in one line) --- */}
-            <section id="plans" className="py-24 relative bg-gray-50/50">
+            {/* --- PLANS SECTION --- */}
+            <section id="plans" className="py-24 lg:py-32 relative bg-slate-50 border-y border-slate-200/60">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4">Choose Your Plan</h2>
@@ -264,9 +291,47 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                                 </div>
                             </div>
                         ))}
+                        <br />
+                        <br />
+                        <br />
+                        <br />
                     </div>
                 </div>
             </section>
+
+            {/* Application Process Section (Moved below Plans) */}
+            {content.process && (
+                <section className="py-24 lg:py-32 bg-white relative">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-20">
+                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-6 font-display">How It Works</h2>
+                            <p className="text-xl text-gray-500 max-w-3xl mx-auto">
+                                Simple, transparent, and efficient process to get your work done.
+                            </p>
+                        </div>
+
+                        <div className="relative">
+                            {/* Desktop Connected Line */}
+                            <div className="hidden md:block absolute top-1/2 left-0 w-full h-0.5 bg-gray-100 -z-0 -translate-y-1/2"></div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-12 relative z-10">
+                                {content.process.map((step, idx) => (
+                                    <div key={idx} className="flex flex-col items-center text-center group">
+                                        <div className="w-20 h-20 bg-white border-4 border-white shadow-xl shadow-blue-900/5 rounded-full flex items-center justify-center text-2xl font-bold text-primary mb-8 group-hover:scale-110 group-hover:border-accent group-hover:text-accent transition-all duration-300 relative z-10">
+                                            {idx + 1}
+                                        </div>
+                                        <h3 className="text-xl font-bold text-gray-900 mb-3 group-hover:text-accent transition-colors">{step.title}</h3>
+                                        <p className="text-gray-600 leading-relaxed">
+                                            {step.description}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            )}
+
 
             {/* Plan Details Modal */}
             {selectedPlan && (
@@ -359,7 +424,7 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                                     onClick={handleProceedToPayment}
                                     className="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2"
                                 >
-                                    Proceed to Payment <ArrowRight className="w-5 h-5" />
+                                    Proceed to Filling Form <ArrowRight className="w-5 h-5" />
                                 </button>
                                 <p className="text-center text-xs text-gray-400 mt-3">
                                     Secure payment via Razorpay. Invoice generated instantly.
@@ -369,6 +434,11 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                     </div>
                 </div>
             )}
+
+            <br />
+            <br />
+            <br />
+            <br />
 
             {/* Common Sections (Benefits, Docs, FAQs) */}
             <div className="bg-neutral-50 py-20 border-t border-gray-200">

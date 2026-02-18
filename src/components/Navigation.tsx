@@ -1043,6 +1043,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
     setMobileMenuOpen(false);
     setMobileServicesOpen(false);
     setIsProfileOpen(false);
+    setIsServicesHovered(false);
     setActiveCategory(SERVICE_CATEGORIES[0].id);
     setActiveMobileCategory(null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1252,7 +1253,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                   navigate('/#consultation-form');
                 }
               }}
-              className="px-3 py-1.5 lg:px-4 lg:py-2 xl:px-6 xl:py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-lg transform hover:-translate-y-0.5 text-xs lg:text-sm xl:text-base whitespace-nowrap"
+              className="px-3 py-3 lg:px-4 lg:py-2 xl:px-6 xl:py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-lg transform hover:-translate-y-0.5 text-xs lg:text-sm xl:text-base whitespace-nowrap"
             >
               GET EXPERT CA GUIDANCE
             </button>

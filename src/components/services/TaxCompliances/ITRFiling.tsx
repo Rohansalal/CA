@@ -1,7 +1,6 @@
-
 import React, { useState } from 'react';
 import {
-    FileText, CheckCircle, PieChart, Clock, ArrowRight, TrendingUp, AlertCircle, DollarSign, Shield, Briefcase, Globe, Award
+    FileText, CheckCircle, PieChart, Clock, ArrowRight, TrendingUp, AlertCircle, DollarSign, Shield, Briefcase, Globe, Award, Calculator, UploadCloud
 } from 'lucide-react';
 import { ServiceTemplate, ServiceContent } from '../ServiceTemplate';
 
@@ -28,156 +27,168 @@ export function ITRFiling() {
 
     const defaultContent: ServiceContent = {
         title: "Income Tax Filing",
-        subtitle: "Expert ITR Filing Service",
-        description: "Accurate, secure, and hassle-free Income Tax Return filing by expert Chartered Accountants. Maximize your refunds and stay compliant.",
+        subtitle: "Expert-Assisted ITR Filing",
+        description: "Maximize your refunds and ensure 100% compliance with India's leading tax experts. Secure, accurate, and completely hassle-free filing experience.",
         heroFeatures: [
-            { icon: Award, text: "Expert Assisted" },
-            { icon: Shield, text: "Secure & Confidential" }
+            { icon: Award, text: "Authorized E-Return Intermediary" },
+            { icon: Shield, text: "256-bit Secure Encryption" },
+            { icon: Clock, text: "Fastest Refund Processing" }
         ],
-        typesTitle: "Who Should File?",
+        process: [
+            { step: "1", title: "Upload Documents", description: "Easily upload Form-16 and other documents on our secure dashboard." },
+            { step: "2", title: "Expert Review", description: "Our CAs review your details, identify tax savings, and prepare your return." },
+            { step: "3", title: "Review & File", description: "You approve the summary, and we file your return with the IT Department." },
+            { step: "4", title: "Ack & Refund", description: "Get your ITR-V acknowledgment and track your refund status." }
+        ],
+        typesTitle: "Who Should File ITR?",
         types: [
             {
                 title: 'Salaried & Individuals',
-                description: 'For employees with salary income, house property, and other sources.',
+                description: 'Ideal for employees, pensioners, and individuals with house property income.',
                 icon: FileText,
-                features: ['Form 16 Analysis', 'House Rent Allowance', 'Deductions (80C, 80D)', 'Tax Refund Claims'],
+                features: ['Multiple Form 16 Support', 'HRA & Rental Income', 'Chapter VI-A Deductions', 'Maximum Tax Refund'],
             },
             {
-                title: 'Capital Gains & Investors',
-                description: 'For traders and investors with income from stocks, mutual funds, or crypto.',
-                icon: TrendingUp,
-                features: ['Stock Market Gains', 'Crypto Assets', 'Real Estate Sale', 'Foreign Assets'],
-            },
-            {
-                title: 'Business & Profession',
-                description: 'For freelancers, doctors, lawyers, and small business owners.',
+                title: 'Business & Freelancers',
+                description: 'Tailored for small business owners, professionals, and freelancers.',
                 icon: Briefcase,
-                features: ['Presumptive Taxation', 'Business Expenses', 'Balance Sheet', 'Audit Applicability Check'],
+                features: ['Presumptive Taxation (44AD)', 'Expense Management', 'Financial Statements', 'Profit & Loss Analysis'],
+            },
+            {
+                title: 'Capital Gains & Traders',
+                description: 'For investors in Stocks, Mutual Funds, Crypto, and Real Estate.',
+                icon: TrendingUp,
+                features: ['Capital Gains Statement', 'Intraday & F&O Trading', 'Crypto Tax Filing', 'Asset Sale Reporting'],
             },
         ],
         // Default plans (fallback)
         plans: [
             {
                 name: 'Basic',
-                price: 2500,
+                price: 999,
                 color: 'bg-blue-500',
+                description: "For single Form-16 & Interest Income",
                 features: [
-                    'Salary / Pension / House Property',
-                    'Bank Interest / Dividend',
-                    'Presumptive Business (44AD/ADA)',
-                    'Single Form 16 / Single House'
+                    'Salary Income (Single Form 16)',
+                    'Interest Income Reporting',
+                    'House Rent Allowance (HRA)',
+                    'Standard Deductions',
+                    'Tax Due/Refund Calculation',
+                    'ITR-1 Filing'
                 ]
             },
             {
                 name: 'Standard',
-                price: 5000,
+                price: 1999,
                 color: 'bg-green-500',
                 recommended: true,
+                description: "Perfect for multiple incomes & house property",
                 features: [
-                    'Everything in Basic',
-                    'Multiple Form 16 / Multiple House',
-                    'Capital Gain / Commission Inc.',
-                    'Tax payment assistance',
-                    'Pre-filling discussion',
-                    'Post filing petty issues*'
+                    'Multiple Form 16s',
+                    'House Property Income',
+                    'Capital Gains (Basic)',
+                    'Deductions (80C, 80D, etc.)',
+                    'Support for Notices (Basic)',
+                    'ITR-1 / ITR-2 Filing'
                 ]
             },
             {
-                name: 'Premium',
-                price: 7000,
+                name: 'Professional',
+                price: 3499,
                 color: 'bg-purple-500',
+                description: "For Freelancers, Consultants & Businesses",
                 features: [
-                    'Everything in Standard',
-                    'Multiple Capital Gains / F&O',
-                    'Crypto / ESOPs',
-                    'Directorship / Unlisted Shares',
-                    'Business Balance Sheet',
-                    'Year round advisory**'
+                    'Business/Profession Income',
+                    'Presumptive Taxation (44AD)',
+                    'Balance Sheet & P&L',
+                    'GST Reconciliation',
+                    'Depreciation Benefits',
+                    'ITR-3 / ITR-4 Filing'
                 ]
             },
             {
-                name: 'Elite',
-                price: 8000,
+                name: 'Trader / Investor',
+                price: 4999,
                 color: 'bg-yellow-500',
+                description: "For Stock Market & Crypto Traders",
                 features: [
-                    'Everything in Premium',
-                    'Income >1 Crore',
-                    'Foreign Income / Assets',
-                    'Personal Balance Sheet',
-                    'Advance Tax Compliances',
-                    'AIS-TIS-26AS Reconciliation'
+                    'Capital Gains (Stocks/MF)',
+                    'Intraday & F&O Trading',
+                    'Crypto Assets Reporting',
+                    'Foreign Assets Declaration',
+                    'Loss Carry Forward',
+                    'Expert Tax Planning'
                 ]
             }
         ],
-        descriptionTitle: "What is Income Tax Return (ITR)?",
-        descriptionContent: "Income Tax Return (ITR) is a form that every taxpayer files with the Income Tax Department of India. It contains details of your income, tax deductions, and tax payments for a financial year. Filing ITR is mandatory if your income exceeds the basic exemption limit. Even if it's not mandatory, filing ITR is crucial for claiming tax refunds, applying for loans, and processing visas.",
+        descriptionTitle: "What is ITR Filing?",
+        descriptionContent: "Income Tax Return (ITR) is a form that marks your declaration of income, tax liability, and tax payments to the government. Filing ITR is not just a mandatory annual compliance but a vital financial proof that facilitates loan approvals, visa processing, and carrying forward of losses. Whether you are salaried, a freelancer, or a business owner, timely filing ensures you stay compliant and claim legitimate tax refunds.",
         faqs: [
             {
                 q: 'Is it mandatory to file ITR?',
-                a: 'Yes, if your gross total income exceeds the basic exemption limit (₹2.5L or ₹3L under new regime). It is also mandatory for carrying forward losses or claiming refunds.',
+                a: 'Yes, if your gross total income exceeds the basic exemption limit (₹2.5L or ₹3L depending on age/regime). Even if income is below the limit, filing ITR is necessary to claim tax refunds, carry forward losses, or for visa/loan applications.',
             },
             {
-                q: 'What are "Post filing petty issues"?',
-                a: 'These include handling minor discrepancies like bank mismatches, TDS mismatches, or refund failures that may occur after filing.',
+                q: 'What is the due date for filing ITR?',
+                a: 'For most individuals (non-audit cases), the due date is usually 31st July of the assessment year. Late filing attracts penalties up to ₹5,000 and interest on unpaid taxes.',
             },
             {
-                q: 'Do you provide year-round advisory?',
-                a: 'Yes, our Premium and Elite plans include verbal year-round tax and investment advisory to help you plan your finances better.',
+                q: 'Can I file ITR if I don’t have Form 16?',
+                a: 'Yes, you can. We can file your ITR using your salary slips, bank statements, and Form 26AS/AIS. Form 16 makes it easier but is not the only document.',
             },
             {
-                q: 'What information is needed for Foreign Assets?',
-                a: 'You need to provide details like Nature of asset, Cost of acquisition, Country where located, and Income earned from such assets.',
+                q: 'How do you handle Capital Gains?',
+                a: 'You simply need to upload the Capital Gain Statement (CAMS/Broker report). Our experts will analyze Short Term (STCG) and Long Term (LTCG) gains and apply relevant exemptions.',
             },
             {
-                q: 'How do I share my documents?',
-                a: 'You can securely upload documents on our dashboard after logging in, or share them via email/WhatsApp as per your convenience.',
+                q: 'What if I receive a tax notice?',
+                a: 'Our Premium plans cover basic notice management. We will guide you on how to respond to common intimations from the IT department. For complex scrutiny notices, we offer separate advisory services.',
             },
         ],
         checklist: [
-            "Copy of PAN & Aadhaar",
-            "Form 16 (Salary Certificate)",
-            "Bank Statements (Interest Income)",
-            "Investment Proofs (LIC/PPF/ELSS)",
-            "Capital Gain Statements (Broker)",
-            "Home Loan Interest Certificate",
-            "Form 26AS & AIS/TIS Report"
+            "PAN Card & Aadhaar Card",
+            "Form 16 / Salary Slips",
+            "Bank Account Details (Account No & IFSC)",
+            "Interest Certificates (Savings/FD)",
+            "Capital Gain Statements (if applicable)",
+            "Home Loan Interest Certificate (if applicable)",
+            "Investment Proofs (LIC, PPF, Donations, etc.)"
         ],
         termsAndConditions: [
-            "Fee is subject to change without prior information.",
-            "If any additional calculation is needed, it will be charged separately.",
-            "If any additional form need to file, it will be charged separately.",
-            "Fee paid is non refundable if computation is prepared.",
-            "* Post filing petty issues like bank mismatch, tds mismatch, refund failure etc.",
-            "** Verbal advice only."
+            "Prices mentioned are starting prices and may vary based on complexity.",
+            "Government fees/penalties, if any, are payable separately.",
+            "Refund processing time is subject to Income Tax Department discretion.",
+            "Data provided by the client is assumed to be true and correct.",
+            "CA advisory included in plans is limited to specific time duration."
         ],
         benefits: [
-            'Prefiling consultation for tax saving insights',
-            'Expert team ensures accurate filing',
-            'Post-filing support: notices & refunds',
-            'Financial data safely backed up',
-            'Confidential, personalized guidance',
-            'Year-round tax & investment advisory**',
+            'Dedicated CA for your filing',
+            'Maximum Tax Refund Guarantee',
+            '100% Data Privacy & Security',
+            'Year-round Tax Support',
+            'Error-free Accurate Filing',
+            'Notice Management Assistance',
         ],
         criticalConsiderations: [
             {
-                title: 'Late Filing Fee',
-                description: 'Penalty of up to ₹5,000 u/s 234F for filing after the due date (31st July).',
+                title: 'Late Fees',
+                description: 'Penalty of up to ₹5,000 u/s 234F for filing after the due date.',
                 icon: DollarSign,
             },
             {
                 title: 'Defective Return',
-                description: 'Mismatches with AIS/TIS can lead to notices and defective return status.',
+                description: 'Incorrect disclosures can lead to "Defective Return" notices u/s 139(9).',
                 icon: AlertCircle,
             },
             {
                 title: 'Foreign Assets',
-                description: 'Non-disclosure of foreign assets (shares, bank challenges) attracts heavy penalties.',
+                description: 'Mandatory disclosure of foreign assets to avoid Black Money Act implications.',
                 icon: Globe,
             },
             {
-                title: 'Loss Carrier',
-                description: 'Losses from stocks/business cannot be carried forward if return is filed late.',
-                icon: Shield,
+                title: 'Losses',
+                description: 'Filing on time is mandatory to carry forward stock market or business losses.',
+                icon: TrendingUp,
             }
         ]
     };
@@ -186,7 +197,7 @@ export function ITRFiling() {
     const content = { ...defaultContent };
     if (fetchedService && fetchedService.plans && fetchedService.plans.length > 0) {
         content.plans = fetchedService.plans.map((p: any, index: number) => {
-            // Basic color mapping logic if backend doesn't provide color
+            // Colors logic
             const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-yellow-500'];
             const color = colors[index % colors.length];
 
@@ -194,8 +205,8 @@ export function ITRFiling() {
                 id: p.id,
                 name: p.planType,
                 price: p.discountedPrice || p.price,
-                description: p.planType === 'Standard' ? 'Recommended for most' : '', // Simple logic
-                recommended: p.planType === 'Standard' || p.isPopular, // fallback logic
+                description: p.planType === 'Standard' ? 'Most Popular Choice' : '',
+                recommended: p.planType === 'Standard' || p.isPopular,
                 color: color,
                 features: p.scopes ? p.scopes.map((s: any) => s.title || s.description) : (p.features || [])
             };
