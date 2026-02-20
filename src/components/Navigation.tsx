@@ -1104,13 +1104,13 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
             <img
               src="/logo.png"
               alt="Company Logo"
-              className="w-12 h-12 sm:w-20 sm:h-20 bg-transparent"
+               className="w-14 h-14  sm:w-20 sm:h-20 border border-gray-300 object-contain p-1 bg-white shadow-sm rounded-lg"
             />
             <div className="flex flex-col items-start gap-0.5">
-              <div className="text-sm sm:text-xl md:text-2xl lg:text-xl xl:text-2xl 2xl:text-3xl font-bold text-primary font-display leading-none uppercase">
-                Avinash Payal & Associates
-              </div>
-              <div className="text-[10px] sm:text-sm md:text-base lg:text-xs xl:text-sm 2xl:text-base font-medium text-primary/90 font-display leading-tight tracking-wide">
+<div className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-primary font-display leading-tight uppercase">
+  Avinash Payal & Associates
+</div>
+      <div className="text-[10px] sm:text-sm md:text-base lg:text-xs xl:text-sm 2xl:text-base font-medium text-primary font-display leading-tight tracking-wide">
                 Chartered Accountants
               </div>
             </div>

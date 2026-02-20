@@ -131,7 +131,7 @@ export function FeaturedInsights() {
                     <Link
                         to="/resources"
                         className="inline-flex items-center gap-3 px-14 py-4
-                        bg-orange-600 text-white hover:text-white font-bold text-base
+                        bg-orange-600 text-black hover:text-black font-bold text-base
                         rounded-full shadow-md
                         hover:bg-orange-700 hover:shadow-xl
                         transition-all duration-300 ease-out

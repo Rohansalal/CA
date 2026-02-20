@@ -136,7 +136,7 @@
 //     );
 // }
 
-import { Award, CheckCircle, TrendingUp, Shield, Users, Target, Heart } from 'lucide-react';
+import { Award, CheckCircle, TrendingUp, Shield, Users, Target, Heart, UserCheck } from 'lucide-react';
 
 export function WhyChooseUs() {
     const features = [
@@ -170,6 +170,11 @@ export function WhyChooseUs() {
             title: 'Dedicated Support',
             description: 'Personalized single point of contact.',
         },
+        {
+            icon: UserCheck,
+            title: 'Dedicated CA Relationship Manager',
+            description: 'Personalized assistance tailored to your firm’s needs.',
+        }
     ];
 
     return (
@@ -204,9 +209,10 @@ export function WhyChooseUs() {
                         <div className="sticky top-8">
                             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
                                 <img
-                                    src="https://images.unsplash.com/photo-1759310610325-2c7cb621e5e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGhhbmRzaGFrZSUyMHRydXN0fGVufDF8fHx8MTc2ODgwOTM2Nnww&ixlib=rb-4.1.0&q=80&w=1080"
+                                    // src="https://images.unsplash.com/photo-1759310610325-2c7cb621e5e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGhhbmRzaGFrZSUyMHRydXN0fGVufDF8fHx8MTc2ODgwOTM2Nnww&ixlib=rb-4.1.0&q=80&w=1080"
+                                    src='/WhyChooseUS.png'
                                     alt="Professional CA Partnership"
-                                    className="w-full h-[400px] lg:h-[600px] object-cover"
+                                    className="w-full h-[600px] lg:h-[800px] object-cover"
                                 />
                                 {/* Overlay */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-900/40 to-transparent" />
@@ -233,19 +239,19 @@ export function WhyChooseUs() {
                             {features.map((feature, index) => (
                                 <div
                                     key={index}
-                                    className="group flex items-start gap-6 p-6 bg-white rounded-xl border-2 border-slate-200 hover:border-[#136da1] hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+                                    className="group flex items-center gap-4 p-4 bg-white rounded-xl border-2 border-slate-200 hover:border-[#136da1] hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
                                 >
                                     {/* Icon Box */}
-                                    <div className="flex-shrink-0 w-14 h-14 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg group-hover:scale-110 transition-all duration-300" style={{ backgroundColor: '#136da1' }}>
-                                        <feature.icon className="w-7 h-7 text-white" />
+                                    <div className="flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center shadow-sm group-hover:shadow-md group-hover:scale-105 transition-all duration-300" style={{ backgroundColor: '#136da1' }}>
+                                        <feature.icon className="w-6 h-6 text-white" />
                                     </div>
 
                                     {/* Content */}
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="text-lg font-bold text-slate-800 group-hover:text-[#136da1] transition-colors mb-2">
+                                        <h3 className="text-base font-bold text-slate-800 group-hover:text-[#136da1] transition-colors mb-1">
                                             {feature.title}
                                         </h3>
-                                        <p className="text-sm text-orange-600 font-bold leading-relaxed">
+                                        <p className="text-sm text-orange-600 font-bold leading-tight">
                                             {feature.description}
                                         </p>
                                     </div>

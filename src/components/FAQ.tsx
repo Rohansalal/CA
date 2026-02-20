@@ -47,10 +47,6 @@ export function FAQ() {
           <br />
           <br />
           <br />
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 rounded-full mb-4">
-            <HelpCircle className="w-4 h-4 text-primary" />
-            <span className="text-xs font-bold text-primary uppercase tracking-wide">FAQ</span>
-          </div>
           <h2 className="text-4xl lg:text-5xl font-bold text-primary mb-4">
             Frequently Asked Questions
           </h2>

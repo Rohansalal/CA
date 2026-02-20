@@ -199,7 +199,7 @@ Expected payload:
 
 ### **Trust Indicators**
 - Professional CA branding
--21+ Years Experience
+- 10+ years experience
 - 1000+ happy clients
 - 24/7 expert support badge
 - 100% data security badge

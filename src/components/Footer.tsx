@@ -54,14 +54,38 @@ export function Footer({ onNavigate }: FooterProps) {
           {/* Company Info */}
           <div>
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-11 h-11 bg-accent rounded-lg flex items-center justify-center">
-                <img src="/logo.png" alt="Logo" className="w-full h-full rounded-lg object-cover bg-white border-0 shadow-none hover:shadow-lg transition-shadow" />
+              <div className="w-35 h-35 bg-accent rounded-lg flex items-center justify-center">
+                <img src="/logo.png" alt="Logo" className="w-25 h-20 rounded-lg object-cover bg-white border-0 shadow-none hover:shadow-lg transition-shadow" />
               </div>
               <div>
-                <div className="text-xl font-bold text-white font-display">Avinash Payal & Associates</div>
+                <div className="text-xl font-bold text-white font-display">Avinash Payal  &  Associates</div>
                 <div className="text-xs text-neutral-200">Chartered Accountants</div>
               </div>
             </div>
+            {/* <div className="flex flex-col gap-2 mb-6">
+
+  {/* Row 1: Logo + Name */}
+  {/* <div className="flex items-center gap-3">
+    <div className="w-11 h-11 bg-accent rounded-lg flex items-center justify-center">
+      <img
+        src="/logo.png"
+        alt="Logo"
+        className="w-2 h-20 rounded-lg object-cover bg-white border-0 shadow-none hover:shadow-lg transition-shadow"
+      />
+    </div>
+
+    <div className="text-xl font-bold text-white font-display">
+      Avinash Payal    & 
+        Associates
+    </div>
+  </div>
+
+  {/* Row 2: Tagline below logo */}
+  {/* <div className="pl-14 text-xs text-neutral-200">
+    Chartered Accountants
+  </div>
+
+</div>  */}
             <p className="text-neutral-200 mb-6 leading-relaxed">
               Your trusted partner for taxation, audit, and business growth. Delivering excellence since 2014.
             </p>
