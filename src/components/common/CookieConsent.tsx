@@ -7,7 +7,7 @@ interface Toast {
     message: string;
 }
 
-const CookieConsent: React.FC = () => {
+export const CookieConsent: React.FC = () => {
     const [isVisible, setIsVisible] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [toasts, setToasts] = useState<Toast[]>([]);
@@ -204,5 +204,3 @@ const CookieConsent: React.FC = () => {
         </>
     );
 };
-
-export default CookieConsent;

@@ -112,8 +112,7 @@ import { PollutionControlLicense } from './components/services/OtherRegistration
 import Navigation from './components/Navigation';
 import { Footer } from './components/Footer';
 import { ScrollToTop } from './components/ScrollToTop';
-import CookieConsent from './components/common/CookieConsent';
-import { CrispChat } from './components/common/CrispChat';
+import { CookieConsent, CrispChat, WhatsAppButton } from './components/common';
 
 function AppContent() {
   const location = useLocation();
@@ -132,6 +131,7 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-neutral-50 relative">
       <CrispChat />
+      <WhatsAppButton />
       {showNavigation && <Navigation currentPage={currentPage} onNavigate={() => { }} />}
       {/* {location.pathname === '/' && <CookieConsent />} */}
       <main>
