@@ -73,6 +73,7 @@ export function Industries() {
     { name: 'NGOs & Social Sector', icon: Heart, desc: 'FCRA & Grant Mgmt' },
     { name: 'Education & Welfare', icon: GraduationCap, desc: 'Trust Audits' },
     { name: 'IT & ITES', icon: Laptop, desc: 'STPI & Transfer Pricing' },
+    { name: 'Healthcare & Pharma', icon: Building2, desc: 'Regulatory Compliance' },
   ];
 
   return (
