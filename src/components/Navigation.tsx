@@ -864,7 +864,7 @@ const MobileServiceItem = ({ service, onNavigate }: { service: SubService; onNav
   const hasNested = service.subServices && service.subServices.length > 0;
 
   return (
-    <div className="border border-slate-100 rounded-lg overflow-hidden">
+    <div className="flex flex-col">
       <button
         onClick={() => {
           if (hasNested) {
@@ -873,24 +873,36 @@ const MobileServiceItem = ({ service, onNavigate }: { service: SubService; onNav
             onNavigate(service.route, service.id);
           }
         }}
-        className="w-full text-left px-4 py-3 flex items-center justify-between hover:bg-blue-50 transition-colors"
-      >
-        <span className="font-medium text-sm text-slate-700">{service.name}</span>
-        {hasNested && (
-          <ChevronDown className={cn("w-4 h-4 transition-transform duration-200", expanded && 'rotate-180')} />
+        className={cn(
+          "w-full text-left px-4 py-3 rounded-lg border-2 transition-all font-medium text-sm",
+          expanded ? "border-primary bg-blue-50 text-primary" : "bg-gradient-to-r from-blue-50 to-blue-50 border-blue-200 text-blue-900",
+          "hover:border-primary hover:from-blue-100 hover:to-blue-50 hover:text-primary"
         )}
+      >
+        <div className="flex items-center justify-between">
+          <span>{service.name}</span>
+          {hasNested && (
+            <ChevronDown className={cn("w-4 h-4 flex-shrink-0 transition-transform duration-200", expanded && 'rotate-180')} />
+          )}
+        </div>
       </button>
 
       {hasNested && expanded && (
-        <div className="bg-slate-50 border-t border-slate-100 py-2">
+        <div className="ml-4 mt-2 space-y-2 pb-2">
           {service.subServices!.map((nested) => (
             <button
               key={nested.id}
               onClick={() => onNavigate(nested.route, nested.id)}
-              className="w-full text-left px-6 py-2.5 text-xs text-slate-600 hover:text-primary hover:bg-white transition-colors flex items-center gap-2"
+              className={cn(
+                "block w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-colors",
+                "bg-slate-50 text-slate-600 border border-slate-200",
+                "hover:bg-primary hover:text-white hover:border-primary"
+              )}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 flex-shrink-0" />
-              {nested.name}
+              <span className="flex items-center gap-2">
+                <span className="w-1 h-1 rounded-full bg-current flex-shrink-0" />
+                {nested.name}
+              </span>
             </button>
           ))}
         </div>
@@ -936,7 +948,7 @@ const DesktopServiceCard = ({
       {/* Nested Sub-services Dropdown - Desktop Only */}
       {hasNested && showNested && (
         <div
-          className="absolute top-[100%] left-0 w-80 pt-3 z-50"
+          className="absolute top-[100%] left-0 w-full pt-3 z-[9999]"
           onMouseEnter={() => setShowNested(true)}
           onMouseLeave={() => setShowNested(false)}
         >
@@ -1104,13 +1116,13 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
             <img
               src="/logo.png"
               alt="Company Logo"
-               className="w-14 h-14  sm:w-20 sm:h-20 border border-gray-300 object-contain p-1 bg-white shadow-sm rounded-lg"
+              className="w-14 h-14  sm:w-20 sm:h-20 border border-gray-300 object-contain p-1 bg-white shadow-sm rounded-lg"
             />
             <div className="flex flex-col items-start gap-0.5">
-<div className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-primary font-display leading-tight uppercase">
-  Avinash Payal & Associates
-</div>
-      <div className="text-[10px] sm:text-sm md:text-base lg:text-xs xl:text-sm 2xl:text-base font-medium text-primary font-display leading-tight tracking-wide">
+              <div className="text-base sm:text-lg md:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl font-bold text-primary font-display leading-tight uppercase">
+                Avinash Payal & Associates
+              </div>
+              <div className="text-[10px] sm:text-sm md:text-base lg:text-xs xl:text-sm 2xl:text-base font-medium text-primary font-display leading-tight tracking-wide">
                 Chartered Accountants
               </div>
             </div>
@@ -1335,48 +1347,14 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                           {activeMobileCategoryData.title}
                         </h3>
 
-                        {/* Services Grid (2 columns) */}
+                        {/* Services Grid (1 column) */}
                         <div className="grid grid-cols-1 gap-3">
                           {activeMobileCategoryData.subServices.map((service) => (
-                            <div key={service.id} className="flex flex-col">
-                              <button
-                                onClick={() => handleNavClick(service.route, service.id)}
-                                className={cn(
-                                  "text-left px-4 py-3 rounded-lg border-2 transition-all font-medium text-sm",
-                                  "bg-gradient-to-r from-blue-50 to-blue-50 border-blue-200 text-blue-900",
-                                  "hover:border-primary hover:from-blue-100 hover:to-blue-50 hover:text-primary"
-                                )}
-                              >
-                                <div className="flex items-center justify-between">
-                                  <span>{service.name}</span>
-                                  {service.subServices && service.subServices.length > 0 && (
-                                    <ChevronRight className="w-4 h-4 flex-shrink-0" />
-                                  )}
-                                </div>
-                              </button>
-
-                              {/* Nested Services - Expandable */}
-                              {service.subServices && service.subServices.length > 0 && (
-                                <div className="ml-4 mt-2 space-y-2 pb-2">
-                                  {service.subServices.map((nested) => (
-                                    <button
-                                      key={nested.id}
-                                      onClick={() => handleNavClick(nested.route, nested.id)}
-                                      className={cn(
-                                        "block w-full text-left px-3 py-2 rounded-lg text-xs font-medium transition-colors",
-                                        "bg-slate-50 text-slate-600 border border-slate-200",
-                                        "hover:bg-primary hover:text-white hover:border-primary"
-                                      )}
-                                    >
-                                      <span className="flex items-center gap-2">
-                                        <span className="w-1 h-1 rounded-full bg-current flex-shrink-0" />
-                                        {nested.name}
-                                      </span>
-                                    </button>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
+                            <MobileServiceItem
+                              key={service.id}
+                              service={service}
+                              onNavigate={handleNavClick}
+                            />
                           ))}
                         </div>
 
@@ -1457,7 +1435,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
 
           <div className="bg-white shadow-2xl shadow-blue-900/10 border border-neutral-100 rounded-b-2xl w-[95vw] max-w-[1400px] flex max-h-[85vh]">
             {/* Sidebar - Service Categories */}
-            <div className="w-80 bg-neutral-50/50 border-r border-neutral-100 py-6 px-4 shrink-0 flex flex-col gap-2 overflow-y-auto">
+            <div className="w-[320px] min-w-[320px] max-w-[320px] bg-neutral-50/50 border-r border-neutral-100 py-6 px-4 shrink-0 flex flex-col gap-2 overflow-y-auto">
               {SERVICE_CATEGORIES.map((category) => {
                 const Icon = category.icon;
                 const isActive = activeCategory === category.id;
@@ -1467,10 +1445,10 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                     onMouseEnter={() => setActiveCategory(category.id)}
                     onClick={() => handleNavClick(category.route, category.id)}
                     className={cn(
-                      "w-full text-left px-5 py-4 transition-all text-[15px] font-semibold rounded-xl flex items-center gap-4 relative",
+                      "w-full text-left px-5 py-4 transition-colors text-[15px] font-semibold rounded-xl flex items-center gap-4 relative group",
                       isActive
-                        ? "bg-white text-primary shadow-lg shadow-neutral-200/50 ring-1 ring-neutral-100 scale-105 z-10"
-                        : "text-neutral-500 hover:bg-neutral-100/80 hover:text-neutral-700"
+                        ? "bg-primary text-white shadow-md z-10"
+                        : "text-neutral-600 hover:bg-blue-500 hover:text-white"
                     )}
                     role="menuitem"
                     aria-current={isActive ? 'page' : undefined}
@@ -1478,12 +1456,18 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                     <Icon
                       className={cn(
                         "w-5 h-5 shrink-0 transition-colors",
-                        isActive ? "text-primary" : "text-neutral-400"
+                        isActive ? "text-white" : "text-neutral-400 group-hover:text-white"
                       )}
                       aria-hidden="true"
                     />
-                    <span>{category.title}</span>
-                    {isActive && <ChevronRight className="w-4 h-4 ml-auto text-primary" aria-hidden="true" />}
+                    <span className="flex-1 whitespace-nowrap">{category.title}</span>
+                    <ChevronRight
+                      className={cn(
+                        "w-4 h-4 ml-auto transition-colors",
+                        isActive ? "text-white" : "text-transparent group-hover:text-white"
+                      )}
+                      aria-hidden="true"
+                    />
                   </button>
                 );
               })}
@@ -1514,7 +1498,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                   </div>
 
                   {/* Main Content */}
-                  <div className="p-8 flex-1 flex flex-col overflow-y-auto">
+                  <div className="p-8 flex-1 flex flex-col overflow-y-visible">
                     {/* Services Grid */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full pb-3">
                       {activeCategoryData.subServices.map((sub) => (

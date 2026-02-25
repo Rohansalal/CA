@@ -49,7 +49,7 @@ export function BusinessRegistrations() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="max-w-3xl">
                         <h1 className="text-4xl md:text-5xl font-bold mb-6">Business Registrations</h1>
-                        <p className="text-xl text-blue-100">
+                        <p className="text-xl text-black">
                             Complete business registration services for all types of entities. From company incorporation to LLP formation, we handle all legal formalities for your business setup.
                         </p>
                     </div>

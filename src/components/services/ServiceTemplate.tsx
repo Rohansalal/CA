@@ -146,34 +146,26 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
             {/* About / Description Section (Modern & Clean) */}
             {(content.descriptionTitle || content.descriptionContent) && (
                 <section className="py-24 lg:py-32 bg-white relative overflow-hidden">
-                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="flex flex-col md:flex-row items-start gap-12 lg:gap-24">
-                            {/* Left: Title & Visual */}
-                            <div className="w-full md:w-1/3 sticky top-24">
-                                {content.descriptionTitle && (
-                                    <>
-                                        <div className="inline-block p-3 bg-blue-50 rounded-2xl mb-6">
-                                            <FileText className="w-8 h-8 text-primary" />
-                                        </div>
-                                        <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight mb-4 font-display">
-                                            {content.descriptionTitle}
-                                        </h2>
-                                        <div className="h-1.5 w-20 bg-accent rounded-full"></div>
-                                    </>
-                                )}
+                    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                        {content.descriptionTitle && (
+                            <div className="mb-10 flex flex-col items-center">
+                                <div className="inline-block p-4 bg-blue-50 rounded-full mb-6">
+                                    <FileText className="w-8 h-8 text-primary" />
+                                </div>
+                                <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight mb-4 font-display">
+                                    {content.descriptionTitle}
+                                </h2>
+                                <div className="h-1.5 w-24 bg-accent rounded-full mx-auto"></div>
                             </div>
+                        )}
 
-                            {/* Right: Content */}
-                            <div className="w-full md:w-2/3">
-                                {content.descriptionContent && (
-                                    <div className="prose prose-xl text-gray-600 leading-loose font-light tracking-wide">
-                                        <p>
-                                            {content.descriptionContent}
-                                        </p>
-                                    </div>
-                                )}
+                        {content.descriptionContent && (
+                            <div className="prose prose-xl text-gray-600 leading-loose font-light tracking-wide mx-auto text-center">
+                                <p>
+                                    {content.descriptionContent}
+                                </p>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </section>
             )}
@@ -224,78 +216,290 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
             <br />
 
             {/* --- PLANS SECTION --- */}
-            <section id="plans" className="py-24 lg:py-32 relative bg-slate-50 border-y border-slate-200/60">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl lg:text-5xl font-bold text-gray-900 mb-4">Choose Your Plan</h2>
-                        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-                            Transparent pricing tailored to your needs. No hidden fees.
+            {/* --- PLANS SECTION --- */}
+            <section id="plans" className="relative" style={{ background: "#ffffff", padding: "50px 20px 60px", fontFamily: "'Plus Jakarta Sans', sans-serif", color: "#0f172a" }}>
+                <style>{`
+                    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap');
+                    .pricing-card {
+                        transition: transform 0.25s, box-shadow 0.25s;
+                    }
+                    .pricing-card:hover {
+                        transform: translateY(-6px);
+                    }
+                `}</style>
+                <div className="max-w-7xl mx-auto">
+                    <div style={{ textAlign: "center", maxWidth: 600, margin: "0 auto 72px" }}>
+                        <div
+                            style={{
+                                display: "inline-block",
+                                background: "#dbeafe",
+                                color: "#ffffff",
+                                fontSize: 11.5,
+                                fontWeight: 600,
+                                letterSpacing: "0.14em",
+                                textTransform: "uppercase",
+                                padding: "6px 16px",
+                                borderRadius: 99,
+                                marginBottom: 22,
+                                border: "1px solid #bfdbfe",
+                            }}
+                        >
+                            Pricing Plans
+                        </div>
+                        <h2
+                            style={{
+                                fontFamily: "'Playfair Display', serif",
+                                fontSize: "clamp(34px, 4.5vw, 52px)",
+                                fontWeight: 600,
+                                lineHeight: 1.15,
+                                color: "#0d3b82",
+                                marginBottom: 16,
+                            }}
+                        >
+                            Simple pricing,{" "}
+                            <span style={{ color: "#2563eb" }}>powerful results</span>
+                        </h2>
+                        <p style={{ fontSize: 15.5, fontWeight: 400, color: "#64748b", lineHeight: 1.75 }}>
+                            Transparent plans designed for individuals, teams, and enterprises.
+                            Start free — upgrade anytime, no hidden charges.
                         </p>
                     </div>
 
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        {plans.map((plan, index) => ( // Use 'plans' state
-                            <div
-                                key={index}
-                                onClick={() => handlePlanClick(plan)}
-                                className={`
-                                    relative bg-white rounded-xl border cursor-pointer transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg flex flex-col
-                                    ${plan.recommended ? 'border-accent ring-2 ring-accent/10' : 'border-gray-100 hover:border-blue-200'}
-                                `}
-                            >
-                                {plan.recommended && (
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-accent text-white px-3 py-0.5 rounded-full text-xs font-bold shadow-sm uppercase tracking-wider whitespace-nowrap">
-                                        Best Value
-                                    </div>
-                                )}
+                    <div
+                        style={{
+                            display: "grid",
+                            gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+                            gap: 20,
+                            maxWidth: 1280,
+                            margin: "0 auto",
+                            alignItems: "stretch"
+                        }}
+                    >
+                        {plans.map((plan, index) => {
+                            const featured = plan.recommended;
+                            return (
+                                <div
+                                    key={index}
+                                    onClick={() => handlePlanClick(plan)}
+                                    className="pricing-card"
+                                    style={{
+                                        background: featured ? "#0d3b82" : "#ffffff",
+                                        borderRadius: 18,
+                                        border: `1.5px solid ${featured ? "#0d3b82" : "#bfdbfe"}`,
+                                        padding: "32px 24px 36px",
+                                        position: "relative",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        cursor: "pointer",
+                                        boxShadow: featured ? "0 16px 48px rgba(13,59,130,0.32)" : "none",
+                                    }}
+                                    onMouseEnter={(e) => {
+                                        if (featured) {
+                                            e.currentTarget.style.boxShadow = "0 24px 60px rgba(13,59,130,0.40)";
+                                        } else {
+                                            e.currentTarget.style.boxShadow = "0 20px 50px rgba(37,99,235,0.12)";
+                                        }
+                                    }}
+                                    onMouseLeave={(e) => {
+                                        if (featured) {
+                                            e.currentTarget.style.boxShadow = "0 16px 48px rgba(13,59,130,0.32)";
+                                        } else {
+                                            e.currentTarget.style.boxShadow = "none";
+                                        }
+                                    }}
+                                >
+                                    {/* Popular Badge */}
+                                    {featured && (
+                                        <div
+                                            style={{
+                                                position: "absolute",
+                                                top: -1,
+                                                right: 28,
+                                                background: featured ? "#f59e0b" : "#2563eb",
+                                                color: "#fff",
+                                                fontSize: 10.5,
+                                                fontWeight: 600,
+                                                letterSpacing: "0.08em",
+                                                textTransform: "uppercase",
+                                                padding: "5px 14px",
+                                                borderRadius: "0 0 10px 10px",
+                                            }}
+                                        >
+                                            Most Popular
+                                        </div>
+                                    )}
 
-                                <div className={`p-4 border-b border-gray-50 ${plan.recommended ? 'bg-accent/5' : ''}`}>
-                                    <h3 className="text-lg font-bold text-gray-900">{plan.name}</h3>
-                                    <div className="mt-2 flex items-baseline">
-                                        <span className="text-3xl font-bold text-gray-900">
-                                            {typeof plan.price === 'number' ? `₹${plan.price.toLocaleString()}` : plan.price}
+                                    {/* Tier */}
+                                    <p
+                                        style={{
+                                            fontSize: 11,
+                                            fontWeight: 700,
+                                            letterSpacing: "0.16em",
+                                            textTransform: "uppercase",
+                                            color: featured ? "rgba(255,255,255,0.5)" : "#1a56c4",
+                                            marginBottom: 20,
+                                        }}
+                                    >
+                                        {plan.name}
+                                    </p>
+
+                                    {/* Price */}
+                                    <div style={{ display: "flex", alignItems: "flex-start", gap: 4, lineHeight: 1, marginBottom: 6 }}>
+                                        <span
+                                            style={{
+                                                fontSize: 22,
+                                                fontWeight: 600,
+                                                color: featured ? "rgba(255,255,255,0.75)" : "#0d3b82",
+                                                marginTop: 6,
+                                            }}
+                                        >
+                                            ₹
                                         </span>
-                                        {typeof plan.price === 'number' && <span className="text-gray-500 ml-1 text-xs font-medium">/ year</span>}
+                                        <span
+                                            style={{
+                                                fontFamily: "'Playfair Display', serif",
+                                                fontSize: 54,
+                                                fontWeight: 600,
+                                                color: featured ? "#ffffff" : "#0d3b82",
+                                                letterSpacing: "-0.02em",
+                                                lineHeight: 1,
+                                            }}
+                                        >
+                                            {typeof plan.price === 'number' ? plan.price.toLocaleString() : plan.price}
+                                        </span>
+                                        {typeof plan.price === 'number' && (
+                                            <span
+                                                style={{
+                                                    fontSize: 13,
+                                                    fontWeight: 400,
+                                                    color: featured ? "rgba(255,255,255,0.4)" : "#94a3b8",
+                                                    marginTop: "auto",
+                                                    marginBottom: 8,
+                                                }}
+                                            >
+                                                &nbsp;/ year
+                                            </span>
+                                        )}
                                     </div>
-                                    {plan.description && <p className="text-xs text-gray-500 mt-1">{plan.description}</p>}
-                                </div>
 
-                                <div className="p-4 flex-1 bg-gray-50/30">
-                                    <ul className="space-y-3">
-                                        {/* Show only top 5 features in card to keep height balanced */}
-                                        {plan.features.slice(0, 5).map((feature, idx) => (
-                                            <li key={idx} className="flex items-start gap-2">
-                                                <div className="w-4 h-4 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                                                    <CheckCircle className="w-2.5 h-2.5 text-green-600" />
-                                                </div>
-                                                <span className="text-xs text-gray-700 leading-tight">{feature}</span>
+                                    {/* Description */}
+                                    <p
+                                        style={{
+                                            fontSize: 13.5,
+                                            fontWeight: 400,
+                                            color: featured ? "rgba(255,255,255,0.6)" : "#64748b",
+                                            lineHeight: 1.65,
+                                            marginBottom: 28,
+                                            minHeight: 42,
+                                        }}
+                                    >
+                                        {plan.description}
+                                    </p>
+
+                                    {/* Divider */}
+                                    <div
+                                        style={{
+                                            height: 1,
+                                            background: featured ? "rgba(255,255,255,0.12)" : "#bfdbfe",
+                                            marginBottom: 28,
+                                        }}
+                                    />
+
+                                    {/* Features */}
+                                    <ul style={{ listStyle: "none", marginBottom: 40, display: "flex", flexDirection: "column", gap: 13, flex: 1 }}>
+                                        {plan.features.map((f, i) => (
+                                            <li
+                                                key={i}
+                                                style={{
+                                                    display: "flex",
+                                                    alignItems: "flex-start",
+                                                    gap: 11,
+                                                    fontSize: 14,
+                                                    fontWeight: 400,
+                                                    color: featured ? "rgba(255,255,255,0.82)" : "#334155",
+                                                    lineHeight: 1.4,
+                                                }}
+                                            >
+                                                <span
+                                                    style={{
+                                                        flexShrink: 0,
+                                                        width: 20,
+                                                        height: 20,
+                                                        borderRadius: "50%",
+                                                        background: featured ? "rgba(255,255,255,0.12)" : "#eff6ff",
+                                                        border: `1.5px solid ${featured ? "rgba(255,255,255,0.2)" : "#bfdbfe"}`,
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "center",
+                                                    }}
+                                                >
+                                                    <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
+                                                        <path
+                                                            d="M1 4l2.5 2.5L9 1"
+                                                            stroke={featured ? "#93c5fd" : "#2563eb"}
+                                                            strokeWidth="1.6"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        />
+                                                    </svg>
+                                                </span>
+                                                <span>{f}</span>
                                             </li>
                                         ))}
-                                        {plan.features.length > 5 && (
-                                            <li className="text-[10px] text-blue-600 font-semibold pt-1 pl-6">
-                                                + {plan.features.length - 5} more...
-                                            </li>
-                                        )}
                                     </ul>
-                                </div>
 
-                                <div className="p-4 mt-auto">
-                                    <button
-                                        className={`w-full py-2.5 rounded-lg text-sm font-bold transition-colors ${plan.recommended
-                                            ? 'bg-accent text-white hover:bg-accent/90'
-                                            : 'bg-white text-primary border border-primary hover:bg-primary hover:text-white'
-                                            }`}
+                                    {/* CTA Button */}
+                                    <div
+                                        style={{
+                                            display: "block",
+                                            width: "100%",
+                                            padding: "14px 20px",
+                                            textAlign: "center",
+                                            fontFamily: "'Plus Jakarta Sans', sans-serif",
+                                            fontSize: 14,
+                                            fontWeight: 600,
+                                            letterSpacing: "0.03em",
+                                            borderRadius: 10,
+                                            cursor: "pointer",
+                                            textDecoration: "none",
+                                            border: featured ? "1.5px solid #ffffff" : "1.5px solid #2563eb",
+                                            color: featured ? "#0d3b82" : "#2563eb",
+                                            background: featured ? "#ffffff" : "transparent",
+                                            transition: "all 0.22s",
+                                            marginTop: "auto"
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (!featured) {
+                                                e.currentTarget.style.background = "#2563eb";
+                                                e.currentTarget.style.color = "#ffffff";
+                                            } else {
+                                                e.currentTarget.style.background = "transparent";
+                                                e.currentTarget.style.color = "#ffffff";
+                                            }
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (!featured) {
+                                                e.currentTarget.style.background = "transparent";
+                                                e.currentTarget.style.color = "#2563eb";
+                                            } else {
+                                                e.currentTarget.style.background = "#ffffff";
+                                                e.currentTarget.style.color = "#0d3b82";
+                                            }
+                                        }}
+                                        onClick={(e) => { e.stopPropagation(); handlePlanClick(plan); document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }); }}
                                     >
                                         Select Plan
-                                    </button>
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
-                        <br />
-                        <br />
-                        <br />
-                        <br />
+                            );
+                        })}
                     </div>
+
+                    <p
+                        style={{ textAlign: "center", marginTop: 44, fontSize: 13.5, fontWeight: 400, color: "#94a3b8" }}
+                    >
+                        All prices are inclusive of GST &nbsp;·&nbsp; Secure checkout &nbsp;·&nbsp; No hidden fees
+                    </p>
                 </div>
             </section>
 

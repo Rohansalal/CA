@@ -124,38 +124,38 @@ export const UserProfile: React.FC = () => {
 
             <main className="max-w-7xl mx-auto p-6 md:p-10 lg:p-12">
                 {/* Hero Profile Section */}
-                <div className="relative overflow-hidden rounded-[2.5rem] bg-[#0b1f3a] p-10 md:p-14 text-black shadow-2xl mb-12 border border-blue-900/50">
-                    <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/20 rounded-full -mr-40 -mt-40 blur-[100px]"></div>
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-500/10 rounded-full -ml-32 -mb-32 blur-[80px]"></div>
+                <div className="relative overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#0b1f3a] p-6 md:p-14 text-white shadow-2xl mb-8 md:mb-12 border border-blue-900/50">
+                    <div className="absolute top-0 right-0 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-primary/20 rounded-full -mr-20 md:-mr-40 -mt-20 md:-mt-40 blur-[50px] md:blur-[100px]"></div>
+                    <div className="absolute bottom-0 left-0 w-32 md:w-64 h-32 md:h-64 bg-emerald-500/10 rounded-full -ml-16 md:-ml-32 -mb-16 md:-mb-32 blur-[40px] md:blur-[80px]"></div>
 
-                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-10">
+                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
                         <div className="relative">
-                            <div className="w-32 h-32 md:w-40 md:h-40 bg-white/10 backdrop-blur-md rounded-[2.5rem] p-4 border border-white/20 shadow-2xl flex items-center justify-center text-5xl md:text-6xl font-black text-black group cursor-pointer overflow-hidden">
+                            <div className="w-24 h-24 md:w-40 md:h-40 bg-white/10 backdrop-blur-md rounded-[1.5rem] md:rounded-[2.5rem] p-4 border border-white/20 shadow-2xl flex items-center justify-center text-4xl md:text-6xl font-black text-white group cursor-pointer overflow-hidden">
                                 <div className="absolute inset-0 bg-gradient-to-tr from-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 <span className="relative z-10">{formData.name.charAt(0).toUpperCase()}</span>
                             </div>
-                            <div className="absolute -bottom-2 -right-2 w-10 h-10 bg-emerald-500 rounded-2xl flex items-center justify-center shadow-lg border-4 border-[#0b1f3a]">
-                                <Shield className="w-5 h-5 text-black" />
+                            <div className="absolute -bottom-2 -right-2 w-8 h-8 md:w-10 md:h-10 bg-emerald-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg border-2 md:border-4 border-[#0b1f3a]">
+                                <Shield className="w-4 h-4 md:w-5 md:h-5 text-[#0b1f3a]" />
                             </div>
                         </div>
 
                         <div className="flex-1 text-center md:text-left">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 border border-emerald-500/30 rounded-full text-[9px] font-bold uppercase tracking-widest text-emerald-400 mb-4">
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/30 rounded-full text-[9px] font-bold uppercase tracking-widest text-emerald-400 mb-3 md:mb-4">
                                 <span className="relative flex h-1.5 w-1.5">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                                     <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                                 </span>
                                 Verified Identity
                             </div>
-                            <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-2 text-black">{user?.name}</h1>
-                            <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm text-black font-medium">
-                                <span className="flex items-center gap-2"><Mail className="w-4 h-4" /> {user?.email}</span>
-                                <span className="hidden md:block w-1.5 h-1.5 bg-blue-400 rounded-full my-auto"></span>
-                                <span className="flex items-center gap-2"><Shield className="w-4 h-4" /> {user?.role} Account</span>
+                            <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-2 text-white">{user?.name}</h1>
+                            <div className="flex flex-wrap justify-center md:justify-start gap-2 md:gap-4 text-xs md:text-sm text-gray-200 font-medium">
+                                <span className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 md:w-4 md:h-4" /> {user?.email}</span>
+                                <span className="hidden md:block w-1 h-1 bg-gray-500 rounded-full my-auto"></span>
+                                <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 md:w-4 md:h-4" /> {user?.role} Account</span>
                                 {user?.phone && (
                                     <>
-                                        <span className="hidden md:block w-1.5 h-1.5 bg-blue-400 rounded-full my-auto"></span>
-                                        <span className="flex items-center gap-2"><Phone className="w-4 h-4" /> {user.phone}</span>
+                                        <span className="hidden md:block w-1 h-1 bg-gray-500 rounded-full my-auto"></span>
+                                        <span className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 md:w-4 md:h-4" /> {user.phone}</span>
                                     </>
                                 )}
                             </div>
@@ -166,7 +166,7 @@ export const UserProfile: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                     {/* Sidebar Information / Navigation */}
                     <div className="space-y-8">
-                        <div className="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-sm border-l-4 border-l-primary">
+                        <div className="bg-white rounded-[2rem] p-6 md:p-8 border border-gray-100 shadow-sm border-l-4 border-l-primary">
                             <h3 className="text-sm font-black text-[#0b1f3a] uppercase tracking-widest mb-6 flex items-center gap-2">
                                 <Shield className="w-4 h-4 text-primary" /> Governance Status
                             </h3>
@@ -182,7 +182,7 @@ export const UserProfile: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-[2rem] p-8 border border-gray-100 shadow-sm">
+                        <div className="bg-white rounded-[2rem] p-6 md:p-8 border border-gray-100 shadow-sm">
                             <h3 className="text-sm font-black text-[#0b1f3a] uppercase tracking-widest mb-4">Security Insights</h3>
                             <p className="text-xs text-gray-800 leading-relaxed font-bold">
                                 Your account is encrypted with 256-bit SSL technology. All business documents are stored in decentralized cloud nodes.
@@ -197,14 +197,14 @@ export const UserProfile: React.FC = () => {
                     </div>
 
                     {/* Main Configuration Forms */}
-                    <div className="lg:col-span-2 space-y-10">
+                    <div className="lg:col-span-2 space-y-8 md:space-y-10">
                         {/* Account Settings */}
-                        <div className="bg-white rounded-[2.5rem] p-8 md:p-12 border border-gray-100 shadow-sm relative overflow-hidden group">
-                            <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 rounded-full -mr-20 -mt-20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 border border-gray-100 shadow-sm relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-32 md:w-40 h-32 md:h-40 bg-primary/5 rounded-full -mr-16 -mt-16 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
-                            <div className="flex items-center gap-3 mb-10">
-                                <div className="w-1.5 h-6 bg-primary rounded-full"></div>
-                                <h3 className="text-xl font-black text-[#0b1f3a] tracking-tight">Account Parameters</h3>
+                            <div className="flex items-center gap-3 mb-8">
+                                <div className="w-1.5 h-5 bg-primary rounded-full"></div>
+                                <h3 className="text-lg md:text-xl font-black text-[#0b1f3a] tracking-tight">Account Parameters</h3>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -270,10 +270,10 @@ export const UserProfile: React.FC = () => {
                         </div>
 
                         {/* Tax Credentials */}
-                        <div className="bg-white rounded-[2.5rem] p-8 md:p-12 border border-gray-100 shadow-sm relative overflow-hidden group">
-                            <div className="flex items-center gap-3 mb-10">
-                                <div className="w-1.5 h-6 bg-[#ee7228] rounded-full"></div>
-                                <h3 className="text-xl font-black text-[#0b1f3a] tracking-tight">Tax Credentials</h3>
+                        <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 border border-gray-100 shadow-sm relative overflow-hidden group">
+                            <div className="flex items-center gap-3 mb-8">
+                                <div className="w-1.5 h-5 bg-[#ee7228] rounded-full"></div>
+                                <h3 className="text-lg md:text-xl font-black text-[#0b1f3a] tracking-tight">Tax Credentials</h3>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -303,10 +303,10 @@ export const UserProfile: React.FC = () => {
                         </div>
 
                         {/* Location / Office */}
-                        <div className="bg-white rounded-[2.5rem] p-8 md:p-12 border border-gray-100 shadow-sm">
-                            <div className="flex items-center gap-3 mb-10">
-                                <div className="w-1.5 h-6 bg-blue-500 rounded-full"></div>
-                                <h3 className="text-xl font-black text-[#0b1f3a] tracking-tight">Registered Office</h3>
+                        <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 border border-gray-100 shadow-sm">
+                            <div className="flex items-center gap-3 mb-8">
+                                <div className="w-1.5 h-5 bg-blue-500 rounded-full"></div>
+                                <h3 className="text-lg md:text-xl font-black text-[#0b1f3a] tracking-tight">Registered Office</h3>
                             </div>
 
                             <div className="space-y-8">
@@ -409,7 +409,7 @@ const PaymentHistoryList = () => {
 
     if (payments.length === 0) {
         return (
-            <div className="bg-white rounded-[2.5rem] p-16 border border-dashed border-gray-200 text-center shadow-inner">
+            <div className="bg-white rounded-[2.5rem] p-8 md:p-16 border border-dashed border-gray-200 text-center shadow-inner">
                 <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
                     <CreditCard className="w-8 h-8 text-gray-300" />
                 </div>
@@ -422,7 +422,7 @@ const PaymentHistoryList = () => {
     return (
         <div className="bg-white rounded-[2.5rem] border border-gray-100 overflow-hidden shadow-sm relative">
             <div className="overflow-x-auto custom-scrollbar">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse min-w-[800px]">
                     <thead>
                         <tr className="bg-gray-50/80">
                             <th className="px-8 py-6 text-[10px] font-black text-gray-900 uppercase tracking-widest border-b border-gray-100">Timestamp</th>

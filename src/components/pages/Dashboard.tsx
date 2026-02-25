@@ -1033,8 +1033,8 @@ export const Dashboard: React.FC = () => {
                 </div>
 
                 {documents.length > 0 ? (
-                  <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
-                    <table className="w-full text-sm text-left">
+                  <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden overflow-x-auto">
+                    <table className="w-full min-w-[600px] text-sm text-left">
                       <thead className="bg-gray-50 text-gray-500 font-medium border-b border-gray-200">
                         <tr>
                           <th className="px-6 py-4">Name</th>
@@ -1303,12 +1303,12 @@ export const Dashboard: React.FC = () => {
                     <br />
 
                     {/* Main Tableservices block  */}
-                    <div className="overflow-x-auto -mx-8">
-                      <table className="w-full text-left border-collapse min-w-[1000px]">
+                    <div className="overflow-x-auto -mx-4 md:-mx-8 px-4 md:px-8 custom-scrollbar">
+                      <table className="w-full text-left border-collapse min-w-[900px]">
                         <thead>
                           <tr className="border-b border-gray-50">
-                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Service Insight</th>
-                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Purchase Date</th>
+                            <th className="px-4 md:px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Service Insight</th>
+                            <th className="px-4 md:px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Purchase Date</th>
                             <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Investment</th>
                             <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Service Status</th>
                             <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Payment Node</th>
@@ -1318,25 +1318,25 @@ export const Dashboard: React.FC = () => {
                         <tbody className="divide-y divide-gray-50">
                           {userServices.map(svc => (
                             <tr key={svc.id} className="group hover:bg-gray-50/50 transition-colors">
-                              <td className="px-8 py-6">
+                              <td className="px-4 md:px-8 py-6">
                                 <div className="flex flex-col">
                                   <span className="text-sm font-black text-[#0b1f3a] group-hover:text-primary transition-colors">{svc.service?.name}</span>
                                   <span className="text-[10px] font-bold text-gray-400 uppercase mt-1">ID: #{svc.orderId}</span>
                                 </div>
                               </td>
-                              <td className="px-8 py-6">
+                              <td className="px-4 md:px-8 py-6">
                                 <span className="text-sm text-gray-500 font-medium">{new Date(svc.createdAt).toLocaleDateString()}</span>
                               </td>
-                              <td className="px-8 py-6">
+                              <td className="px-4 md:px-8 py-6">
                                 <span className="text-sm font-black text-[#0b1f3a]">₹{Number(svc.price || 0).toLocaleString()}</span>
                               </td>
-                              <td className="px-8 py-6">
+                              <td className="px-4 md:px-8 py-6">
                                 <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[9px] font-black border ${getStatusColor(svc.status)} uppercase tracking-widest`}>
                                   {getStatusIcon(svc.status)}
                                   {svc.status.replace('_', ' ')}
                                 </div>
                               </td>
-                              <td className="px-8 py-6">
+                              <td className="px-4 md:px-8 py-6">
                                 {['ACTIVE', 'COMPLETED', 'PENDING_VERIFICATION'].includes(svc.status) ? (
                                   <div className="flex flex-col">
                                     <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Linked / Paid</span>
@@ -1349,7 +1349,7 @@ export const Dashboard: React.FC = () => {
                                   </div>
                                 )}
                               </td>
-                              <td className="px-8 py-6 text-right">
+                              <td className="px-4 md:px-8 py-6 text-right">
                                 <div className="flex items-center justify-end gap-2">
                                   {svc.status === 'PENDING_PAYMENT' && (
                                     <button
@@ -1524,30 +1524,30 @@ export const Dashboard: React.FC = () => {
         {
           showPaymentModal && selectedService && (
             <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-              <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl relative shadow-orange-500/10 overflow-hidden">
-                <div className="p-8">
-                  <div className="flex justify-between items-center mb-8 border-b border-gray-50 pb-6">
+              <div className="bg-white rounded-2xl max-w-md w-full shadow-2xl relative shadow-blue-500/10 overflow-hidden flex flex-col max-h-[90vh]">
+                <div className="p-5 md:p-6 overflow-y-auto custom-scrollbar flex-1 relative">
+                  <div className="flex justify-between items-center mb-6 border-b border-gray-50 pb-4">
                     <div>
-                      <h3 className="text-2xl font-black text-[#0b1f3a] tracking-tight">Financial Checkout</h3>
+                      <h3 className="text-xl md:text-2xl font-black text-[#0b1f3a] tracking-tight">Financial Checkout</h3>
                       <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Order Ref: #{selectedService.orderId}</p>
                     </div>
                     <button onClick={() => setShowPaymentModal(false)} className="p-2 hover:bg-gray-50 rounded-xl transition-colors"><XCircle className="w-6 h-6 text-gray-300" /></button>
                   </div>
 
-                  <div className="mb-8 p-6 bg-[#0b1f3a] rounded-3xl text-black shadow-xl shadow-blue-900/10">
-                    <p className="text-[10px] font-black text-blue-300 uppercase tracking-widest mb-2">Service Allocation</p>
-                    <p className="text-lg font-black tracking-tight">{selectedService.name}</p>
-                    <div className="mt-6 pt-6 border-t border-blue-800/50 flex justify-between items-end">
+                  <div className="mb-6 p-5 bg-[#0b1f3a] rounded-2xl text-white shadow-xl shadow-blue-900/10">
+                    <p className="text-[10px] font-black text-blue-300 uppercase tracking-widest mb-1.5">Service Allocation</p>
+                    <p className="text-base md:text-lg font-black tracking-tight">{selectedService.name}</p>
+                    <div className="mt-4 pt-4 border-t border-blue-800/50 flex justify-between items-end">
                       <span className="text-[10px] font-black text-blue-300 uppercase tracking-widest">Investment</span>
-                      <p className="text-3xl font-black">₹{Number(selectedService.price).toLocaleString()}</p>
+                      <p className="text-2xl md:text-3xl font-black">₹{Number(selectedService.price).toLocaleString()}</p>
                     </div>
                   </div>
 
-                  <div className="space-y-4 mb-8">
-                    <label className={`block p-5 rounded-3xl border-2 transition-all cursor-pointer ${selectedPaymentMethod === 'manual_qr' ? 'border-[#ee7228] bg-orange-50/30' : 'border-gray-100 hover:border-gray-200'}`}>
+                  <div className="space-y-3 mb-6">
+                    <label className={`block p-4 rounded-xl border-2 transition-all cursor-pointer ${selectedPaymentMethod === 'manual_qr' ? 'border-primary bg-blue-50/30' : 'border-gray-100 hover:border-gray-200'}`}>
                       <div className="flex items-center gap-4">
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selectedPaymentMethod === 'manual_qr' ? 'border-[#ee7228] bg-[#ee7228]' : 'border-gray-300'}`}>
-                          {selectedPaymentMethod === 'manual_qr' && <CheckCircle className="w-4 h-4 text-black" />}
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${selectedPaymentMethod === 'manual_qr' ? 'border-primary bg-primary' : 'border-gray-300'}`}>
+                          {selectedPaymentMethod === 'manual_qr' && <CheckCircle className="w-3 h-3 text-white" />}
                         </div>
                         <div>
                           <span className="text-sm font-black text-[#0b1f3a] uppercase tracking-widest">Bank QR Protocol</span>
@@ -1556,17 +1556,17 @@ export const Dashboard: React.FC = () => {
                         <input type="radio" checked={selectedPaymentMethod === 'manual_qr'} onChange={() => setSelectedPaymentMethod('manual_qr')} className="hidden" />
                       </div>
                       {selectedPaymentMethod === 'manual_qr' && (
-                        <div className="mt-6 pl-10 animate-fade-in">
-                          <div className="p-4 bg-white rounded-2xl border-2 border-orange-100 border-dashed">
-                            <input type="file" onChange={(e) => setPaymentProofFile(e.target.files?.[0] || null)} className="w-full text-[10px] font-black uppercase text-gray-400 cursor-pointer file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-[10px] file:font-black file:bg-[#ee7228] file:text-black hover:file:bg-[#0b1f3a] transition-all" />
+                        <div className="mt-4 pl-9 animate-fade-in">
+                          <div className="p-3 bg-white rounded-xl border-2 border-blue-100 border-dashed">
+                            <input type="file" onChange={(e) => setPaymentProofFile(e.target.files?.[0] || null)} className="w-full text-[9px] font-black uppercase text-gray-500 cursor-pointer file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[9px] file:font-black file:bg-primary/10 file:text-primary hover:file:bg-primary hover:file:text-white transition-all" />
                           </div>
                         </div>
                       )}
                     </label>
-                    <label className={`block p-5 rounded-3xl border-2 transition-all cursor-pointer ${selectedPaymentMethod === 'pay_later' ? 'border-[#136da1] bg-blue-50/30' : 'border-gray-100 hover:border-gray-200'}`}>
+                    <label className={`block p-4 rounded-xl border-2 transition-all cursor-pointer ${selectedPaymentMethod === 'pay_later' ? 'border-[#136da1] bg-blue-50/30' : 'border-gray-100 hover:border-gray-200'}`}>
                       <div className="flex items-center gap-4">
-                        <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-all ${selectedPaymentMethod === 'pay_later' ? 'border-[#136da1] bg-[#136da1]' : 'border-gray-300'}`}>
-                          {selectedPaymentMethod === 'pay_later' && <CheckCircle className="w-4 h-4 text-black" />}
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${selectedPaymentMethod === 'pay_later' ? 'border-[#136da1] bg-[#136da1]' : 'border-gray-300'}`}>
+                          {selectedPaymentMethod === 'pay_later' && <CheckCircle className="w-3 h-3 text-white" />}
                         </div>
                         <div>
                           <span className="text-sm font-black text-[#0b1f3a] uppercase tracking-widest">Post-Settlement</span>
@@ -1577,7 +1577,7 @@ export const Dashboard: React.FC = () => {
                     </label>
                   </div>
 
-                  <button onClick={handlePayment} disabled={actionLoading} className=" py-5 bg-blue-500 text-black font-black text-[12px] uppercase tracking-[0.2em] rounded-[2rem] hover:bg-[#0b1f3a] transition-all shadow-xl shadow-orange-500/20 active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-3">
+                  <button onClick={handlePayment} disabled={actionLoading} className="w-full py-4 bg-[#136da1] text-white font-black text-[11px] md:text-[12px] uppercase tracking-[0.2em] rounded-xl hover:bg-[#0b1f3a] transition-all shadow-xl shadow-blue-500/20 active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-3 sticky bottom-0 z-10">
                     {actionLoading ? <Loader className="animate-spin w-4 h-4" /> : <Shield className="w-4 h-4" />}
                     {selectedPaymentMethod === 'pay_later' ? 'Authorize Order' : 'Submit Remittance'}
                   </button>
@@ -1590,7 +1590,7 @@ export const Dashboard: React.FC = () => {
         {
           showTicketModal && (
             <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
-              <div className="bg-white rounded-[2.5rem] max-w-lg w-full p-10 shadow-2xl">
+              <div className="bg-white rounded-[2.5rem] max-w-lg w-full p-6 md:p-10 shadow-2xl">
                 <div className="mb-8">
                   <h3 className="text-2xl font-black text-[#0b1f3a] tracking-tight">Initiate Support Node</h3>
                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Standard response time: &lt; 24 hours</p>
@@ -1683,7 +1683,7 @@ export const Dashboard: React.FC = () => {
         {
           showRoadmapModal && viewingRoadmapService && (
             <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[100] p-4 backdrop-blur-sm">
-              <div className="bg-white rounded-[2.5rem] max-w-xl w-full p-10 shadow-2xl">
+              <div className="bg-white rounded-[2.5rem] max-w-xl w-full p-6 md:p-10 shadow-2xl">
                 <div className="flex justify-between items-center mb-10">
                   <div>
                     <h3 className="text-2xl font-black text-[#0b1f3a] tracking-tight">Service Lifecycle</h3>
@@ -1726,8 +1726,8 @@ export const Dashboard: React.FC = () => {
         {/* Sidebar - Mobile (Slide-over) */}
         {mobileMenuOpen && (
           <>
-            <div className="fixed inset-0 bg-black/60 z-[998] lg:hidden backdrop-blur-sm transition-opacity" onClick={() => setMobileMenuOpen(false)} />
-            <aside className="fixed inset-y-0 left-0 bg-white w-72 z-[999] flex flex-col border-r border-gray-200 animate-in slide-in-from-left duration-500 shadow-2xl">
+            <div className="fixed inset-0 bg-black/60 lg:hidden backdrop-blur-sm transition-opacity" style={{ zIndex: 9998 }} onClick={() => setMobileMenuOpen(false)} />
+            <aside className="fixed inset-y-0 left-0 bg-white !bg-white w-72 flex flex-col border-r border-gray-200 animate-in slide-in-from-left duration-500 shadow-2xl" style={{ zIndex: 9999, backgroundColor: '#ffffff' }}>
               <div className="h-20 flex items-center justify-between px-6 bg-white border-b border-gray-100 shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-gradient-to-tr from-[#136da1] to-[#0b1f3a] rounded-xl flex items-center justify-center">

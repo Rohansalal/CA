@@ -53,39 +53,15 @@ export function Footer({ onNavigate }: FooterProps) {
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Company Info */}
           <div>
-            <div className="flex items-center gap-3 mb-6">
-              <div className="w-35 h-35 bg-accent rounded-lg flex items-center justify-center">
-                <img src="/logo.png" alt="Logo" className="w-25 h-20 rounded-lg object-cover bg-white border-0 shadow-none hover:shadow-lg transition-shadow" />
+            <div className="flex items-center gap-4 mb-6">
+              <div className="w-46 h-24 sm:w-48 sm:h-28 bg-accent rounded-lg flex items-center justify-center p-1.5 shrink-0">
+                <img src="/logo.png" alt="Logo" className="w-full h-full rounded-md object-contain bg-white border-0 shadow-none hover:shadow-lg transition-shadow" />
               </div>
               <div>
-                <div className="text-xl font-bold text-white font-display">Avinash Payal  &  Associates</div>
-                <div className="text-xs text-neutral-200">Chartered Accountants</div>
+                <div className="text-xl sm:text-2xl font-bold text-white font-display leading-tight">Avinash Payal & Associates</div>
+                <div className="text-sm text-neutral-200 mt-1">Chartered Accountants</div>
               </div>
             </div>
-            {/* <div className="flex flex-col gap-2 mb-6">
-
-  {/* Row 1: Logo + Name */}
-  {/* <div className="flex items-center gap-3">
-    <div className="w-11 h-11 bg-accent rounded-lg flex items-center justify-center">
-      <img
-        src="/logo.png"
-        alt="Logo"
-        className="w-2 h-20 rounded-lg object-cover bg-white border-0 shadow-none hover:shadow-lg transition-shadow"
-      />
-    </div>
-
-    <div className="text-xl font-bold text-white font-display">
-      Avinash Payal    & 
-        Associates
-    </div>
-  </div>
-
-  {/* Row 2: Tagline below logo */}
-  {/* <div className="pl-14 text-xs text-neutral-200">
-    Chartered Accountants
-  </div>
-
-</div>  */}
             <p className="text-neutral-200 mb-6 leading-relaxed">
               Your trusted partner for taxation, audit, and business growth. Delivering excellence since 2014.
             </p>
@@ -193,7 +169,7 @@ export function Footer({ onNavigate }: FooterProps) {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-neutral-200">
             <div>
-              © 2026 Avinash Payal & Co.. All rights reserved. | ICAI Registered Firm
+              © 2026 Avinash Payal & Associates.. All rights reserved. | ICAI Registered Firm
             </div>
             <div className="flex gap-6 flex-wrap justify-center">
               <div className="flex gap-6 flex-wrap justify-center">
