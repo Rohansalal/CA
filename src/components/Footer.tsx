@@ -56,7 +56,7 @@ export function Footer({ onNavigate }: FooterProps) {
             <div className="flex items-center gap-4 mb-6">
               <div className="w-46 h-24 sm:w-48 sm:h-28 bg-accent rounded-lg flex items-center justify-center p-1.5 shrink-0">
                 <img src="/logo.png" alt="Logo" className="w-full h-full rounded-md object-contain bg-white border-0 shadow-none hover:shadow-lg transition-shadow" />
-              </div>
+              </div>  
               <div>
                 <div className="text-xl sm:text-2xl font-bold text-white font-display leading-tight">Avinash Payal & Associates</div>
                 <div className="text-sm text-neutral-200 mt-1">Chartered Accountants</div>

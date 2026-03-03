@@ -6,7 +6,8 @@ import {
     ArrowRight,
     Shield,
     FileText,
-    AlertCircle
+    AlertCircle,
+    ShoppingCart
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
@@ -62,6 +63,7 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
     const { isAuthenticated } = useAuth();
     const [selectedPlan, setSelectedPlan] = useState<ServicePlan | null>(null);
     const [plans, setPlans] = useState<ServicePlan[]>(content.plans); // Initialize with static content
+    const [toastMessage, setToastMessage] = useState<string | null>(null);
 
     // Update plans if content changes (e.g. after fetch in parent)
     React.useEffect(() => {
@@ -70,6 +72,31 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
 
     const handlePlanClick = (plan: ServicePlan) => {
         setSelectedPlan(plan);
+    };
+
+    const handleAddToCart = (plan: ServicePlan) => {
+        const priceValue = typeof plan.price === 'string'
+            ? parseInt(plan.price.toString().replace(/[^0-9]/g, '')) || 0
+            : plan.price;
+
+        const cartItem = {
+            id: plan.id || Date.now() + Math.random(),
+            name: plan.name,
+            price: priceValue,
+            serviceSlug: serviceSlug,
+            serviceId: serviceId,
+            gst: priceValue * 0.18,
+            total: priceValue * 1.18,
+        };
+
+        const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
+        existingCart.push(cartItem);
+        localStorage.setItem('cart', JSON.stringify(existingCart));
+
+        window.dispatchEvent(new Event('cartUpdated'));
+
+        setToastMessage(`${plan.name} has been added to your cart.`);
+        setTimeout(() => setToastMessage(null), 3500);
     };
 
     const handleProceedToPayment = () => {
@@ -233,7 +260,7 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                             style={{
                                 display: "inline-block",
                                 background: "#dbeafe",
-                                color: "#ffffff",
+                                color: "#000000ffff",
                                 fontSize: 11.5,
                                 fontWeight: 600,
                                 letterSpacing: "0.14em",
@@ -241,7 +268,7 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                                 padding: "6px 16px",
                                 borderRadius: 99,
                                 marginBottom: 22,
-                                border: "1px solid #bfdbfe",
+                                border: "1px solid #000000ff",
                             }}
                         >
                             Pricing Plans
@@ -382,6 +409,12 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                                         )}
                                     </div>
 
+                                    {typeof plan.price === 'number' && (
+                                        <div style={{ fontSize: 13, fontWeight: 500, color: featured ? "rgba(255,255,255,0.8)" : "#059669", marginBottom: 16 }}>
+                                            ₹{(plan.price * 1.18).toLocaleString(undefined, { maximumFractionDigits: 0 })} <span style={{ fontSize: 11, fontWeight: 400, color: featured ? "rgba(255,255,255,0.6)" : "#64748b" }}>(incl. 18% GST)</span>
+                                        </div>
+                                    )}
+
                                     {/* Description */}
                                     <p
                                         style={{
@@ -448,47 +481,23 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                                         ))}
                                     </ul>
 
-                                    {/* CTA Button */}
-                                    <div
-                                        style={{
-                                            display: "block",
-                                            width: "100%",
-                                            padding: "14px 20px",
-                                            textAlign: "center",
-                                            fontFamily: "'Plus Jakarta Sans', sans-serif",
-                                            fontSize: 14,
-                                            fontWeight: 600,
-                                            letterSpacing: "0.03em",
-                                            borderRadius: 10,
-                                            cursor: "pointer",
-                                            textDecoration: "none",
-                                            border: featured ? "1.5px solid #ffffff" : "1.5px solid #2563eb",
-                                            color: featured ? "#0d3b82" : "#2563eb",
-                                            background: featured ? "#ffffff" : "transparent",
-                                            transition: "all 0.22s",
-                                            marginTop: "auto"
-                                        }}
-                                        onMouseEnter={(e) => {
-                                            if (!featured) {
-                                                e.currentTarget.style.background = "#2563eb";
-                                                e.currentTarget.style.color = "#ffffff";
-                                            } else {
-                                                e.currentTarget.style.background = "transparent";
-                                                e.currentTarget.style.color = "#ffffff";
-                                            }
-                                        }}
-                                        onMouseLeave={(e) => {
-                                            if (!featured) {
-                                                e.currentTarget.style.background = "transparent";
-                                                e.currentTarget.style.color = "#2563eb";
-                                            } else {
-                                                e.currentTarget.style.background = "#ffffff";
-                                                e.currentTarget.style.color = "#0d3b82";
-                                            }
-                                        }}
-                                        onClick={(e) => { e.stopPropagation(); handlePlanClick(plan); document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }); }}
-                                    >
-                                        Select Plan
+                                    {/* CTA Buttons */}
+                                    <div style={{ display: "flex", gap: "10px", marginTop: "auto", width: "100%", position: "relative", zIndex: 20 }}>
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); handleAddToCart(plan); }}
+                                            className={`flex-1 flex items-center justify-center gap-2 py-3 px-2 rounded-xl font-bold text-[13px] transition-all duration-300 shadow-sm border-2 ${featured ? 'bg-[#0d3b82] border-white/30 text-white hover:bg-white/10 hover:border-white' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-blue-300 hover:text-blue-600'}`}
+                                            title="Add this plan to your cart"
+                                        >
+                                            <ShoppingCart className="w-4 h-4" />
+                                            Add to Cart
+                                        </button>
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); handlePlanClick(plan); document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' }); }}
+                                            className={`flex-1 py-3 px-2 rounded-xl font-bold text-[13px] transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5 ${featured ? 'bg-white text-[#0d3b82] hover:bg-gray-100' : 'bg-blue-600 text-white hover:bg-blue-700'}`}
+                                            title="View plan details and proceed"
+                                        >
+                                            Select Plan
+                                        </button>
                                     </div>
                                 </div>
                             );
@@ -502,6 +511,37 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                     </p>
                 </div>
             </section>
+
+            {/* Tax & Financial Compliances Recommended Sub-services */}
+            {window.location.pathname.includes('tax-compliances') && (
+                <section className="py-16 bg-blue-50/50 border-t border-b border-blue-100">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-10">
+                            <h3 className="text-2xl lg:text-3xl font-bold text-gray-900 mb-3 font-display">Recommended Tax Compliances</h3>
+                            <p className="text-gray-500 max-w-2xl mx-auto">Explore other essential tax services that fit perfectly with your current selection.</p>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                            {[
+                                { name: 'ITR Filing', link: '/services/tax-compliances/itr-filing', icon: FileText },
+                                { name: 'Advance Tax Calculation', link: '/services/tax-compliances/advance-tax-calculation', icon: Shield },
+                                { name: 'TDS Return Filing', link: '/services/tax-compliances/tds-return-filing', icon: AlertCircle },
+                                { name: 'GST Return Filing', link: '/services/tax-compliances/gst-return-filing', icon: FileText },
+                                { name: 'GST Annual Return', link: '/services/tax-compliances/gst-annual-return', icon: CheckCircle }
+                            ].map((sub, i) => (
+                                <div key={i} onClick={() => { navigate(sub.link); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer flex flex-col items-center text-center gap-3 group">
+                                    <div className="w-12 h-12 bg-blue-50 group-hover:bg-blue-600 rounded-full flex items-center justify-center transition-colors">
+                                        <sub.icon className="w-5 h-5 text-blue-600 group-hover:text-white transition-colors" />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-semibold text-gray-800 text-sm group-hover:text-blue-600 transition-colors leading-tight mb-1">{sub.name}</h4>
+                                        <span className="text-xs text-blue-500 font-medium">View details →</span>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+            )}
 
             {/* Application Process Section (Moved below Plans) */}
             {content.process && (
@@ -541,179 +581,228 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
 
             {/* Plan Details Modal */}
             {selectedPlan && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+                <div
+                    className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/60 backdrop-blur-sm transition-all animate-in fade-in duration-300"
+                    onClick={() => setSelectedPlan(null)}
+                >
                     <div
-                        className="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col md:flex-row animate-in zoom-in-95 duration-200"
+                        className="bg-white rounded-t-3xl sm:rounded-[2rem] w-full max-w-4xl max-h-[92vh] sm:max-h-[85vh] shadow-2xl flex flex-col animate-in slide-in-from-bottom-full sm:slide-in-from-bottom-0 sm:zoom-in-95 duration-300 overflow-hidden relative mt-auto sm:m-auto"
                         onClick={(e) => e.stopPropagation()}
                     >
-                        {/* Left Side: Plan Info & Features */}
-                        <div className="w-full md:w-5/12 bg-slate-50 border-r border-gray-200 flex flex-col">
-                            <div className="p-8 border-b border-gray-200 bg-white">
-                                <h3 className="text-2xl font-bold text-gray-900">{selectedPlan.name}</h3>
-                                <div className="mt-2 flex items-baseline gap-2">
-                                    <span className="text-3xl font-bold text-primary">
-                                        {typeof selectedPlan.price === 'number' ? `₹${selectedPlan.price.toLocaleString()}` : selectedPlan.price}
-                                    </span>
-                                    <span className="text-sm text-gray-500">Total Fee</span>
-                                </div>
-                            </div>
-
-                            <div className="p-8 overflow-y-auto flex-1 custom-scrollbar">
-                                <h4 className="font-semibold text-gray-900 mb-4">What's Included:</h4>
-                                <ul className="space-y-3">
-                                    {selectedPlan.features.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-3">
-                                            <div className="bg-green-100 p-1 rounded-full flex-shrink-0 mt-0.5">
-                                                <CheckCircle className="w-4 h-4 text-green-600" />
-                                            </div>
-                                            <span className="text-sm text-gray-700 leading-relaxed">{feature}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                        {/* Mobile handle indicator */}
+                        <div className="w-full flex justify-center pt-3 pb-1 sm:hidden absolute top-0 left-0 z-20 pointer-events-none">
+                            <div className="w-12 h-1.5 bg-slate-200 rounded-full"></div>
                         </div>
 
-                        {/* Right Side: Terms & Content */}
-                        <div className="w-full md:w-7/12 flex flex-col bg-white">
-                            <div className="flex items-center justify-between p-6 border-b border-gray-100">
-                                <h4 className="font-bold text-gray-900">Plan Details</h4>
-                                <button
-                                    onClick={() => setSelectedPlan(null)}
-                                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
-                                >
-                                    <X className="w-6 h-6 text-gray-500" />
-                                </button>
-                            </div>
+                        {/* Shared Scrollable area for mobile vertical stacking */}
+                        <div className="flex-1 overflow-y-auto w-full custom-scrollbar flex flex-col md:flex-row pt-8 sm:pt-0 relative">
+                            {/* Left Side: Plan Info & Features */}
+                            <div className="w-full md:w-5/12 bg-slate-50 border-b md:border-b-0 md:border-r border-slate-200 flex flex-col flex-shrink-0">
+                                <div className="p-5 sm:p-8 border-b border-slate-200 bg-white relative">
+                                    {/* Mobile Close Button */}
+                                    <button
+                                        onClick={() => setSelectedPlan(null)}
+                                        className="md:hidden absolute top-2 right-2 p-2 bg-slate-100 hover:bg-slate-200 rounded-full transition-colors z-10"
+                                    >
+                                        <X className="w-4 h-4 text-slate-600" />
+                                    </button>
 
-                            <div className="p-8 overflow-y-auto flex-1 custom-scrollbar space-y-8">
-                                {/* Checklist */}
-                                {content.checklist && (
-                                    <div>
-                                        <h5 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                            <FileText className="w-5 h-5 text-blue-500" />
-                                            Document Checklist
-                                        </h5>
-                                        <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-                                            <ul className="space-y-2">
-                                                {content.checklist.map((item, idx) => (
-                                                    <li key={idx} className="text-sm text-blue-900 flex items-start gap-2">
-                                                        <span className="font-bold text-blue-400">•</span>
-                                                        {item}
-                                                    </li>
-                                                ))}
-                                            </ul>
+                                    <h3 className="text-xl sm:text-2xl font-bold text-slate-900 pr-8 md:pr-0 mt-2 sm:mt-0">{selectedPlan.name}</h3>
+                                    <div className="mt-2.5 sm:mt-3 flex flex-col gap-1 sm:gap-1.5">
+                                        <div className="flex items-baseline gap-2">
+                                            <span className="text-2xl sm:text-3xl font-bold text-blue-600 tabular-nums tracking-tight">
+                                                {typeof selectedPlan.price === 'number' ? `₹${selectedPlan.price.toLocaleString('en-IN')}` : selectedPlan.price}
+                                            </span>
+                                            <span className="text-[11px] sm:text-sm font-medium text-slate-500 uppercase tracking-wider">Base Fee</span>
                                         </div>
+                                        {typeof selectedPlan.price === 'number' && (
+                                            <div className="text-[11px] sm:text-sm font-semibold text-emerald-600 bg-emerald-50 w-fit px-2 py-0.5 rounded-md border border-emerald-100 mt-1">
+                                                Total ₹{(selectedPlan.price * 1.18).toLocaleString('en-IN', { maximumFractionDigits: 0 })} (incl. 18% GST)
+                                            </div>
+                                        )}
                                     </div>
-                                )}
 
-                                {/* Terms */}
-                                {content.termsAndConditions && (
-                                    <div>
-                                        <h5 className="font-bold text-gray-900 mb-3 flex items-center gap-2">
-                                            <AlertCircle className="w-5 h-5 text-orange-500" />
-                                            Terms & Conditions
-                                        </h5>
-                                        <ul className="space-y-2">
-                                            {content.termsAndConditions.map((term, idx) => (
-                                                <li key={idx} className="text-xs text-gray-500 flex items-start gap-2">
-                                                    <span>•</span>
-                                                    {term}
+                                    <div className="p-5 sm:p-8 flex-1">
+                                        <h4 className="font-semibold text-slate-900 mb-3 sm:mb-4 flex items-center gap-2 text-sm sm:text-base">
+                                            <CheckCircle className="w-4 h-4 text-blue-500" /> What's Included:
+                                        </h4>
+                                        <ul className="space-y-3 sm:space-y-3.5">
+                                            {selectedPlan.features.map((feature, idx) => (
+                                                <li key={idx} className="flex items-start gap-3 group">
+                                                    <div className="bg-emerald-100/80 p-1 rounded-full flex-shrink-0 mt-0.5 border border-emerald-200/50 group-hover:bg-emerald-200 transition-colors">
+                                                        <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
+                                                    </div>
+                                                    <span className="text-[13px] sm:text-[15px] text-slate-700 leading-relaxed font-medium">{feature}</span>
                                                 </li>
                                             ))}
                                         </ul>
                                     </div>
-                                )}
-                            </div>
+                                </div>
 
-                            <div className="p-6 border-t border-gray-100 bg-gray-50">
-                                <button
-                                    onClick={handleProceedToPayment}
-                                    className="w-full py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 shadow-lg shadow-primary/25 transition-all flex items-center justify-center gap-2"
-                                >
-                                    Proceed to Filling Form <ArrowRight className="w-5 h-5" />
-                                </button>
-                                <p className="text-center text-xs text-gray-400 mt-3">
-                                    Secure payment via Razorpay. Invoice generated instantly.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            <br />
-            <br />
-            <br />
-            <br />
-
-            {/* Common Sections (Benefits, Docs, FAQs) */}
-            <div className="bg-neutral-50 py-20 border-t border-gray-200">
-                {/* This can be customized further, using standard blocks from ITR page */}
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-12">
-                        {/* Benefits */}
-                        <div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-6">Why Choose Us?</h3>
-                            <div className="space-y-4">
-                                {content.benefits.map((benefit, idx) => (
-                                    <div key={idx} className="flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                        <CheckCircle className="w-5 h-5 text-green-500" />
-                                        <span className="font-medium text-gray-700">{benefit}</span>
+                                {/* Right Side: Terms & Content */}
+                                <div className="w-full md:w-7/12 flex flex-col bg-white flex-shrink-0 border-t sm:border-t-0 border-slate-100 pb-4">
+                                    <div className="hidden md:flex items-center justify-between p-6 border-b border-slate-100 sticky top-0 bg-white/95 backdrop-blur-sm z-10">
+                                        <h4 className="font-bold text-slate-900 text-lg">Plan Details</h4>
+                                        <button
+                                            onClick={() => setSelectedPlan(null)}
+                                            className="p-2 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-full transition-colors"
+                                        >
+                                            <X className="w-5 h-5 text-slate-500" />
+                                        </button>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
 
-                        {/* Critical or Docs */}
-                        <div>
-                            <h3 className="text-2xl font-bold text-gray-900 mb-6">Important Information</h3>
-                            <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
-                                <ul className="space-y-4">
-                                    {content.criticalConsiderations?.map((item, idx) => (
-                                        <li key={idx} className="flex items-start gap-3">
-                                            <div className="bg-orange-50 p-2 rounded-lg text-orange-600">
-                                                <item.icon className="w-5 h-5" />
-                                            </div>
+                                    <div className="p-5 sm:p-8 space-y-6 sm:space-y-8">
+                                        {/* Checklist */}
+                                        {content.checklist && (
                                             <div>
-                                                <h4 className="font-bold text-gray-900 text-sm">{item.title}</h4>
-                                                <p className="text-sm text-gray-500">{item.description}</p>
+                                                <h5 className="font-semibold text-slate-900 mb-3 flex items-center gap-2 text-sm sm:text-base">
+                                                    <FileText className="w-4.5 h-4.5 text-blue-500" />
+                                                    Required Documents
+                                                </h5>
+                                                <div className="bg-blue-50/50 rounded-xl sm:rounded-2xl p-4 sm:p-5 border border-blue-100/50">
+                                                    <ul className="space-y-2.5">
+                                                        {content.checklist.map((item, idx) => (
+                                                            <li key={idx} className="text-[13px] sm:text-sm text-blue-900/80 flex items-start gap-2.5 font-medium leading-relaxed">
+                                                                <span className="text-blue-400 mt-1 sm:mt-0.5 text-[10px] sm:text-xs">▶</span>
+                                                                {item}
+                                                            </li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
                                             </div>
-                                        </li>
-                                    ))}
-                                </ul>
+                                        )}
+
+                                        {/* Terms */}
+                                        {content.termsAndConditions && (
+                                            <div>
+                                                <h5 className="font-semibold text-slate-900 mb-3 flex items-center gap-2 text-sm sm:text-base">
+                                                    <AlertCircle className="w-4.5 h-4.5 text-amber-500" />
+                                                    Terms & Conditions
+                                                </h5>
+                                                <ul className="space-y-2.5 bg-slate-50 rounded-xl sm:rounded-2xl p-4 sm:p-5 border border-slate-100">
+                                                    {content.termsAndConditions.map((term, idx) => (
+                                                        <li key={idx} className="text-xs sm:text-[13px] text-slate-600 flex items-start gap-2.5 leading-relaxed">
+                                                            <span className="text-slate-400 mt-0.5">•</span>
+                                                            {term}
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Fixed Actions Bottom Bar */}
+                        <div className="p-4 sm:p-6 border-t border-slate-100 bg-white w-full z-20 flex-shrink-0 shadow-[0_-15px_30px_-15px_rgba(0,0,0,0.1)]">
+                            <button
+                                onClick={handleProceedToPayment}
+                                className="w-full py-4 bg-blue-600 text-white font-bold text-[15px] sm:text-[16px] rounded-xl hover:bg-blue-500 shadow-xl shadow-blue-600/20 transition-all flex items-center justify-center gap-2 group active:scale-[0.98]"
+                            >
+                                Proceed to Form <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
+                            </button>
+                            <div className="flex items-center justify-center gap-1.5 mt-3 text-[10px] sm:text-xs font-medium text-slate-400">
+                                <Shield className="w-3.5 h-3.5 text-emerald-500" />
+                                <span>Secure checkout & instant invoice</span>
                             </div>
                         </div>
                     </div>
-                </div>
-            </div>
-
-            {/* FAQs Section (New) */}
-            {content.faqs && (
-                <section className="py-20 bg-white border-t border-gray-100">
-                    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                        <div className="text-center mb-12">
-                            <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
-                        </div>
-                        <div className="space-y-4">
-                            {content.faqs.map((faq, index) => (
-                                <details
-                                    key={index}
-                                    className="bg-neutral-50 rounded-xl border border-gray-200 overflow-hidden group hover:bg-white hover:shadow-md transition-all"
-                                >
-                                    <summary className="px-6 py-4 cursor-pointer font-medium text-gray-900 flex items-center justify-between list-none">
-                                        <span>{faq.q}</span>
-                                        <ArrowRight className="w-5 h-5 text-gray-400 transform group-open:rotate-90 transition-transform" />
-                                    </summary>
-                                    <div className="px-6 pb-4 text-gray-600 leading-relaxed border-t border-gray-100 mt-2 pt-4">
-                                        {faq.a}
-                                    </div>
-                                </details>
-                            ))}
-                        </div>
-                    </div>
-                </section>
             )}
 
-        </div>
-    );
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+
+                    {/* Common Sections (Benefits, Docs, FAQs) */}
+                    <div className="bg-neutral-50 py-20 border-t border-gray-200">
+                        {/* This can be customized further, using standard blocks from ITR page */}
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="grid lg:grid-cols-2 gap-12">
+                                {/* Benefits */}
+                                <div>
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-6">Why Choose Us?</h3>
+                                    <div className="space-y-4">
+                                        {content.benefits.map((benefit, idx) => (
+                                            <div key={idx} className="flex items-center gap-3 bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                                                <CheckCircle className="w-5 h-5 text-green-500" />
+                                                <span className="font-medium text-gray-700">{benefit}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Critical or Docs */}
+                                <div>
+                                    <h3 className="text-2xl font-bold text-gray-900 mb-6">Important Information</h3>
+                                    <div className="bg-white rounded-xl border border-gray-100 shadow-sm p-6">
+                                        <ul className="space-y-4">
+                                            {content.criticalConsiderations?.map((item, idx) => (
+                                                <li key={idx} className="flex items-start gap-3">
+                                                    <div className="bg-orange-50 p-2 rounded-lg text-orange-600">
+                                                        <item.icon className="w-5 h-5" />
+                                                    </div>
+                                                    <div>
+                                                        <h4 className="font-bold text-gray-900 text-sm">{item.title}</h4>
+                                                        <p className="text-sm text-gray-500">{item.description}</p>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* FAQs Section (New) */}
+                    {content.faqs && (
+                        <section className="py-20 bg-white border-t border-gray-100">
+                            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                                <div className="text-center mb-12">
+                                    <h2 className="text-3xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+                                </div>
+                                <div className="space-y-4">
+                                    {content.faqs.map((faq, index) => (
+                                        <details
+                                            key={index}
+                                            className="bg-neutral-50 rounded-xl border border-gray-200 overflow-hidden group hover:bg-white hover:shadow-md transition-all"
+                                        >
+                                            <summary className="px-6 py-4 cursor-pointer font-medium text-gray-900 flex items-center justify-between list-none">
+                                                <span>{faq.q}</span>
+                                                <ArrowRight className="w-5 h-5 text-gray-400 transform group-open:rotate-90 transition-transform" />
+                                            </summary>
+                                            <div className="px-6 pb-4 text-gray-600 leading-relaxed border-t border-gray-100 mt-2 pt-4">
+                                                {faq.a}
+                                            </div>
+                                        </details>
+                                    ))}
+                                </div>
+                            </div>
+                        </section>
+                    )}
+
+                    {/* Professional Toast Notification */}
+                    {toastMessage && (
+                        <div className="fixed bottom-4 sm:bottom-8 right-4 sm:right-8 left-4 sm:left-auto z-[9999] animate-in slide-in-from-bottom-5 fade-in duration-300">
+                            <div className="bg-white border-[0.5px] border-emerald-100 shadow-[0_8px_30px_rgb(0,0,0,0.12)] rounded-2xl p-4 sm:pr-12 flex items-start gap-3.5 relative max-w-sm w-full mx-auto">
+                                <div className="bg-emerald-500 rounded-full p-1.5 flex-shrink-0 shadow-sm shadow-emerald-500/20 mt-0.5">
+                                    <CheckCircle className="w-4 h-4 text-white" />
+                                </div>
+                                <div>
+                                    <h4 className="font-bold text-slate-800 text-[15px] leading-snug">Added to Cart!</h4>
+                                    <p className="text-[13px] text-slate-500 mt-1 leading-relaxed font-medium">{toastMessage}</p>
+                                </div>
+                                <button
+                                    onClick={() => setToastMessage(null)}
+                                    className="absolute top-4 right-4 p-1 rounded-full text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-colors"
+                                >
+                                    <X className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
 }

@@ -6,7 +6,7 @@ import {
   Upload, CreditCard, CheckCircle, Clock, XCircle, Download, Eye,
   AlertCircle, TrendingUp, Package, Loader, Map, ChevronRight, MessageSquare, Trash2,
   Calendar as CalendarIcon, FileBarChart, LayoutDashboard, Menu, X, Shield, Search,
-  Zap, ShieldCheck
+  Zap, ShieldCheck, DollarSign
 } from 'lucide-react';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
@@ -99,7 +99,7 @@ export const Dashboard: React.FC = () => {
   // UI State
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'services' | 'documents' | 'reports' | 'calendar' | 'tickets' | 'billing'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'services' | 'documents' | 'reports' | 'calendar' | 'tickets' | 'billing' | 'va-portal'>('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [reportsSearchQuery, setReportsSearchQuery] = useState('');
@@ -571,6 +571,7 @@ export const Dashboard: React.FC = () => {
 
             <div>
               <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Assistance</p>
+              <NavItem id="va-portal" label="Virtual Assistance" icon={Zap} />
               <NavItem id="tickets" label="Ask an Expert" icon={MessageSquare} />
             </div>
           </div>
@@ -773,6 +774,246 @@ export const Dashboard: React.FC = () => {
             )}
 
             {/* DASHBOARD VIEW CONTENT */}
+            {/* VIRTUAL ASSISTANCE PORTAL VIEW */}
+            {activeTab === 'va-portal' && (
+              <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-24">
+                {/* VA Hero Section */}
+                <div className="relative overflow-hidden rounded-[3rem] bg-gradient-to-br from-[#0b1f3a] to-[#136da1] p-10 md:p-16 text-white shadow-2xl">
+                  <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-white/10 rounded-full -mr-40 -mt-40 blur-[120px]"></div>
+                  <div className="absolute bottom-0 left-0 w-64 h-64 bg-orange-500/10 rounded-full -ml-20 -mb-20 blur-[100px]"></div>
+
+                  <div className="relative z-10 flex flex-col lg:flex-row justify-between items-center gap-10">
+                    <div className="max-w-2xl text-center lg:text-left">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/20 rounded-full text-[9px] font-bold uppercase tracking-[0.2em] text-blue-100 mb-6">
+                        <Zap className="w-3 h-3 text-orange-400" /> Executive Business Suite
+                      </div>
+                      <h2 className="text-4xl md:text-5xl font-black tracking-tight mb-4">Virtual Assistance <span className="text-orange-400">Portal</span></h2>
+                      <p className="text-blue-100/70 font-medium leading-relaxed">
+                        Your all-in-one business growth command center. Manage your clients, build your digital presence, track leads, and connect with your dedicated assistant from a single encrypted node.
+                      </p>
+                    </div>
+                    <div className="flex gap-4">
+                      <div className="px-6 py-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 text-center">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-blue-200 mb-1">Lead Conversion</p>
+                        <p className="text-2xl font-black text-white">84%</p>
+                      </div>
+                      <div className="px-6 py-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 text-center">
+                        <p className="text-[10px] font-black uppercase tracking-widest text-blue-200 mb-1">Site Health</p>
+                        <p className="text-2xl font-black text-emerald-400">99.9%</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+                  {/* Left Column - CRM & Website Builder */}
+                  <div className="lg:col-span-8 space-y-10">
+                    
+                    {/* CRM Module */}
+                    <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm overflow-hidden relative">
+                      <div className="flex items-center justify-between mb-8">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 bg-blue-50 text-primary rounded-2xl flex items-center justify-center">
+                            <User className="w-6 h-6" />
+                          </div>
+                          <div>
+                            <h3 className="text-xl font-black text-[#0b1f3a] tracking-tight">Client Relationship Management</h3>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Client & Deal Tracking</p>
+                          </div>
+                        </div>
+                        <button className="px-5 py-2.5 bg-gray-50 text-[#0b1f3a] rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-100 transition-all border border-gray-100">Configure CRM</button>
+                      </div>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                        {[
+                          { label: 'Active Clients', count: '24', trend: '+3 this month' },
+                          { label: 'Pending Deals', count: '₹4.2L', trend: '5 high value' },
+                          { label: 'Avg. Retention', count: '14 mo', trend: 'Upper Quartile' }
+                        ].map((stat, i) => (
+                          <div key={i} className="p-5 bg-gray-50 rounded-2xl border border-gray-100">
+                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-2">{stat.label}</p>
+                            <h4 className="text-2xl font-black text-[#0b1f3a]">{stat.count}</h4>
+                            <p className="text-[9px] font-bold text-emerald-600 mt-1 uppercase tracking-tight">{stat.trend}</p>
+                          </div>
+                        ))}
+                      </div>
+
+                      <div className="space-y-3">
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Recent Client Interactions</p>
+                        {[
+                          { name: 'Quantum Logistics', status: 'Quote Sent', time: '2h ago' },
+                          { name: 'Skyline Architects', status: 'Contract Signed', time: '5h ago' },
+                          { name: 'E-Commerce Solutions', status: 'Follow-up Needed', time: 'Yesterday' }
+                        ].map((client, i) => (
+                          <div key={i} className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-2xl transition-all group cursor-pointer border border-transparent hover:border-gray-100">
+                            <div className="flex items-center gap-4">
+                              <div className="w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-[10px] font-black text-gray-400 group-hover:text-primary transition-colors">
+                                {client.name.charAt(0)}
+                              </div>
+                              <div>
+                                <p className="text-sm font-black text-[#0b1f3a]">{client.name}</p>
+                                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{client.status}</p>
+                              </div>
+                            </div>
+                            <span className="text-[10px] font-black text-gray-300 group-hover:text-gray-400">{client.time}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Website Builder Module */}
+                    <div className="bg-[#0b1f3a] rounded-[2.5rem] p-10 text-black shadow-2xl relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-primary/20 transition-colors"></div>
+                      
+                      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 relative z-10">
+                        <div className="flex-1">
+                          <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/10 shadow-xl">
+                            <TrendingUp className="w-8 h-8 text-primary" />
+                          </div>
+                          <h3 className="text-2xl font-black text-white tracking-tight mb-2">Pro Website Builder</h3>
+                          <p className="text-blue-100/60 font-medium text-sm leading-relaxed max-w-sm">
+                            Manage your professional digital identity. Deploy updates, edit content, and track performance from one dashboard.
+                          </p>
+                        </div>
+                        
+                        <div className="w-full md:w-auto space-y-4">
+                          <div className="p-6 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 min-w-[240px]">
+                            <div className="flex justify-between items-center mb-4">
+                              <span className="text-[10px] font-black text-blue-200 uppercase tracking-widest">Current Template</span>
+                              <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 rounded text-[8px] font-black uppercase tracking-widest">Live</span>
+                            </div>
+                            <p className="text-lg font-black text-white">Elite Corporate V4</p>
+                            <div className="mt-6 flex gap-2">
+                              <button className="flex-1 py-3 bg-primary text-black rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all">Edit Site</button>
+                              <button className="w-12 h-12 bg-white/10 text-white rounded-xl flex items-center justify-center hover:bg-white/20 transition-all">
+                                <Eye className="w-5 h-5" />
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right Column - Lead Management & Admin Support */}
+                  <div className="lg:col-span-4 space-y-10">
+                    
+                    {/* Lead Management Module */}
+                    <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm">
+                      <div className="flex items-center gap-4 mb-8">
+                        <div className="w-10 h-10 bg-[#ee7228]/10 text-[#ee7228] rounded-xl flex items-center justify-center">
+                          <Plus className="w-5 h-5" />
+                        </div>
+                        <h3 className="text-lg font-black text-[#0b1f3a] tracking-tight">Lead Tracker</h3>
+                      </div>
+
+                      <div className="space-y-6">
+                        {[
+                          { name: 'Arjun Mehra', email: 'arjun@tech.in', service: 'Company Inc.', score: 92 },
+                          { name: 'Priya Sharma', email: 'priya.s@corp.com', service: 'Tax Audit', score: 78 },
+                          { name: 'Karan Singh', email: 'karan@ind.co', service: 'GST Filing', score: 65 }
+                        ].map((lead, i) => (
+                          <div key={i} className="p-5 bg-gray-50 rounded-2xl border border-gray-100 hover:border-orange-200 transition-all relative group">
+                            <div className="absolute top-4 right-4 text-[18px] font-black text-orange-500/10 group-hover:text-orange-500/20 transition-colors">#{lead.score}</div>
+                            <p className="text-sm font-black text-[#0b1f3a] mb-1">{lead.name}</p>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">{lead.email}</p>
+                            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                              <span className="text-[9px] font-black text-[#ee7228] uppercase tracking-[0.2em]">{lead.service}</span>
+                              <button className="w-8 h-8 bg-white rounded-lg flex items-center justify-center text-gray-400 hover:text-[#0b1f3a] transition-colors border border-gray-100 shadow-sm">
+                                <ChevronRight className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+
+                      <button className="w-full mt-8 py-4 bg-[#0b1f3a] text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#ee7228] transition-all shadow-lg shadow-blue-900/10">View Full Pipeline</button>
+                    </div>
+
+                    {/* Dedicated Admin Support */}
+                    <div className="bg-emerald-50 rounded-[2.5rem] p-8 border border-emerald-100 relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+                      
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-4 mb-6">
+                          <div className="w-12 h-12 bg-white rounded-2xl shadow-sm border border-emerald-100 flex items-center justify-center">
+                            <MessageSquare className="w-6 h-6 text-emerald-500" />
+                          </div>
+                          <div>
+                            <h3 className="text-lg font-black text-emerald-900 tracking-tight">Dedicated Support</h3>
+                            <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Virtual Assistant Online</p>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-4 mb-8 p-3 bg-white rounded-2xl border border-emerald-100">
+                          <div className="w-12 h-12 bg-emerald-500 rounded-xl flex items-center justify-center text-black font-black text-sm shadow-lg shadow-emerald-500/20">
+                            AM
+                          </div>
+                          <div>
+                            <p className="text-xs font-black text-emerald-900 leading-none mb-1">Anjali Mishra</p>
+                            <p className="text-[9px] font-bold text-emerald-500 uppercase tracking-widest">Senior Associate Assistant</p>
+                          </div>
+                          <div className="ml-auto flex items-center gap-1.5 px-2 py-1 bg-emerald-50 rounded-lg">
+                            <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                            <span className="text-[8px] font-black text-emerald-600 uppercase">Live</span>
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <button className="w-full py-4 bg-[#0b1f3a] text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#ee7228] transition-all shadow-xl shadow-emerald-900/10 flex items-center justify-center gap-3">
+                            <MessageSquare className="w-4 h-4" /> Start Quick Chat
+                          </button>
+                          <button className="w-full py-4 bg-white text-emerald-600 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-emerald-100 transition-all border border-emerald-200">
+                            Schedule Briefing
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                {/* Additional Services Hub */}
+                <div className="bg-white rounded-[3rem] p-12 border border-gray-100 shadow-sm relative overflow-hidden">
+                  <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-primary/5 rounded-full blur-[100px]"></div>
+                  
+                  <div className="relative z-10">
+                    <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-12">
+                      <div className="max-w-xl">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-100 rounded-full text-[9px] font-black uppercase tracking-widest text-[#136da1] mb-6">
+                          Explore Ecosystem
+                        </div>
+                        <h3 className="text-3xl font-black text-[#0b1f3a] tracking-tight mb-4">Extend Your <span className="text-primary">Ecosystem</span></h3>
+                        <p className="text-gray-500 font-medium text-sm leading-relaxed">
+                          Deploy additional high-intelligence modules to your workspace. From specialized audits to legal advisory, access our full range of expert services.
+                        </p>
+                      </div>
+                      <button onClick={() => setActiveTab('services')} className="px-10 py-4 bg-[#0b1f3a] text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-blue-900/10 hover:bg-primary transition-all flex items-center gap-3">
+                        Service Directory <ChevronRight className="w-4 h-4" />
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                      {[
+                        { title: 'Legal Advisory', desc: 'Expert legal counsel for business operations.', icon: ShieldCheck, color: 'text-emerald-500' },
+                        { title: 'Strategic Audit', desc: 'Comprehensive financial health assessments.', icon: FileBarChart, color: 'text-primary' },
+                        { title: 'Trademark Registry', desc: 'Secure your brand assets globally.', icon: Shield, color: 'text-orange-500' },
+                        { title: 'Wealth Management', desc: 'Personal & corporate investment planning.', icon: DollarSign, color: 'text-violet-500' }
+                      ].map((svc, i) => (
+                        <div key={i} className="group p-8 bg-gray-50 rounded-[2.5rem] border border-gray-100 hover:border-primary hover:bg-white transition-all duration-500 cursor-pointer shadow-sm hover:shadow-xl">
+                          <div className={`w-14 h-14 bg-white rounded-2xl flex items-center justify-center mb-6 border border-gray-100 shadow-sm group-hover:scale-110 group-hover:bg-[#0b1f3a] transition-all duration-500`}>
+                            <svc.icon className={`w-6 h-6 ${svc.color} group-hover:text-primary transition-colors`} />
+                          </div>
+                          <h4 className="text-base font-black text-[#0b1f3a] mb-2 tracking-tight group-hover:text-primary transition-colors">{svc.title}</h4>
+                          <p className="text-[11px] text-gray-400 font-bold leading-relaxed">{svc.desc}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {activeTab === 'dashboard' && (
               <div className="space-y-8 md:space-y-12 pb-16">
                 {/* Greeting Section */}
@@ -972,32 +1213,88 @@ export const Dashboard: React.FC = () => {
 
             {/* SERVICES VIEW */}
             {activeTab === 'services' && (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {services.length > 0 ? (
-                  services.map(service => (
-                    <div key={service.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 flex flex-col group">
-                      <div className="h-32 bg-gradient-to-br from-gray-900 to-gray-800 p-6 flex flex-col justify-end relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-primary/20 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                        <h4 className="text-black font-bold text-lg relative z-10">{service.name}</h4>
-                      </div>
-                      <div className="p-6 flex-1 flex flex-col">
-                        <p className="text-gray-600 text-sm mb-6 flex-1">{service.description}</p>
-                        <div className="flex items-center justify-between mb-6">
-                          {Number(service.price) > 0 && (
-                            <span className="text-2xl font-bold text-gray-900">₹{Number(service.price).toLocaleString()}</span>
-                          )}
+              <div className="space-y-16 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-24">
+                {/* Search & Filter Header */}
+                <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm flex flex-col md:flex-row justify-between items-center gap-6">
+                  <div>
+                    <h3 className="text-2xl font-black text-[#0b1f3a] tracking-tight">Service Directory</h3>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Explore and initiate professional modules</p>
+                  </div>
+                  <div className="relative w-full md:w-96">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                    <input 
+                      type="text" 
+                      placeholder="Search for a specific service..." 
+                      className="w-full pl-12 pr-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl outline-none focus:border-primary focus:bg-white transition-all font-bold text-sm"
+                      value={globalSearchQuery}
+                      onChange={(e) => setGlobalSearchQuery(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                {categories.length > 0 ? (
+                  categories.map((category) => {
+                    const filteredServices = category.services.filter(s => 
+                      s.name.toLowerCase().includes(globalSearchQuery.toLowerCase()) ||
+                      s.description.toLowerCase().includes(globalSearchQuery.toLowerCase())
+                    );
+
+                    if (globalSearchQuery && filteredServices.length === 0) return null;
+
+                    return (
+                      <div key={category.id} className="space-y-8">
+                        <div className="flex items-center gap-4 ml-4">
+                          <div className="w-1.5 h-8 bg-primary rounded-full"></div>
+                          <div>
+                            <h4 className="text-lg font-black text-[#0b1f3a] uppercase tracking-wider">{category.name}</h4>
+                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{category.description}</p>
+                          </div>
                         </div>
-                        <button
-                          onClick={() => handleChoosePlan(service)}
-                          className="w-full py-3 border-2 border-primary text-primary font-bold rounded-xl hover:bg-primary hover:text-black transition flex items-center justify-center gap-2"
-                        >
-                          <ShoppingCart className="w-5 h-5" /> Choose Plan
-                        </button>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                          {filteredServices.map(service => (
+                            <div key={service.id} className="bg-white rounded-[2.5rem] border border-gray-100 p-8 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group h-full relative overflow-hidden">
+                              <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-primary/10 transition-colors"></div>
+                              
+                              <div className="relative z-10 flex flex-col h-full">
+                                <div className="mb-8">
+                                  <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 border border-gray-100 group-hover:bg-[#0b1f3a] transition-all duration-500">
+                                    <Package className="w-7 h-7 text-[#0b1f3a] group-hover:text-primary transition-colors" />
+                                  </div>
+                                  <h5 className="text-xl font-black text-[#0b1f3a] tracking-tight mb-3 group-hover:text-primary transition-colors leading-tight">{service.name}</h5>
+                                  <p className="text-sm text-gray-400 font-medium leading-relaxed line-clamp-3">{service.description}</p>
+                                </div>
+
+                                <div className="mt-auto pt-8 border-t border-gray-50 flex items-center justify-between gap-4">
+                                  <div className="flex flex-col">
+                                    <span className="text-[9px] font-black text-gray-300 uppercase tracking-widest">Starting from</span>
+                                    <span className="text-lg font-black text-[#0b1f3a]">
+                                      {service.price && Number(service.price) > 0 ? `₹${Number(service.price).toLocaleString()}` : 'Custom'}
+                                    </span>
+                                  </div>
+                                  <button
+                                    onClick={() => handleChoosePlan(service)}
+                                    className="px-6 py-4 bg-[#0b1f3a] text-black rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-blue-500/10 hover:bg-primary hover:text-black hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+                                  >
+                                    <ShoppingCart className="w-4 h-4" /> Initiate
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 ) : (
-                  <div className="col-span-full text-center py-20 text-gray-500">Loading services...</div>
+                  <div className="flex flex-col items-center justify-center py-32 bg-white rounded-[3rem] border border-dashed border-gray-200">
+                    <div className="relative w-20 h-20 mb-8">
+                      <div className="absolute inset-0 border-4 border-[#136da1]/10 rounded-full"></div>
+                      <div className="absolute inset-0 border-4 border-[#136da1] border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                    <h4 className="text-xl font-black text-[#0b1f3a] mb-2 tracking-tight">Syncing Service Registry</h4>
+                    <p className="text-gray-400 font-bold uppercase text-[10px] tracking-widest">Retrieving latest compliance modules...</p>
+                  </div>
                 )}
               </div>
             )}
@@ -1755,6 +2052,7 @@ export const Dashboard: React.FC = () => {
                   </div>
                   <div>
                     <p className="px-4 text-[9px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Support</p>
+                    <NavItem id="va-portal" label="Virtual Assistance" icon={Zap} />
                     <NavItem id="tickets" label="Ask an Expert" icon={MessageSquare} />
                   </div>
                 </div>

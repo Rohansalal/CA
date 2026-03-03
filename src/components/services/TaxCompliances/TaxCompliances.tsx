@@ -1,4 +1,4 @@
-import { FileText, CheckCircle, Clock, ArrowRight, AlertCircle, Calendar, DollarSign } from 'lucide-react';
+import { FileText, CheckCircle, Clock, ArrowRight, AlertCircle, Calendar, DollarSign, ShoppingCart } from 'lucide-react';
 
 export function TaxCompliances() {
   const itrServices = [
@@ -273,9 +273,15 @@ export function TaxCompliances() {
                       </div>
                     </div>
                   </div>
-                  <button className="w-full mt-4 px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all">
-                    File Now
-                  </button>
+                  <div className="flex gap-3 mt-6">
+                    <button className="flex-1 flex items-center justify-center gap-2 py-3 px-2 bg-white border-2 border-gray-200 text-gray-700 font-bold text-[13px] rounded-xl hover:bg-gray-50 hover:border-blue-300 hover:text-blue-600 transition-all duration-300 shadow-sm group">
+                      <ShoppingCart className="w-4 h-4 group-hover:scale-110 transition-transform" />
+                      Add to Cart
+                    </button>
+                    <button className="flex-1 py-3 px-2 bg-blue-600 text-white font-bold text-[13px] rounded-xl hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-xl hover:-translate-y-0.5">
+                      File Now
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -482,7 +488,7 @@ export function TaxCompliances() {
             <div className="bg-white rounded-xl shadow-lg border border-neutral-200 p-8">
               <h2 className="text-2xl text-primary mb-4">E-Invoicing</h2>
               <p className="text-neutral-600 mb-6">{eInvoicing.description}</p>
-              
+
               <div className="mb-6">
                 <h3 className="text-sm font-semibold text-primary mb-3 uppercase">Applicability:</h3>
                 <div className="space-y-2">
@@ -523,7 +529,7 @@ export function TaxCompliances() {
             <div className="bg-white rounded-xl shadow-lg border border-neutral-200 p-8">
               <h2 className="text-2xl text-primary mb-4">E-Way Bill</h2>
               <p className="text-neutral-600 mb-6">{eWayBill.description}</p>
-              
+
               <div className="mb-6">
                 <h3 className="text-sm font-semibold text-primary mb-3 uppercase">When Required:</h3>
                 <div className="space-y-2">
@@ -590,7 +596,7 @@ export function TaxCompliances() {
           <p className="text-xl text-neutral-100 mb-8">
             Let our CA experts handle all your tax filings and compliances
           </p>
-          <button className="px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center gap-2">
+          <button className="px-8 py-4 bg-accent text-white font-bold tracking-wide rounded-xl shadow-lg shadow-accent/20 hover:bg-accent/90 transition-all hover:shadow-xl hover:shadow-accent/40 transform hover:-translate-y-1 inline-flex items-center gap-2">
             GET COMPLIANCE SUPPORT NOW
             <ArrowRight className="w-5 h-5" />
           </button>
