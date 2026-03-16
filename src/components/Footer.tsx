@@ -89,7 +89,7 @@ export function Footer({ onNavigate }: FooterProps) {
                 <li key={link.id}>
                   <button
                     onClick={() => handleNavClick(link.id)}
-                    className="text-neutral-200 hover:text-accent transition-colors flex items-center gap-2 group"
+                    className="text-neutral-200 hover:text-accent transition-colors flex items-center gap-2 group cursor-pointer"
                   >
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     {link.label}
@@ -110,7 +110,7 @@ export function Footer({ onNavigate }: FooterProps) {
                       navigate(service.route);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className="text-neutral-200 hover:text-accent transition-colors flex items-center gap-2 group"
+                    className="text-neutral-200 hover:text-accent transition-colors flex items-center gap-2 group cursor-pointer"
                   >
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     {service.label}
@@ -173,10 +173,10 @@ export function Footer({ onNavigate }: FooterProps) {
             </div>
             <div className="flex gap-6 flex-wrap justify-center">
               <div className="flex gap-6 flex-wrap justify-center">
-                <button onClick={() => handleNavClick('privacy-policy')} className="hover:text-accent transition-colors">Privacy Policy</button>
-                <button onClick={() => handleNavClick('terms-conditions')} className="hover:text-accent transition-colors">Terms & Conditions</button>
-                <button onClick={() => window.dispatchEvent(new CustomEvent('openCookieSettings'))} className="hover:text-accent transition-colors">Cookie Policy</button>
-                <button onClick={() => handleNavClick('terms-conditions')} className="hover:text-accent transition-colors">Disclaimer</button>
+                <button onClick={() => handleNavClick('privacy-policy')} className="hover:text-accent transition-colors cursor-pointer">Privacy Policy</button>
+                <button onClick={() => handleNavClick('terms-conditions')} className="hover:text-accent transition-colors cursor-pointer">Terms & Conditions</button>
+                <button onClick={() => window.dispatchEvent(new CustomEvent('openCookieSettings'))} className="hover:text-accent transition-colors cursor-pointer">Cookie Policy</button>
+                <button onClick={() => handleNavClick('terms-conditions')} className="hover:text-accent transition-colors cursor-pointer">Disclaimer</button>
               </div>
             </div>
           </div>

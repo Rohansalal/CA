@@ -20,7 +20,7 @@ export function ServicePricing({ serviceSlug, serviceName, fallbackContent }: Se
             try {
                 // Ensure the URL is correct based on environment
                 const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
-                const response = await fetch(`${baseUrl}/services/${serviceSlug}`);
+                const response = await fetch(`${baseUrl}/services/slug/${serviceSlug}`);
                 const data = await response.json();
                 if (data.service) setServiceData(data.service);
             } catch (e) {

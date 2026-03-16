@@ -86,8 +86,8 @@ export const PlanSelectionModal: React.FC<PlanSelectionModalProps> = ({ isOpen, 
             const data = await response.json();
             const orderId = data.order.id;
 
-            // Redirect to document upload
-            navigate(`/dashboard/order/${orderId}/upload-documents`);
+            // Redirect to document upload unified page
+            navigate(`/dashboard/order/${orderId}/submit-details`);
 
         } catch (error) {
             console.error(error);

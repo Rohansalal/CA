@@ -28,15 +28,34 @@ export const OrderRequirements = () => {
         }
     };
 
-    // Mock requirements form - this should be dynamic based on Order -> Service -> Plan -> Requirements
-    // For now, static fields for "Incorporation"
-    const formFields = [
-        { label: 'Proposed Company Name (Option 1)', name: 'companyName1', type: 'text', required: true },
-        { label: 'Proposed Company Name (Option 2)', name: 'companyName2', type: 'text', required: false },
-        { label: 'Principal Business Activity', name: 'activity', type: 'textarea', required: true },
-        { label: 'Authorized Capital (in INR)', name: 'capital', type: 'number', required: true },
-        { label: 'Director Details (Brief)', name: 'directors', type: 'textarea', required: true }
-    ];
+    // Dynamic form requirements based on Service and Plan
+    const isITRBasic = order?.items?.[0]?.serviceName?.toLowerCase().includes('itr') || 
+                       order?.items?.[0]?.serviceName?.toLowerCase().includes('income tax');
+    const planType = order?.items?.[0]?.planType?.toUpperCase();
+    const isBasicPlan = planType === 'BASIC';
+
+    const getFormFields = () => {
+        if (isITRBasic && isBasicPlan) {
+            return [
+                { label: 'Mobile No.', name: 'mobileNo', type: 'tel', required: true },
+                { label: 'Email Id', name: 'emailId', type: 'email', required: true },
+                { label: 'PAN Number', name: 'panNumber', type: 'text', required: false },
+                { label: 'Aadhaar Number', name: 'aadhaarNumber', type: 'text', required: false },
+                { label: 'Other notes / Remarks', name: 'remarks', type: 'textarea', required: false }
+            ];
+        }
+
+        // Default (Incorporation etc.)
+        return [
+            { label: 'Proposed Company Name (Option 1)', name: 'companyName1', type: 'text', required: true },
+            { label: 'Proposed Company Name (Option 2)', name: 'companyName2', type: 'text', required: false },
+            { label: 'Principal Business Activity', name: 'activity', type: 'textarea', required: true },
+            { label: 'Authorized Capital (in INR)', name: 'capital', type: 'number', required: true },
+            { label: 'Director Details (Brief)', name: 'directors', type: 'textarea', required: true }
+        ];
+    };
+
+    const formFields = getFormFields();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });

@@ -3,6 +3,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { AdminProvider } from './contexts/AdminContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { AdminProtectedRoute } from './components/AdminProtectedRoute';
+import { CartProvider } from './contexts/CartContext';
 
 // Auth Pages
 import { Login } from './components/pages/Login';
@@ -13,6 +14,7 @@ import { OTPVerification } from './components/pages/OTPVerification';
 import { ForgotPassword } from './components/pages/ForgotPassword';
 import { OrderDocuments } from './components/pages/OrderDocuments';
 import { OrderRequirements } from './components/pages/OrderRequirements';
+import { OrderSubmitDetails } from './components/pages/OrderSubmitDetails';
 
 // Admin Pages
 import { AdminLogin } from './components/pages/AdminLogin';
@@ -22,6 +24,14 @@ import { AdminAnalytics } from './components/pages/AdminAnalytics';
 import { AdminTickets } from './components/pages/AdminTickets';
 import { AdminServices } from './components/pages/AdminServices';
 import { AdminProfile } from './components/pages/AdminProfile'; // Import AdminProfile
+import { AdminTasks } from './components/pages/AdminTasks';
+import { AdminLeads } from './components/pages/AdminLeads';
+import { AdminOrders } from './components/pages/AdminOrders';
+import { AdminNotifications } from './components/pages/AdminNotifications';
+import { AdminCRM } from './components/pages/AdminCRM';
+
+import { MyTasks } from './components/pages/MyTasks';
+import { MyNotifications } from './components/pages/MyNotifications';
 
 // Home Pages
 import { Home } from './components/Home';
@@ -33,6 +43,7 @@ import { ContactUs } from './components/ContactUs';
 import { PrivacyPolicy } from './components/pages/PrivacyPolicy';
 import { TermsAndConditions } from './components/pages/TermsConditions';
 import { AllServices } from './components/pages/AllServices';
+import { Cart } from './components/pages/Cart';
 
 // Blog Pages
 import { Budget2026 } from './components/pages/blogs/Budget2026';
@@ -173,6 +184,30 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/dashboard/order/:id/submit-details"
+            element={
+              <ProtectedRoute>
+                <OrderSubmitDetails />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/tasks"
+            element={
+              <ProtectedRoute>
+                <MyTasks />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/notifications"
+            element={
+              <ProtectedRoute>
+                <MyNotifications />
+              </ProtectedRoute>
+            }
+          />
 
           {/* Admin Routes */}
           <Route path="/admin/login" element={<AdminLogin />} />
@@ -224,12 +259,22 @@ function AppContent() {
               </AdminProtectedRoute>
             }
           />
+          {/* CRM Admin Route */}
+          <Route
+            path="/admin/crm"
+            element={
+              <AdminProtectedRoute>
+                <AdminCRM />
+              </AdminProtectedRoute>
+            }
+          />
 
           {/* Main Pages */}
           <Route path="/" element={<Home />} />
           <Route path="/about" element={<AboutUs />} />
           <Route path="/services" element={<Services />} />
           <Route path="/all-services" element={<AllServices />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/industries" element={<Industries />} />
           <Route path="/resources" element={<Resources />} />
           <Route path="/contact" element={<ContactUs />} />
@@ -336,7 +381,9 @@ export default function App() {
       <ScrollToTop />
       <AuthProvider>
         <AdminProvider>
-          <AppContent />
+          <CartProvider>
+            <AppContent />
+          </CartProvider>
         </AdminProvider>
       </AuthProvider>
     </Router>

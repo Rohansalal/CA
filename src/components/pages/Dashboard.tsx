@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
+import { UniversalServicePanel } from './UniversalServicePanel';
 
 // API Configuration
 const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
@@ -95,11 +96,12 @@ export const Dashboard: React.FC = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
   const [tickets, setTickets] = useState<SupportTicket[]>([]);
   const [stats, setStats] = useState<DashboardStats>({ total: 0, active: 0, pending: 0, completed: 0 });
+  const [reports, setReports] = useState<any[]>([]);
 
   // UI State
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'services' | 'documents' | 'reports' | 'calendar' | 'tickets' | 'billing' | 'va-portal'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'services' | 'documents' | 'reports' | 'calendar' | 'tickets' | 'billing' | 'va-portal' | 'workspaces'>('dashboard');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const [reportsSearchQuery, setReportsSearchQuery] = useState('');
@@ -161,9 +163,13 @@ export const Dashboard: React.FC = () => {
   }, [user, navigate, services, location.state]);
 
   const getAuthHeader = (includeIdempotencyKey = false) => {
+    const token = localStorage.getItem('token');
     const headers: any = {
       'Content-Type': 'application/json'
     };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
     if (includeIdempotencyKey) {
       headers['X-Idempotency-Key'] = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     }
@@ -176,13 +182,14 @@ export const Dashboard: React.FC = () => {
     try {
       const headers = getAuthHeader();
 
-      const [servicesRes, userServicesRes, docsRes, statsRes, ticketsRes, methodsRes] = await Promise.all([
+      const [servicesRes, userServicesRes, docsRes, statsRes, ticketsRes, methodsRes, reportsRes] = await Promise.all([
         fetch(`${API_URL}/services/categories`, { headers, credentials: 'include' }),
         fetch(`${API_URL}/services/my-services`, { headers, credentials: 'include' }),
         fetch(`${API_URL}/documents/my-documents`, { headers, credentials: 'include' }),
         fetch(`${API_URL}/dashboard/user`, { headers, credentials: 'include' }),
         fetch(`${API_URL}/tickets/my-tickets`, { headers, credentials: 'include' }),
-        fetch(`${API_URL}/payments/methods`, { headers, credentials: 'include' })
+        fetch(`${API_URL}/payments/methods`, { headers, credentials: 'include' }),
+        fetch(`${API_URL}/documents/my-reports`, { headers, credentials: 'include' })
       ]);
 
       if (servicesRes.ok) {
@@ -234,6 +241,10 @@ export const Dashboard: React.FC = () => {
         setAvailablePaymentMethods(methods);
         if (methods.razorpay) setSelectedPaymentMethod('razorpay');
         else if (methods.stripe) setSelectedPaymentMethod('stripe');
+      }
+      if (reportsRes?.ok) {
+        const reportsData = await reportsRes.json();
+        setReports(reportsData.reports || []);
       }
 
     } catch (err) {
@@ -420,14 +431,18 @@ export const Dashboard: React.FC = () => {
         credentials: 'include'
       });
 
-      if (!res.ok) throw new Error('Failed to submit detailed payment');
+      if (!res.ok) {
+        let errData;
+        try { errData = await res.json(); } catch (e) { }
+        throw new Error(errData?.error || 'Failed to submit detailed payment');
+      }
 
       alert(selectedPaymentMethod === 'pay_later' ? 'Order placed! You can pay later.' : 'Payment proof submitted for verification!');
       setShowPaymentModal(false);
       await fetchData();
     } catch (err: any) {
       console.error(err);
-      alert(err.message || 'Payment process failed');
+      alert(`Payment Error: ${err.message || 'Payment process failed'}`);
     } finally {
       setActionLoading(false);
     }
@@ -512,11 +527,17 @@ export const Dashboard: React.FC = () => {
     );
   }
 
-  // Derived Data for Views
-  const reportDocuments = documents.filter(doc =>
-    doc.fileName.toLowerCase().includes('report') ||
-    doc.fileName.toLowerCase().includes('final')
-  );
+  // Derived Data for Views — use admin-uploaded reports from /my-reports endpoint,
+  // falling back to filename-based filter from general documents
+  const reportDocuments = (reports.length > 0 ? reports : documents.filter(doc =>
+    doc.fileType === 'REPORT' ||
+    doc.fileName?.toLowerCase().includes('report') ||
+    doc.fileName?.toLowerCase().includes('final')
+  )).map((doc: any) => ({
+    ...doc,
+    // Normalise download URL — backend stores `filePath`, UI needs absolute URL
+    url: doc.url || (doc.filePath ? `${import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000'}${doc.filePath}` : '#')
+  }));
 
   const NavItem = ({ id, label, icon: Icon }: { id: typeof activeTab, label: string, icon: any }) => (
     <button
@@ -573,6 +594,7 @@ export const Dashboard: React.FC = () => {
               <p className="px-4 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-4">Assistance</p>
               <NavItem id="va-portal" label="Virtual Assistance" icon={Zap} />
               <NavItem id="tickets" label="Ask an Expert" icon={MessageSquare} />
+              <NavItem id="workspaces" label="Service Workspaces" icon={FileText} />
             </div>
           </div>
         </nav>
@@ -774,6 +796,18 @@ export const Dashboard: React.FC = () => {
             )}
 
             {/* DASHBOARD VIEW CONTENT */}
+
+            {/* UNIVERSAL WORKSPACE VIEW */}
+            {activeTab === 'workspaces' && (
+              <UniversalServicePanel
+                onInitiatePayment={(service) => {
+                  setSelectedService(service);
+                  setShowPaymentModal(true);
+                }}
+                initialServices={userServices}
+              />
+            )}
+
             {/* VIRTUAL ASSISTANCE PORTAL VIEW */}
             {activeTab === 'va-portal' && (
               <div className="space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700 pb-24">
@@ -808,7 +842,7 @@ export const Dashboard: React.FC = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                   {/* Left Column - CRM & Website Builder */}
                   <div className="lg:col-span-8 space-y-10">
-                    
+
                     {/* CRM Module */}
                     <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm overflow-hidden relative">
                       <div className="flex items-center justify-between mb-8">
@@ -864,7 +898,7 @@ export const Dashboard: React.FC = () => {
                     {/* Website Builder Module */}
                     <div className="bg-[#0b1f3a] rounded-[2.5rem] p-10 text-black shadow-2xl relative overflow-hidden group">
                       <div className="absolute top-0 right-0 w-64 h-64 bg-primary/10 rounded-full -mr-32 -mt-32 blur-3xl group-hover:bg-primary/20 transition-colors"></div>
-                      
+
                       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-8 relative z-10">
                         <div className="flex-1">
                           <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-6 border border-white/10 shadow-xl">
@@ -875,7 +909,7 @@ export const Dashboard: React.FC = () => {
                             Manage your professional digital identity. Deploy updates, edit content, and track performance from one dashboard.
                           </p>
                         </div>
-                        
+
                         <div className="w-full md:w-auto space-y-4">
                           <div className="p-6 bg-white/5 backdrop-blur-md rounded-2xl border border-white/10 min-w-[240px]">
                             <div className="flex justify-between items-center mb-4">
@@ -897,7 +931,7 @@ export const Dashboard: React.FC = () => {
 
                   {/* Right Column - Lead Management & Admin Support */}
                   <div className="lg:col-span-4 space-y-10">
-                    
+
                     {/* Lead Management Module */}
                     <div className="bg-white rounded-[2.5rem] p-8 border border-gray-100 shadow-sm">
                       <div className="flex items-center gap-4 mb-8">
@@ -933,7 +967,7 @@ export const Dashboard: React.FC = () => {
                     {/* Dedicated Admin Support */}
                     <div className="bg-emerald-50 rounded-[2.5rem] p-8 border border-emerald-100 relative overflow-hidden group">
                       <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
-                      
+
                       <div className="relative z-10">
                         <div className="flex items-center gap-4 mb-6">
                           <div className="w-12 h-12 bg-white rounded-2xl shadow-sm border border-emerald-100 flex items-center justify-center">
@@ -976,7 +1010,7 @@ export const Dashboard: React.FC = () => {
                 {/* Additional Services Hub */}
                 <div className="bg-white rounded-[3rem] p-12 border border-gray-100 shadow-sm relative overflow-hidden">
                   <div className="absolute -left-20 -bottom-20 w-64 h-64 bg-primary/5 rounded-full blur-[100px]"></div>
-                  
+
                   <div className="relative z-10">
                     <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-12">
                       <div className="max-w-xl">
@@ -1110,10 +1144,12 @@ export const Dashboard: React.FC = () => {
 
                           <div className="mt-auto pt-6 border-t border-gray-50 flex gap-3">
                             {svc.status === 'NEED_DOCUMENTS' && (
-                              <label className="flex-1 text-center py-4 bg-primary text-black rounded-2xl text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-[#0b1f3a] hover:text-black transition-all shadow-lg shadow-blue-500/10 active:scale-95">
-                                Upload File
-                                <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, svc.orderId)} accept=".pdf,.png,.jpg" />
-                              </label>
+                              <button
+                                onClick={() => setActiveTab('workspaces')}
+                                className="flex-1 py-4 bg-primary text-black rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#0b1f3a] hover:text-black transition-all shadow-lg shadow-blue-500/10 active:scale-95"
+                              >
+                                Open Workspace
+                              </button>
                             )}
                             {svc.status === 'PENDING_PAYMENT' && (
                               <button
@@ -1222,9 +1258,9 @@ export const Dashboard: React.FC = () => {
                   </div>
                   <div className="relative w-full md:w-96">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                    <input 
-                      type="text" 
-                      placeholder="Search for a specific service..." 
+                    <input
+                      type="text"
+                      placeholder="Search for a specific service..."
                       className="w-full pl-12 pr-6 py-4 bg-gray-50 border-2 border-transparent rounded-2xl outline-none focus:border-primary focus:bg-white transition-all font-bold text-sm"
                       value={globalSearchQuery}
                       onChange={(e) => setGlobalSearchQuery(e.target.value)}
@@ -1234,7 +1270,7 @@ export const Dashboard: React.FC = () => {
 
                 {categories.length > 0 ? (
                   categories.map((category) => {
-                    const filteredServices = category.services.filter(s => 
+                    const filteredServices = category.services.filter(s =>
                       s.name.toLowerCase().includes(globalSearchQuery.toLowerCase()) ||
                       s.description.toLowerCase().includes(globalSearchQuery.toLowerCase())
                     );
@@ -1255,7 +1291,7 @@ export const Dashboard: React.FC = () => {
                           {filteredServices.map(service => (
                             <div key={service.id} className="bg-white rounded-[2.5rem] border border-gray-100 p-8 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 flex flex-col group h-full relative overflow-hidden">
                               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-primary/10 transition-colors"></div>
-                              
+
                               <div className="relative z-10 flex flex-col h-full">
                                 <div className="mb-8">
                                   <div className="w-14 h-14 bg-gray-50 rounded-2xl flex items-center justify-center mb-6 border border-gray-100 group-hover:bg-[#0b1f3a] transition-all duration-500">
@@ -1498,11 +1534,10 @@ export const Dashboard: React.FC = () => {
 
                               <a
                                 href={report.url}
-                                target="_blank"
-                                rel="noreferrer"
-                                className="px-6 py-3.5 bg-[#0b1f3a] text-black rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-blue-500/10 hover:bg-primary hover:text-black hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
+                                download={report.fileName || 'report'}
+                                className="px-6 py-3.5 bg-[#0b1f3a] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] shadow-lg shadow-blue-500/10 hover:bg-primary hover:scale-105 active:scale-95 transition-all flex items-center gap-2"
                               >
-                                <Download className="w-3.5 h-3.5" /> Retrieve
+                                <Download className="w-3.5 h-3.5" /> Download PDF
                               </a>
                             </div>
                           </div>
@@ -1831,14 +1866,35 @@ export const Dashboard: React.FC = () => {
                     <button onClick={() => setShowPaymentModal(false)} className="p-2 hover:bg-gray-50 rounded-xl transition-colors"><XCircle className="w-6 h-6 text-gray-300" /></button>
                   </div>
 
-                  <div className="mb-6 p-5 bg-[#0b1f3a] rounded-2xl text-white shadow-xl shadow-blue-900/10">
-                    <p className="text-[10px] font-black text-blue-300 uppercase tracking-widest mb-1.5">Service Allocation</p>
-                    <p className="text-base md:text-lg font-black tracking-tight">{selectedService.name}</p>
-                    <div className="mt-4 pt-4 border-t border-blue-800/50 flex justify-between items-end">
-                      <span className="text-[10px] font-black text-blue-300 uppercase tracking-widest">Investment</span>
-                      <p className="text-2xl md:text-3xl font-black">₹{Number(selectedService.price).toLocaleString()}</p>
-                    </div>
-                  </div>
+                  {(() => {
+                    const basePrice = Number(selectedService.price) || 0;
+                    const gstAmount = Math.round(basePrice * 0.18);
+                    const grandTotal = basePrice + gstAmount;
+                    return (
+                      <div className="mb-6 rounded-2xl overflow-hidden shadow-xl shadow-blue-900/10">
+                        {/* Service name header */}
+                        <div className="p-5 bg-[#0b1f3a] text-black">
+                          <p className="text-[10px] font-black text-blue-300 uppercase tracking-widest mb-1">Service Allocation</p>
+                          <p className="text-base md:text-lg font-black tracking-tight text-black">{selectedService.name}</p>
+                        </div>
+                        {/* Price breakdown */}
+                        <div className="bg-[#0f2844] px-5 py-4 space-y-2.5">
+                          <div className="flex justify-between items-center">
+                            <span className="text-[11px] font-bold text-blue-300/80 uppercase tracking-widest">Base Amount</span>
+                            <span className="text-sm font-black text-black">₹{basePrice.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between items-center">
+                            <span className="text-[11px] font-bold text-yellow-300/80 uppercase tracking-widest">GST @ 18%</span>
+                            <span className="text-sm font-black text-yellow-300">+ ₹{gstAmount.toLocaleString()}</span>
+                          </div>
+                          <div className="flex justify-between items-center border-t border-blue-800/50 pt-3 mt-1">
+                            <span className="text-[11px] font-black text-black uppercase tracking-widest">Grand Total</span>
+                            <span className="text-2xl md:text-3xl font-black text-black">₹{grandTotal.toLocaleString()}</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
 
                   <div className="space-y-3 mb-6">
                     <label className={`block p-4 rounded-xl border-2 transition-all cursor-pointer ${selectedPaymentMethod === 'manual_qr' ? 'border-primary bg-blue-50/30' : 'border-gray-100 hover:border-gray-200'}`}>
@@ -1852,14 +1908,22 @@ export const Dashboard: React.FC = () => {
                         </div>
                         <input type="radio" checked={selectedPaymentMethod === 'manual_qr'} onChange={() => setSelectedPaymentMethod('manual_qr')} className="hidden" />
                       </div>
-                      {selectedPaymentMethod === 'manual_qr' && (
-                        <div className="mt-4 pl-9 animate-fade-in">
-                          <div className="p-3 bg-white rounded-xl border-2 border-blue-100 border-dashed">
-                            <input type="file" onChange={(e) => setPaymentProofFile(e.target.files?.[0] || null)} className="w-full text-[9px] font-black uppercase text-gray-500 cursor-pointer file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-[9px] file:font-black file:bg-primary/10 file:text-primary hover:file:bg-primary hover:file:text-white transition-all" />
-                          </div>
-                        </div>
-                      )}
                     </label>
+                    {selectedPaymentMethod === 'manual_qr' && (
+                      <div className="mt-4 pl-9 animate-fade-in transition-all">
+                        <div className="p-3 bg-white rounded-xl border-2 border-primary/30 border-dashed relative group">
+                          <input
+                            type="file"
+                            accept="image/*,.pdf"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) setPaymentProofFile(file);
+                            }}
+                            className="w-full text-[10px] font-black uppercase text-gray-400 cursor-pointer file:cursor-pointer file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:bg-[#0b1f3a] file:text-white hover:file:bg-primary transition-all relative z-10"
+                          />
+                        </div>
+                      </div>
+                    )}
                     <label className={`block p-4 rounded-xl border-2 transition-all cursor-pointer ${selectedPaymentMethod === 'pay_later' ? 'border-[#136da1] bg-blue-50/30' : 'border-gray-100 hover:border-gray-200'}`}>
                       <div className="flex items-center gap-4">
                         <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${selectedPaymentMethod === 'pay_later' ? 'border-[#136da1] bg-[#136da1]' : 'border-gray-300'}`}>
@@ -1874,10 +1938,18 @@ export const Dashboard: React.FC = () => {
                     </label>
                   </div>
 
-                  <button onClick={handlePayment} disabled={actionLoading} className="w-full py-4 bg-[#136da1] text-white font-black text-[11px] md:text-[12px] uppercase tracking-[0.2em] rounded-xl hover:bg-[#0b1f3a] transition-all shadow-xl shadow-blue-500/20 active:scale-[0.98] disabled:opacity-50 flex justify-center items-center gap-3 sticky bottom-0 z-10">
-                    {actionLoading ? <Loader className="animate-spin w-4 h-4" /> : <Shield className="w-4 h-4" />}
-                    {selectedPaymentMethod === 'pay_later' ? 'Authorize Order' : 'Submit Remittance'}
-                  </button>
+                  {/* SUBMIT FOOTER */}
+                  <div className="shrink-0 px-5 pb-5 pt-4 bg-white border-t border-gray-100">
+                    <button
+                      onClick={handlePayment}
+                      disabled={actionLoading}
+                      className="w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest text-white flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-50 shadow-xl"
+                      style={{ background: 'linear-gradient(135deg, #0b1f3a 0%, #1a6fa8 100%)' }}
+                    >
+                      {actionLoading ? <Loader className="w-5 h-5 animate-spin" /> : <Shield className="w-5 h-5" />}
+                      {selectedPaymentMethod === 'pay_later' ? 'Authorize Order - Pay Later' : 'Submit Payment - Pay Now'}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -1924,53 +1996,85 @@ export const Dashboard: React.FC = () => {
 
         {
           showPlanModal && selectedServiceForPlan && (
-            <div className="fixed inset-0 bg-white flex items-center justify-center z-[100] p-4">
-              <div className="bg-white rounded-[3rem] max-w-6xl w-full max-h-[90vh] flex flex-col overflow-hidden shadow-2xl border border-gray-100">
-                <div className="p-8 md:p-12 border-b flex justify-between items-center bg-gray-50/50">
+            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[100] p-3">
+              <div className="bg-white rounded-2xl w-full max-w-[95vw] max-h-[90vh] flex flex-col overflow-hidden shadow-2xl border border-gray-100">
+                {/* Header */}
+                <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center shrink-0">
                   <div>
-                    <h3 className="text-3xl font-black text-[#0b1f3a] tracking-tight">Strategy Selection</h3>
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Module: {selectedServiceForPlan.name}</p>
+                    <h3 className="text-lg font-black text-[#0b1f3a] tracking-tight">Strategy Selection</h3>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Module: {selectedServiceForPlan.name}</p>
                   </div>
-                  <button onClick={() => setShowPlanModal(false)} className="p-3 hover:bg-gray-100 rounded-2xl transition-all"><X className="w-6 h-6 text-gray-400" /></button>
+                  <button onClick={() => setShowPlanModal(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-all"><X className="w-5 h-5 text-gray-400" /></button>
                 </div>
-                <div className="p-8 md:p-12 overflow-y-auto bg-white">
-                  <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    {loadingPlans ? (
-                      <div className="col-span-full py-20 flex flex-col items-center gap-4">
-                        <Loader className="animate-spin w-10 h-10 text-primary" />
-                        <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Fetching Available Configurations...</p>
-                      </div>
-                    ) : availablePlans.map(plan => (
-                      <div key={plan.id} className="group bg-white rounded-[2.5rem] border border-gray-100 p-8 hover:border-primary hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 flex flex-col h-full">
-                        <div className="mb-8">
-                          <span className="inline-block px-4 py-1.5 bg-gray-50 text-[#0b1f3a] rounded-full text-[9px] font-black uppercase tracking-widest mb-4 group-hover:bg-primary group-hover:text-black transition-colors">{plan.planType}</span>
-                          <div className="flex items-baseline gap-1">
-                            <span className="text-4xl font-black text-[#0b1f3a]">₹{Number(plan.discountedPrice || plan.price).toLocaleString()}</span>
-                            {plan.discountedPrice && plan.discountedPrice < plan.price && (
-                              <span className="text-sm text-gray-300 line-through font-bold">₹{Number(plan.price).toLocaleString()}</span>
-                            )}
-                          </div>
-                        </div>
-                        <div className="flex-1 space-y-4 mb-10">
-                          {plan.scopes?.map((s: any, i: number) => (
-                            <div key={i} className="flex gap-3 text-sm">
-                              {s.isIncluded ? (
-                                <div className="w-5 h-5 rounded-full bg-emerald-50 flex items-center justify-center shrink-0">
-                                  <CheckCircle className="w-3 h-3 text-emerald-500" />
+
+                {/* Plan comparison table */}
+                <div className="overflow-auto flex-1">
+                  {loadingPlans ? (
+                    <div className="py-16 flex flex-col items-center gap-4">
+                      <Loader className="animate-spin w-8 h-8 text-primary" />
+                      <p className="text-[10px] font-black text-gray-300 uppercase tracking-widest">Fetching Configurations...</p>
+                    </div>
+                  ) : (
+                    <table className="w-full border-collapse text-left">
+                      <thead className="sticky top-0 z-10 bg-white border-b border-gray-100">
+                        <tr>
+                          <th className="py-3 px-5 text-[10px] font-black text-gray-400 uppercase tracking-widest w-48 bg-gray-50/80">Feature</th>
+                          {availablePlans.map(plan => (
+                            <th key={plan.id} className="py-3 px-4 text-center border-l border-gray-100 min-w-[160px]">
+                              <div className="flex flex-col items-center gap-1">
+                                <span className="px-3 py-0.5 bg-[#0b1f3a] text-white rounded-full text-[9px] font-black uppercase tracking-widest">{plan.planType}</span>
+                                <div className="flex items-baseline gap-1 justify-center">
+                                  <span className="text-xl font-black text-[#0b1f3a]">₹{Number(plan.discountedPrice || plan.price).toLocaleString()}</span>
+                                  {plan.discountedPrice && plan.discountedPrice < plan.price && (
+                                    <span className="text-[10px] text-gray-300 line-through">₹{Number(plan.price).toLocaleString()}</span>
+                                  )}
                                 </div>
-                              ) : (
-                                <div className="w-5 h-5 rounded-full bg-gray-50 flex items-center justify-center shrink-0">
-                                  <XCircle className="w-3 h-3 text-gray-200" />
-                                </div>
-                              )}
-                              <span className={`text-[11px] font-bold ${s.isIncluded ? 'text-gray-600' : 'text-gray-300'}`}>{s.title}</span>
-                            </div>
+                              </div>
+                            </th>
                           ))}
-                        </div>
-                        <button onClick={() => handleSelectPlan(plan)} className="w-full py-4 bg-[#0b1f3a] text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[#ee7228] transition-all shadow-lg hover:shadow-orange-500/20 active:scale-95">Commit Tier</button>
-                      </div>
-                    ))}
-                  </div>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {/* Collect all unique scope titles */}
+                        {(() => {
+                          const allTitles = Array.from(new Set(
+                            availablePlans.flatMap(p => (p.scopes || []).map((s: any) => s.title))
+                          ));
+                          return allTitles.map((title, i) => (
+                            <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50/40'}>
+                              <td className="py-2 px-5 text-[11px] font-bold text-gray-600 border-r border-gray-100">{title}</td>
+                              {availablePlans.map(plan => {
+                                const scope = (plan.scopes || []).find((s: any) => s.title === title);
+                                return (
+                                  <td key={plan.id} className="py-2 px-4 text-center border-l border-gray-100">
+                                    {scope?.isIncluded ? (
+                                      <CheckCircle className="w-4 h-4 text-emerald-500 mx-auto" />
+                                    ) : (
+                                      <XCircle className="w-4 h-4 text-gray-200 mx-auto" />
+                                    )}
+                                  </td>
+                                );
+                              })}
+                            </tr>
+                          ));
+                        })()}
+                        {/* CTA row */}
+                        <tr className="border-t-2 border-gray-100 bg-white sticky bottom-0">
+                          <td className="py-3 px-5 text-[10px] font-black text-gray-400 uppercase tracking-widest">Select Plan</td>
+                          {availablePlans.map(plan => (
+                            <td key={plan.id} className="py-3 px-4 text-center border-l border-gray-100">
+                              <button
+                                onClick={() => handleSelectPlan(plan)}
+                                className="px-5 py-2.5 bg-[#0b1f3a] text-white rounded-xl font-black text-[9px] uppercase tracking-widest hover:bg-primary transition-all shadow-md active:scale-95 w-full"
+                              >
+                                Commit Tier
+                              </button>
+                            </td>
+                          ))}
+                        </tr>
+                      </tbody>
+                    </table>
+                  )}
                 </div>
               </div>
             </div>

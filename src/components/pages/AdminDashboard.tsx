@@ -283,9 +283,9 @@ export const AdminDashboard: React.FC = () => {
       setUploadingReport(true);
       const token = localStorage.getItem('adminToken');
       const formData = new FormData();
-      formData.append('report', reportFile);
       formData.append('orderId', selectedOrderForReport.orderId.toString());
       formData.append('userId', selectedOrderForReport.userId.toString());
+      formData.append('report', reportFile);
 
       const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/documents/upload-report`, {
         method: 'POST',
@@ -417,44 +417,56 @@ export const AdminDashboard: React.FC = () => {
           </div>
 
           <div className="p-8">
-            {/* Admin Quick Actions */}
-            <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
-              <h3 className="text-lg font-bold text-gray-900 mb-4">🔧 Admin Actions</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <button
-                  onClick={() => navigate('/admin/users')}
-                  className="bg-white hover:bg-blue-50 border border-blue-300 rounded-lg p-4 text-left transition"
-                >
-                  <p className="text-sm text-gray-600">👥 Manage Users</p>
-                  <p className="font-semibold text-gray-900">View & Modify</p>
-                </button>
-                <button
-                  onClick={() => navigate('/admin/services')}
-                  className="bg-white hover:bg-green-50 border border-green-300 rounded-lg p-4 text-left transition"
-                >
-                  <p className="text-sm text-gray-600">🛍️ Services</p>
-                  <p className="font-semibold text-gray-900">Create & Edit</p>
-                </button>
-                <button
-                  onClick={() => navigate('/admin/analytics')}
-                  className="bg-white hover:bg-purple-50 border border-purple-300 rounded-lg p-4 text-left transition"
-                >
-                  <p className="text-sm text-gray-600">📊 Analytics</p>
-                  <p className="font-semibold text-gray-900">View Reports</p>
-                </button>
-                <button
-                  onClick={() => navigate('/admin/tickets')}
-                  className="bg-white hover:bg-orange-50 border border-orange-300 rounded-lg p-4 text-left transition"
-                >
-                  <p className="text-sm text-gray-600">🎫 Support Tickets</p>
-                  <p className="font-semibold text-gray-900">Respond & Resolve</p>
-                </button>
-              </div>
-            </div>
 
             {/* Overview Tab */}
             {activeTab === 'overview' && stats && (
               <div className="space-y-8">
+                {/* Admin Quick Actions */}
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-6 border border-blue-200">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">🔧 Admin Actions</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <button onClick={() => navigate('/admin/users')} className="bg-white hover:bg-blue-50 border border-blue-300 rounded-lg p-4 text-left transition shadow-sm">
+                      <p className="text-sm text-gray-600">👥 Manage Users</p>
+                      <p className="font-semibold text-gray-900">View & Modify</p>
+                    </button>
+                    <button onClick={() => navigate('/admin/services')} className="bg-white hover:bg-green-50 border border-green-300 rounded-lg p-4 text-left transition shadow-sm">
+                      <p className="text-sm text-gray-600">🛍️ Services</p>
+                      <p className="font-semibold text-gray-900">Create & Edit</p>
+                    </button>
+                    <button onClick={() => navigate('/admin/analytics')} className="bg-white hover:bg-purple-50 border border-purple-300 rounded-lg p-4 text-left transition shadow-sm">
+                      <p className="text-sm text-gray-600">📊 Analytics</p>
+                      <p className="font-semibold text-gray-900">View Reports</p>
+                    </button>
+                    <button onClick={() => navigate('/admin/tickets')} className="bg-white hover:bg-orange-50 border border-orange-300 rounded-lg p-4 text-left transition shadow-sm">
+                      <p className="text-sm text-gray-600">🎫 Support Tickets</p>
+                      <p className="font-semibold text-gray-900">Respond & Resolve</p>
+                    </button>
+                  </div>
+                </div>
+
+                {/* CRM Actions */}
+                <div className="bg-gradient-to-r from-emerald-50 to-teal-50 rounded-lg p-6 border border-emerald-200">
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">💼 CRM Modules</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <button onClick={() => navigate('/admin/crm', { state: { tab: 'tasks' } })} className="bg-white hover:bg-emerald-50 border border-emerald-300 rounded-lg p-4 text-left transition shadow-sm">
+                      <p className="text-sm text-gray-600">✅ Tasks</p>
+                      <p className="font-semibold text-gray-900">Track & Manage</p>
+                    </button>
+                    <button onClick={() => navigate('/admin/crm', { state: { tab: 'leads' } })} className="bg-white hover:bg-teal-50 border border-teal-300 rounded-lg p-4 text-left transition shadow-sm">
+                      <p className="text-sm text-gray-600">🎯 Leads</p>
+                      <p className="font-semibold text-gray-900">Pipeline Funnel</p>
+                    </button>
+                    <button onClick={() => navigate('/admin/crm', { state: { tab: 'orders' } })} className="bg-white hover:bg-cyan-50 border border-cyan-300 rounded-lg p-4 text-left transition shadow-sm">
+                      <p className="text-sm text-gray-600">📦 Orders</p>
+                      <p className="font-semibold text-gray-900">Audit & Progress</p>
+                    </button>
+                    <button onClick={() => navigate('/admin/crm', { state: { tab: 'notifications' } })} className="bg-white hover:bg-sky-50 border border-sky-300 rounded-lg p-4 text-left transition shadow-sm">
+                      <p className="text-sm text-gray-600">🔔 Notifications</p>
+                      <p className="font-semibold text-gray-900">Send Alerts</p>
+                    </button>
+                  </div>
+                </div>
+
                 {/* Stats Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                   {[

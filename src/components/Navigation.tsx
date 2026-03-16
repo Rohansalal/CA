@@ -697,9 +697,10 @@ import { useAuth } from '../contexts/AuthContext';
 import {
   Menu, X, Phone, Mail, ChevronDown, ChevronRight, ArrowRight,
   Building2, Receipt, Scale,
-  Landmark, PieChart, Calculator, User, BookOpen, LogOut, LayoutDashboard, Settings
+  Landmark, PieChart, Calculator, User, BookOpen, LogOut, LayoutDashboard, Settings, ShoppingCart
 } from 'lucide-react';
 import { cn } from './ui/utils';
+import { useCart } from '../contexts/CartContext';
 
 interface NavigationProps {
   currentPage?: string;
@@ -977,6 +978,7 @@ const DesktopServiceCard = ({
 
 export default function Navigation({ currentPage = '', onNavigate = () => { } }: NavigationProps) {
   const { user, logout } = useAuth();
+  const { cart } = useCart();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -1142,7 +1144,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                     if (item.route && item.route !== '#') handleNavClick(item.route, item.id);
                   }}
                   className={cn(
-                    "text-sm lg:text-base font-medium transition-colors relative flex items-center gap-1.5 py-2",
+                    "text-sm lg:text-base font-medium transition-colors relative flex items-center gap-1.5 py-2 cursor-pointer",
                     currentPage === item.id
                       ? 'text-primary'
                       : 'text-neutral-700 hover:text-primary'
@@ -1174,6 +1176,22 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
 
           {/* Auth Buttons & CTA */}
           <div className="hidden lg:flex items-center gap-4">
+
+            {/* Cart Icon */}
+            <div className="relative cursor-pointer mr-2 border border-gray-100 rounded-full bg-slate-50 shadow-sm" onClick={() => handleNavClick('/cart', 'cart')}>
+              <button
+                className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-200 transition-colors"
+                aria-label="View Cart"
+              >
+                <ShoppingCart className="w-5 h-5 text-gray-700" />
+                {cart.length > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-accent text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm">
+                    {cart.length}
+                  </span>
+                )}
+              </button>
+            </div>
+
             {user ? (
               <div className="relative" ref={profileRef}>
                 <button
@@ -1242,13 +1260,13 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
               <div className="flex items-center gap-3">
                 <button
                   onClick={() => handleNavClick('/login', 'login')}
-                  className="px-4 py-2 text-sm font-semibold text-neutral-600 hover:text-primary transition-colors"
+                  className="px-4 py-2 text-sm font-semibold text-neutral-600 hover:text-primary transition-colors cursor-pointer"
                 >
                   Log In
                 </button>
                 <button
                   onClick={() => handleNavClick('/register', 'register')}
-                  className="px-4 py-2 text-sm font-semibold text-primary border border-primary/20 rounded-lg hover:bg-primary/5 transition-colors"
+                  className="px-4 py-2 text-sm font-semibold text-primary border border-primary/20 rounded-lg hover:bg-primary/5 transition-colors cursor-pointer"
                 >
                   Sign Up
                 </button>
@@ -1265,268 +1283,289 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
                   navigate('/#consultation-form');
                 }
               }}
-              className="px-3 py-3 lg:px-4 lg:py-2 xl:px-6 xl:py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-lg transform hover:-translate-y-0.5 text-xs lg:text-sm xl:text-base whitespace-nowrap"
+              className="px-3 py-3 lg:px-4 lg:py-2 xl:px-6 xl:py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-lg transform hover:-translate-y-0.5 text-xs lg:text-sm xl:text-base whitespace-nowrap cursor-pointer"
             >
               GET EXPERT CA GUIDANCE
             </button>
           </div>
 
-          {/* Mobile menu button */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-neutral-700"
-            aria-expanded={mobileMenuOpen}
-            aria-label="Toggle mobile menu"
-          >
-            {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobile menu button and Cart */}
+          <div className="lg:hidden flex items-center gap-3">
+            {/* Cart Icon Mobile */}
+            <div className="relative cursor-pointer border border-gray-100 rounded-full bg-slate-50 shadow-sm" onClick={() => handleNavClick('/cart', 'cart')}>
+              <button
+                className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-200 transition-colors"
+                aria-label="View Cart"
+              >
+                <ShoppingCart className="w-5 h-5 text-gray-700" />
+                {cart.length > 0 && (
+                  <span className="absolute -top-1.5 -right-1.5 bg-accent text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm">
+                    {cart.length}
+                  </span>
+                )}
+              </button>
+            </div>
+
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 text-neutral-700"
+              aria-expanded={mobileMenuOpen}
+              aria-label="Toggle mobile menu"
+            >
+              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
       </div>
 
       {/* ============================================================ */}
       {/* MOBILE NAVIGATION */}
       {/* ============================================================ */}
-      {mobileMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-white border-t border-neutral-200 shadow-xl max-h-[calc(100vh-100px)] overflow-y-auto pb-10">
-          <div className="px-4 py-4 space-y-2">
-            {NAV_ITEMS.map((item) => (
-              <div key={item.id}>
-                <button
-                  onClick={() => {
-                    if (item.hasSubmenu) {
-                      setMobileServicesOpen(!mobileServicesOpen);
-                      setActiveMobileCategory(SERVICE_CATEGORIES[0].id);
-                    } else if (item.route && item.route !== '#') {
-                      handleNavClick(item.route, item.id);
-                    }
-                  }}
-                  className={cn(
-                    "block w-full text-left px-4 py-3 rounded-lg font-medium transition-colors flex items-center justify-between",
-                    currentPage === item.id
-                      ? 'bg-primary text-white'
-                      : 'text-neutral-700 hover:bg-neutral-50'
-                  )}
-                  aria-expanded={item.hasSubmenu && mobileServicesOpen}
-                  aria-haspopup={item.hasSubmenu}
-                >
-                  {item.label}
-                  {item.hasSubmenu && (
-                    <ChevronDown
-                      className={cn("w-4 h-4 transition-transform", mobileServicesOpen ? 'rotate-180' : '')}
-                      aria-hidden="true"
-                    />
-                  )}
-                </button>
-
-                {/* Mobile Services Submenu - Full Grid View */}
-                {item.hasSubmenu && mobileServicesOpen && (
-                  <div className="mt-2 bg-white border-t border-slate-200 py-4 max-h-[calc(100vh-250px)] overflow-y-auto">
-                    {/* Category Tabs - Horizontal Scroll */}
-                    <div className="px-4 mb-6 flex gap-2 overflow-x-auto pb-2">
-                      {SERVICE_CATEGORIES.map((category) => (
-                        <button
-                          key={category.id}
-                          onClick={() => setActiveMobileCategory(category.id)}
-                          className={cn(
-                            "px-4 py-2 rounded-full font-semibold text-sm whitespace-nowrap transition-all flex-shrink-0",
-                            activeMobileCategory === category.id
-                              ? 'bg-primary text-white shadow-md'
-                              : 'bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200'
-                          )}
-                        >
-                          {category.title}
-                        </button>
-                      ))}
-                    </div>
-
-                    {/* Active Category - Full Width Grid View */}
-                    {activeMobileCategoryData && (
-                      <div className="px-4">
-                        {/* Category Title */}
-                        <h3 className="text-lg font-bold text-primary mb-4">
-                          {activeMobileCategoryData.title}
-                        </h3>
-
-                        {/* Services Grid (1 column) */}
-                        <div className="grid grid-cols-1 gap-3">
-                          {activeMobileCategoryData.subServices.map((service) => (
-                            <MobileServiceItem
-                              key={service.id}
-                              service={service}
-                              onNavigate={handleNavClick}
-                            />
-                          ))}
-                        </div>
-
-                        {/* View All Button - Full Width */}
-                        <button
-                          onClick={() => handleNavClick(activeMobileCategoryData.route, activeMobileCategoryData.id)}
-                          className="w-full mt-6 px-4 py-3 text-center font-semibold text-primary bg-primary/5 rounded-lg border border-primary/20 hover:bg-primary hover:text-white transition-all"
-                        >
-                          View All {activeMobileCategoryData.title}
-                        </button>
-                      </div>
+      {
+        mobileMenuOpen && (
+          <div className="lg:hidden absolute top-full left-0 w-full bg-white border-t border-neutral-200 shadow-xl max-h-[calc(100vh-100px)] overflow-y-auto pb-10">
+            <div className="px-4 py-4 space-y-2">
+              {NAV_ITEMS.map((item) => (
+                <div key={item.id}>
+                  <button
+                    onClick={() => {
+                      if (item.hasSubmenu) {
+                        setMobileServicesOpen(!mobileServicesOpen);
+                        setActiveMobileCategory(SERVICE_CATEGORIES[0].id);
+                      } else if (item.route && item.route !== '#') {
+                        handleNavClick(item.route, item.id);
+                      }
+                    }}
+                    className={cn(
+                      "block w-full text-left px-4 py-3 rounded-lg font-medium transition-colors flex items-center justify-between",
+                      currentPage === item.id
+                        ? 'bg-primary text-white'
+                        : 'text-neutral-700 hover:bg-neutral-50'
                     )}
-                  </div>
+                    aria-expanded={item.hasSubmenu && mobileServicesOpen}
+                    aria-haspopup={item.hasSubmenu}
+                  >
+                    {item.label}
+                    {item.hasSubmenu && (
+                      <ChevronDown
+                        className={cn("w-4 h-4 transition-transform", mobileServicesOpen ? 'rotate-180' : '')}
+                        aria-hidden="true"
+                      />
+                    )}
+                  </button>
+
+                  {/* Mobile Services Submenu - Full Grid View */}
+                  {item.hasSubmenu && mobileServicesOpen && (
+                    <div className="mt-2 bg-white border-t border-slate-200 py-4 max-h-[calc(100vh-250px)] overflow-y-auto">
+                      {/* Category Tabs - Horizontal Scroll */}
+                      <div className="px-4 mb-6 flex gap-2 overflow-x-auto pb-2">
+                        {SERVICE_CATEGORIES.map((category) => (
+                          <button
+                            key={category.id}
+                            onClick={() => setActiveMobileCategory(category.id)}
+                            className={cn(
+                              "px-4 py-2 rounded-full font-semibold text-sm whitespace-nowrap transition-all flex-shrink-0",
+                              activeMobileCategory === category.id
+                                ? 'bg-primary text-white shadow-md'
+                                : 'bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200'
+                            )}
+                          >
+                            {category.title}
+                          </button>
+                        ))}
+                      </div>
+
+                      {/* Active Category - Full Width Grid View */}
+                      {activeMobileCategoryData && (
+                        <div className="px-4">
+                          {/* Category Title */}
+                          <h3 className="text-lg font-bold text-primary mb-4">
+                            {activeMobileCategoryData.title}
+                          </h3>
+
+                          {/* Services Grid (1 column) */}
+                          <div className="grid grid-cols-1 gap-3">
+                            {activeMobileCategoryData.subServices.map((service) => (
+                              <MobileServiceItem
+                                key={service.id}
+                                service={service}
+                                onNavigate={handleNavClick}
+                              />
+                            ))}
+                          </div>
+
+                          {/* View All Button - Full Width */}
+                          <button
+                            onClick={() => handleNavClick(activeMobileCategoryData.route, activeMobileCategoryData.id)}
+                            className="w-full mt-6 px-4 py-3 text-center font-semibold text-primary bg-primary/5 rounded-lg border border-primary/20 hover:bg-primary hover:text-white transition-all"
+                          >
+                            View All {activeMobileCategoryData.title}
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              ))}
+
+              {/* Mobile Auth Buttons */}
+              <div className="grid grid-cols-2 gap-3 mt-6 border-t border-gray-100 pt-6">
+                {user ? (
+                  <>
+                    <button
+                      onClick={() => handleNavClick('/dashboard', 'dashboard')}
+                      className="col-span-2 w-full px-4 py-3 bg-primary/5 text-primary font-semibold rounded-lg hover:bg-primary/10 transition-colors text-center cursor-pointer"
+                    >
+                      Go to Dashboard
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <button
+                      onClick={() => handleNavClick('/login', 'login')}
+                      className="w-full px-4 py-3 text-neutral-600 font-semibold rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-center cursor-pointer"
+                    >
+                      Log In
+                    </button>
+                    <button
+                      onClick={() => handleNavClick('/register', 'register')}
+                      className="w-full px-4 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors text-center cursor-pointer"
+                    >
+                      Sign Up
+                    </button>
+                  </>
                 )}
               </div>
-            ))}
 
-            {/* Mobile Auth Buttons */}
-            <div className="grid grid-cols-2 gap-3 mt-6 border-t border-gray-100 pt-6">
-              {user ? (
-                <>
-                  <button
-                    onClick={() => handleNavClick('/dashboard', 'dashboard')}
-                    className="col-span-2 w-full px-4 py-3 bg-primary/5 text-primary font-semibold rounded-lg hover:bg-primary/10 transition-colors text-center"
-                  >
-                    Go to Dashboard
-                  </button>
-                </>
-              ) : (
-                <>
-                  <button
-                    onClick={() => handleNavClick('/login', 'login')}
-                    className="w-full px-4 py-3 text-neutral-600 font-semibold rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-center"
-                  >
-                    Log In
-                  </button>
-                  <button
-                    onClick={() => handleNavClick('/register', 'register')}
-                    className="w-full px-4 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-colors text-center"
-                  >
-                    Sign Up
-                  </button>
-                </>
-              )}
+              <button
+                onClick={() => {
+                  if (window.location.pathname === '/') {
+                    document.getElementById('consultation-form')?.scrollIntoView({ behavior: 'smooth' });
+                  } else {
+                    navigate('/#consultation-form');
+                  }
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-colors mt-4 shadow-md cursor-pointer"
+              >
+                GET EXPERT CA GUIDANCE
+              </button>
             </div>
-
-            <button
-              onClick={() => {
-                if (window.location.pathname === '/') {
-                  document.getElementById('consultation-form')?.scrollIntoView({ behavior: 'smooth' });
-                } else {
-                  navigate('/#consultation-form');
-                }
-                setMobileMenuOpen(false);
-              }}
-              className="w-full px-6 py-3 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-colors mt-4 shadow-md"
-            >
-              GET EXPERT CA GUIDANCE
-            </button>
           </div>
-        </div>
-      )}
+        )
+      }
 
       {/* ============================================================ */}
       {/* DESKTOP SERVICES DROPDOWN */}
       {/* ============================================================ */}
-      {isServicesHovered && (
-        <div
-          ref={servicesRef}
-          className="absolute top-full left-0 w-full z-50 flex justify-center pointer-events-auto"
-          onMouseEnter={() => handleMouseEnter(true)}
-          onMouseLeave={() => setIsServicesHovered(false)}
-          role="menu"
-          aria-label="Services menu"
-        >
-          {/* Invisible bridge to prevent closing when moving from nav to menu */}
-          <div className="absolute top-[-25px] left-0 w-full h-[25px]" aria-hidden="true" />
+      {
+        isServicesHovered && (
+          <div
+            ref={servicesRef}
+            className="absolute top-full left-0 w-full z-50 flex justify-center pointer-events-auto"
+            onMouseEnter={() => handleMouseEnter(true)}
+            onMouseLeave={() => setIsServicesHovered(false)}
+            role="menu"
+            aria-label="Services menu"
+          >
+            {/* Invisible bridge to prevent closing when moving from nav to menu */}
+            <div className="absolute top-[-25px] left-0 w-full h-[25px]" aria-hidden="true" />
 
-          <div className="bg-white shadow-2xl shadow-blue-900/10 border border-neutral-100 rounded-b-2xl w-[95vw] max-w-[1400px] flex max-h-[85vh]">
-            {/* Sidebar - Service Categories */}
-            <div className="w-[320px] min-w-[320px] max-w-[320px] bg-neutral-50/50 border-r border-neutral-100 py-6 px-4 shrink-0 flex flex-col gap-2 overflow-y-auto">
-              {SERVICE_CATEGORIES.map((category) => {
-                const Icon = category.icon;
-                const isActive = activeCategory === category.id;
-                return (
-                  <button
-                    key={category.id}
-                    onMouseEnter={() => setActiveCategory(category.id)}
-                    onClick={() => handleNavClick(category.route, category.id)}
-                    className={cn(
-                      "w-full text-left px-5 py-4 transition-colors text-[15px] font-semibold rounded-xl flex items-center gap-4 relative group",
-                      isActive
-                        ? "bg-primary text-white shadow-md z-10"
-                        : "text-neutral-600 hover:bg-blue-500 hover:text-white"
-                    )}
-                    role="menuitem"
-                    aria-current={isActive ? 'page' : undefined}
-                  >
-                    <Icon
+            <div className="bg-white shadow-2xl shadow-blue-900/10 border border-neutral-100 rounded-b-2xl w-[95vw] max-w-[1400px] flex max-h-[85vh]">
+              {/* Sidebar - Service Categories */}
+              <div className="w-[320px] min-w-[320px] max-w-[320px] bg-neutral-50/50 border-r border-neutral-100 py-6 px-4 shrink-0 flex flex-col gap-2 overflow-y-auto">
+                {SERVICE_CATEGORIES.map((category) => {
+                  const Icon = category.icon;
+                  const isActive = activeCategory === category.id;
+                  return (
+                    <button
+                      key={category.id}
+                      onMouseEnter={() => setActiveCategory(category.id)}
+                      onClick={() => handleNavClick(category.route, category.id)}
                       className={cn(
-                        "w-5 h-5 shrink-0 transition-colors",
-                        isActive ? "text-white" : "text-neutral-400 group-hover:text-white"
+                        "w-full text-left px-5 py-4 transition-colors text-[15px] font-semibold rounded-xl flex items-center gap-4 relative group",
+                        isActive
+                          ? "bg-primary text-white shadow-md z-10"
+                          : "text-neutral-600 hover:bg-blue-500 hover:text-white"
                       )}
-                      aria-hidden="true"
-                    />
-                    <span className="flex-1 whitespace-nowrap">{category.title}</span>
-                    <ChevronRight
-                      className={cn(
-                        "w-4 h-4 ml-auto transition-colors",
-                        isActive ? "text-white" : "text-transparent group-hover:text-white"
-                      )}
-                      aria-hidden="true"
-                    />
-                  </button>
-                );
-              })}
-            </div>
-
-            {/* Content Area - Service Details */}
-            <div className="flex-1 bg-white flex flex-col relative">
-              {activeCategoryData && (
-                <div className="animate-in fade-in slide-in-from-right-2 duration-300 h-full flex flex-col">
-                  {/* Header Area */}
-                  <div className="flex justify-between items-start p-8 bg-neutral-50 border-b border-neutral-100 shrink-0">
-                    <div>
-                      <h3 className="text-3xl font-bold font-display text-primary mb-2">
-                        {activeCategoryData.title}
-                      </h3>
-                      <p className="text-neutral-500 text-sm max-w-lg">
-                        Explore our professional {activeCategoryData.title.toLowerCase()} services tailored for your business.
-                      </p>
-                    </div>
-                    <Link
-                      to="/all-services"
-                      onClick={() => setIsServicesHovered(false)}
-                      className="px-4 py-2 bg-slate-50 text-slate-700 text-sm font-semibold rounded-lg border border-slate-200 hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center gap-2 group/btn"
+                      role="menuitem"
+                      aria-current={isActive ? 'page' : undefined}
                     >
-                      All Services{' '}
-                      <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" aria-hidden="true" />
-                    </Link>
-                  </div>
+                      <Icon
+                        className={cn(
+                          "w-5 h-5 shrink-0 transition-colors",
+                          isActive ? "text-white" : "text-neutral-400 group-hover:text-white"
+                        )}
+                        aria-hidden="true"
+                      />
+                      <span className="flex-1 whitespace-nowrap">{category.title}</span>
+                      <ChevronRight
+                        className={cn(
+                          "w-4 h-4 ml-auto transition-colors",
+                          isActive ? "text-white" : "text-transparent group-hover:text-white"
+                        )}
+                        aria-hidden="true"
+                      />
+                    </button>
+                  );
+                })}
+              </div>
 
-                  {/* Main Content */}
-                  <div className="p-8 flex-1 flex flex-col overflow-y-visible">
-                    {/* Services Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full pb-3">
-                      {activeCategoryData.subServices.map((sub) => (
-                        <DesktopServiceCard
-                          key={sub.id}
-                          service={sub}
-                          onNavigate={handleNavClick}
-                        />
-                      ))}
-                    </div>
-
-                    {/* View All Button */}
-                    <div className="mt-auto pt-6 flex justify-center">
+              {/* Content Area - Service Details */}
+              <div className="flex-1 bg-white flex flex-col relative">
+                {activeCategoryData && (
+                  <div className="animate-in fade-in slide-in-from-right-2 duration-300 h-full flex flex-col">
+                    {/* Header Area */}
+                    <div className="flex justify-between items-start p-8 bg-neutral-50 border-b border-neutral-100 shrink-0">
+                      <div>
+                        <h3 className="text-3xl font-bold font-display text-primary mb-2">
+                          {activeCategoryData.title}
+                        </h3>
+                        <p className="text-neutral-500 text-sm max-w-lg">
+                          Explore our professional {activeCategoryData.title.toLowerCase()} services tailored for your business.
+                        </p>
+                      </div>
                       <Link
-                        to={activeCategoryData.route}
-                        className="inline-flex items-center justify-center px-6 py-2.5 bg-neutral-50 text-neutral-700 text-sm font-semibold rounded-full hover:bg-primary hover:text-white transition-all duration-300 group shadow-sm hover:shadow-md"
+                        to="/all-services"
+                        onClick={() => setIsServicesHovered(false)}
+                        className="px-4 py-2 bg-slate-50 text-slate-700 text-sm font-semibold rounded-lg border border-slate-200 hover:bg-primary hover:text-white hover:border-primary transition-all flex items-center gap-2 group/btn"
                       >
-                        Manage All {activeCategoryData.title}
-                        <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                        All Services{' '}
+                        <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" aria-hidden="true" />
                       </Link>
                     </div>
+
+                    {/* Main Content */}
+                    <div className="p-8 flex-1 flex flex-col overflow-y-visible">
+                      {/* Services Grid */}
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full pb-3">
+                        {activeCategoryData.subServices.map((sub) => (
+                          <DesktopServiceCard
+                            key={sub.id}
+                            service={sub}
+                            onNavigate={handleNavClick}
+                          />
+                        ))}
+                      </div>
+
+                      {/* View All Button */}
+                      <div className="mt-auto pt-6 flex justify-center">
+                        <Link
+                          to={activeCategoryData.route}
+                          className="inline-flex items-center justify-center px-6 py-2.5 bg-neutral-50 text-neutral-700 text-sm font-semibold rounded-full hover:bg-primary hover:text-white transition-all duration-300 group shadow-sm hover:shadow-md"
+                        >
+                          Manage All {activeCategoryData.title}
+                          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" aria-hidden="true" />
+                        </Link>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </nav>
+        )
+      }
+    </nav >
   );
 }

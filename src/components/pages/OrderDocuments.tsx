@@ -12,12 +12,28 @@ export const OrderDocuments = () => {
     const [documents, setDocuments] = useState<any[]>([]);
     const [order, setOrder] = useState<any>(null);
 
-    // Mock required documents - should come from backend ideally based on Service
-    const requiredDocs = [
-        { name: 'PAN Card', key: 'pan_card' },
-        { name: 'Aadhaar Card', key: 'aadhaar_card' },
-        { name: 'Address Proof', key: 'address_proof' }
-    ];
+    // Dynamic required documents based on Service and Plan
+    const isITRBasic = order?.items?.[0]?.serviceName?.toLowerCase().includes('itr') || 
+                       order?.items?.[0]?.serviceName?.toLowerCase().includes('income tax');
+    const planType = order?.items?.[0]?.planType?.toUpperCase();
+    const isBasicPlan = planType === 'BASIC';
+
+    const getRequiredDocs = () => {
+        if (isITRBasic && isBasicPlan) {
+            return [
+                { name: 'Aadhaar Card (Front & Back)', key: 'aadhaar_card', required: true },
+                { name: 'PAN Card (Front & Back)', key: 'pan_card', required: true },
+                { name: 'Additional Document / Attachment', key: 'additional_document', required: false }
+            ];
+        }
+        return [
+            { name: 'PAN Card', key: 'pan_card', required: true },
+            { name: 'Aadhaar Card', key: 'aadhaar_card', required: true },
+            { name: 'Address Proof', key: 'address_proof', required: true }
+        ];
+    };
+
+    const requiredDocs = getRequiredDocs();
 
     useEffect(() => {
         fetchOrder();
@@ -158,7 +174,7 @@ export const OrderDocuments = () => {
                                                     </div>
                                                     <div>
                                                         <h3 className="font-semibold text-gray-900">{doc.name}</h3>
-                                                        <p className="text-xs text-gray-500">Required</p>
+                                                        <p className="text-xs text-gray-500">{doc.required ? 'Required' : 'Optional'}</p>
                                                     </div>
                                                 </div>
 
@@ -203,7 +219,7 @@ export const OrderDocuments = () => {
                                 <div className="pt-6 flex justify-end">
                                     <button
                                         onClick={handleNext}
-                                        disabled={documents.length === 0}
+                                        disabled={!requiredDocs.every(doc => !doc.required || documents.some(d => d.documentType === doc.key || d.fileName.includes(doc.key)))}
                                         className="px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                                     >
                                         Continue to Requirements <ArrowRight className="w-5 h-5" />
