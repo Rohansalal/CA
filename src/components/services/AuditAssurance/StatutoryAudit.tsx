@@ -1,6 +1,6 @@
 import { Scale, CheckCircle, FileText, Clock, ArrowRight, Shield, Building2, Gavel, AlertCircle, Briefcase } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function StatutoryAudit() {
     const navigate = useNavigate();
@@ -435,3 +435,8 @@ export function StatutoryAudit() {
         </div>
     );
 }
+
+
+
+
+

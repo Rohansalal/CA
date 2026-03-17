@@ -1,6 +1,6 @@
 import { Users, CheckCircle, FileText, Clock, ArrowRight, Shield, HeartPulse, HardHat, CalendarCheck, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function PFESICRegistration() {
     const navigate = useNavigate();
@@ -418,3 +418,8 @@ export function PFESICRegistration() {
         </div>
     );
 }
+
+
+
+
+

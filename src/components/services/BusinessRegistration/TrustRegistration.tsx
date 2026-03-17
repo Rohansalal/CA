@@ -1,6 +1,6 @@
 import { HandHeart, CheckCircle, FileText, Clock, ArrowRight, Wallet, AlertCircle, Bookmark } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function TrustRegistration() {
     const navigate = useNavigate();
@@ -402,3 +402,8 @@ export function TrustRegistration() {
         </div>
     );
 }
+
+
+
+
+

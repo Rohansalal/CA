@@ -1,6 +1,6 @@
 import { ZoomIn, CheckCircle, FileText, Clock, ArrowRight, Shield, AlertTriangle, Activity, BarChart, Lock } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function InternalAudit() {
     const navigate = useNavigate();
@@ -433,3 +433,8 @@ export function InternalAudit() {
         </div>
     );
 }
+
+
+
+
+

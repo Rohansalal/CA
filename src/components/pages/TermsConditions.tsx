@@ -130,3 +130,7 @@ export const TermsAndConditions: React.FC = () => {
         </div>
     );
 };
+
+
+
+

@@ -1,6 +1,6 @@
 import { ArrowRight, FileText, CheckCircle, Clock, ArrowLeftRight, Shield } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function ShareTransfer() {
     const navigate = useNavigate();
@@ -267,3 +267,8 @@ export function ShareTransfer() {
         </div>
     );
 }
+
+
+
+
+

@@ -1,6 +1,6 @@
 // import { useState, useRef, useEffect } from 'react';
 // import { useNavigate, useLocation, Link } from 'react-router-dom';
-// import { useAuth } from '../contexts/AuthContext';
+// import { useAuth } from '../user-panel/contexts/AuthContext';
 // import {
 //   Menu, X, Phone, Mail, ChevronDown, ChevronRight, ArrowRight,
 //   Building2, Receipt, Scale,
@@ -693,14 +693,14 @@
 
 import { useState, useRef, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../user-panel/contexts/AuthContext';
 import {
   Menu, X, Phone, Mail, ChevronDown, ChevronRight, ArrowRight,
   Building2, Receipt, Scale,
   Landmark, PieChart, Calculator, User, BookOpen, LogOut, LayoutDashboard, Settings, ShoppingCart
 } from 'lucide-react';
 import { cn } from './ui/utils';
-import { useCart } from '../contexts/CartContext';
+import { useCart } from '../user-panel/contexts/CartContext';
 
 interface NavigationProps {
   currentPage?: string;
@@ -1569,3 +1569,6 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
     </nav >
   );
 }
+
+
+

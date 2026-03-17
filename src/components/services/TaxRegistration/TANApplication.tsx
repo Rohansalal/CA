@@ -1,6 +1,6 @@
 import { FileText, CheckCircle, Clock, ArrowRight, AlertCircle, Building2, Wallet, PieChart, Shield, Calculator } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function TANApplication() {
     const navigate = useNavigate();
@@ -559,3 +559,8 @@ export function TANApplication() {
         </div>
     );
 }
+
+
+
+
+

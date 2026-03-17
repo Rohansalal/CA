@@ -1,6 +1,6 @@
 import { Store, CheckCircle, FileText, Clock, ArrowRight, Shield, MapPin, Building2, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function TradeLicense() {
     const navigate = useNavigate();
@@ -358,3 +358,8 @@ export function TradeLicense() {
         </div>
     );
 }
+
+
+
+
+

@@ -1,37 +1,37 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import { AuthProvider } from './contexts/AuthContext';
-import { AdminProvider } from './contexts/AdminContext';
-import { ProtectedRoute } from './components/ProtectedRoute';
-import { AdminProtectedRoute } from './components/AdminProtectedRoute';
-import { CartProvider } from './contexts/CartContext';
+import { AuthProvider } from './user-panel/contexts/AuthContext';
+import { AdminProvider } from './admin-panel/contexts/AdminContext';
+import { ProtectedRoute } from './user-panel/components/ProtectedRoute';
+import { AdminProtectedRoute } from './admin-panel/components/AdminProtectedRoute';
+import { CartProvider } from './user-panel/contexts/CartContext';
 
 // Auth Pages
-import { Login } from './components/pages/Login';
-import { Register } from './components/pages/Register';
-import { Dashboard } from './components/pages/Dashboard';
-import { UserProfile } from './components/pages/UserProfile';
-import { OTPVerification } from './components/pages/OTPVerification';
-import { ForgotPassword } from './components/pages/ForgotPassword';
-import { OrderDocuments } from './components/pages/OrderDocuments';
-import { OrderRequirements } from './components/pages/OrderRequirements';
-import { OrderSubmitDetails } from './components/pages/OrderSubmitDetails';
+import { Login } from './user-panel/pages/Login';
+import { Register } from './user-panel/pages/Register';
+import { Dashboard } from './user-panel/pages/Dashboard';
+import { UserProfile } from './user-panel/pages/UserProfile';
+import { OTPVerification } from './user-panel/pages/OTPVerification';
+import { ForgotPassword } from './user-panel/pages/ForgotPassword';
+import { OrderDocuments } from './user-panel/pages/OrderDocuments';
+import { OrderRequirements } from './user-panel/pages/OrderRequirements';
+import { OrderSubmitDetails } from './user-panel/pages/OrderSubmitDetails';
 
 // Admin Pages
-import { AdminLogin } from './components/pages/AdminLogin';
-import { AdminDashboard } from './components/pages/AdminDashboard';
-import { AdminUsers } from './components/pages/AdminUsers';
-import { AdminAnalytics } from './components/pages/AdminAnalytics';
-import { AdminTickets } from './components/pages/AdminTickets';
-import { AdminServices } from './components/pages/AdminServices';
-import { AdminProfile } from './components/pages/AdminProfile'; // Import AdminProfile
-import { AdminTasks } from './components/pages/AdminTasks';
-import { AdminLeads } from './components/pages/AdminLeads';
-import { AdminOrders } from './components/pages/AdminOrders';
-import { AdminNotifications } from './components/pages/AdminNotifications';
-import { AdminCRM } from './components/pages/AdminCRM';
+import { AdminLogin } from './admin-panel/pages/AdminLogin';
+import { AdminDashboard } from './admin-panel/pages/AdminDashboard';
+import { AdminUsers } from './admin-panel/pages/AdminUsers';
+import { AdminAnalytics } from './admin-panel/pages/AdminAnalytics';
+import { AdminTickets } from './admin-panel/pages/AdminTickets';
+import { AdminServices } from './admin-panel/pages/AdminServices';
+import { AdminProfile } from './admin-panel/pages/AdminProfile'; // Import AdminProfile
+import { AdminTasks } from './admin-panel/pages/AdminTasks';
+import { AdminLeads } from './admin-panel/pages/AdminLeads';
+import { AdminOrders } from './admin-panel/pages/AdminOrders';
+import { AdminNotifications } from './admin-panel/pages/AdminNotifications';
+import { AdminCRM } from './admin-panel/pages/AdminCRM';
 
-import { MyTasks } from './components/pages/MyTasks';
-import { MyNotifications } from './components/pages/MyNotifications';
+import { MyTasks } from './user-panel/pages/MyTasks';
+import { MyNotifications } from './user-panel/pages/MyNotifications';
 
 // Home Pages
 import { Home } from './components/Home';
@@ -43,7 +43,7 @@ import { ContactUs } from './components/ContactUs';
 import { PrivacyPolicy } from './components/pages/PrivacyPolicy';
 import { TermsAndConditions } from './components/pages/TermsConditions';
 import { AllServices } from './components/pages/AllServices';
-import { Cart } from './components/pages/Cart';
+import { Cart } from './user-panel/pages/Cart';
 
 // Blog Pages
 import { Budget2026 } from './components/pages/blogs/Budget2026';
@@ -124,6 +124,7 @@ import Navigation from './components/Navigation';
 import { Footer } from './components/Footer';
 import { ScrollToTop } from './components/ScrollToTop';
 import { CookieConsent, CrispChat, WhatsAppButton } from './components/common';
+import { Toaster } from 'sonner';
 
 function AppContent() {
   const location = useLocation();
@@ -141,6 +142,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-neutral-50 relative">
+      <Toaster position="top-right" richColors />
       <CrispChat />
       <WhatsAppButton />
       {showNavigation && <Navigation currentPage={currentPage} onNavigate={() => { }} />}
@@ -256,6 +258,38 @@ function AppContent() {
             element={
               <AdminProtectedRoute>
                 <AdminProfile />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/tasks"
+            element={
+              <AdminProtectedRoute>
+                <AdminTasks />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/leads"
+            element={
+              <AdminProtectedRoute>
+                <AdminLeads />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/orders"
+            element={
+              <AdminProtectedRoute>
+                <AdminOrders />
+              </AdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/notifications"
+            element={
+              <AdminProtectedRoute>
+                <AdminNotifications />
               </AdminProtectedRoute>
             }
           />
@@ -389,3 +423,7 @@ export default function App() {
     </Router>
   );
 }
+
+
+
+

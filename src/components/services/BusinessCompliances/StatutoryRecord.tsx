@@ -1,6 +1,6 @@
 import { Archive, CheckCircle, FileText, Clock, ArrowRight, AlertCircle, Database, Shield, BookOpen, Lock, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function StatutoryRecord() {
     const navigate = useNavigate();
@@ -465,5 +465,10 @@ export function StatutoryRecord() {
         </div>
     );
 }
+
+
+
+
+
 
 

@@ -1,6 +1,6 @@
 import { Rocket, CheckCircle, FileText, Clock, ArrowRight, Shield, Award, Coins, Lightbulb } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function StartupIndiaRegistration() {
     const navigate = useNavigate();
@@ -357,3 +357,8 @@ export function StartupIndiaRegistration() {
         </div>
     );
 }
+
+
+
+
+

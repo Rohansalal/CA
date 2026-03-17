@@ -1,6 +1,6 @@
 import { Globe, CheckCircle, FileText, Clock, ArrowRight, Shield, Plane, Ship, RefreshCw, AlertCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function IECRegistration() {
     const navigate = useNavigate();
@@ -404,3 +404,8 @@ export function IECRegistration() {
         </div>
     );
 }
+
+
+
+
+

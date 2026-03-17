@@ -1,6 +1,6 @@
 import { Users, CheckCircle, FileText, Clock, ArrowRight, Shield, Globe, Award, HelpCircle, AlertCircle, Wallet } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 import { ServicePricing } from '../ServicePricing';
 
 export function LLPFormation() {
@@ -420,3 +420,8 @@ export function LLPFormation() {
     </div>
   );
 }
+
+
+
+
+

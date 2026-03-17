@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { X, Check, Loader2 } from 'lucide-react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../user-panel/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
 
@@ -179,3 +179,8 @@ export const PlanSelectionModal: React.FC<PlanSelectionModalProps> = ({ isOpen, 
         </div>
     );
 };
+
+
+
+
+

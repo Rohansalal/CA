@@ -136,3 +136,7 @@ export const PrivacyPolicy: React.FC = () => {
         </div>
     );
 };
+
+
+
+

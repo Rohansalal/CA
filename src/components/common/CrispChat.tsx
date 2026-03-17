@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../user-panel/contexts/AuthContext';
 
 declare global {
     interface Window {
@@ -33,3 +33,7 @@ export const CrispChat = () => {
 
     return null; // This component doesn't render anything
 };
+
+
+
+

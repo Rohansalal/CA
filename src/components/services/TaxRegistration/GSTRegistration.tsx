@@ -1,6 +1,6 @@
 import { Receipt, CheckCircle, FileText, Clock, ArrowRight, AlertCircle, TrendingUp, Shield, Globe, ShoppingCart, Percent } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 import { ServicePricing } from '../ServicePricing';
 
 export function GSTRegistration() {
@@ -556,3 +556,8 @@ export function GSTRegistration() {
         </div>
     );
 }
+
+
+
+
+

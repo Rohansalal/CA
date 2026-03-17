@@ -1,6 +1,6 @@
 import { Building2, CheckCircle, FileText, Clock, ArrowRight, TrendingUp, AlertCircle, ShoppingBag, Globe, Shield, Users, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 import { useState } from 'react';
 import { ServicePricing } from '../ServicePricing';
 
@@ -558,3 +558,8 @@ export function PrivateLimitedCompany() {
         </div>
     );
 }
+
+
+
+
+

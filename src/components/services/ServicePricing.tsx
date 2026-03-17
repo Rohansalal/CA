@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2, CheckCircle, ArrowRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '../../user-panel/contexts/AuthContext';
+import { useCart } from '../../user-panel/contexts/CartContext';
+import { ShoppingCart, PlayCircle } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface ServicePricingProps {
     serviceSlug: string;
@@ -12,6 +15,7 @@ interface ServicePricingProps {
 export function ServicePricing({ serviceSlug, serviceName, fallbackContent }: ServicePricingProps) {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
+    const { addToCart } = useCart();
     const [serviceData, setServiceData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
 
@@ -32,18 +36,24 @@ export function ServicePricing({ serviceSlug, serviceName, fallbackContent }: Se
         fetchService();
     }, [serviceSlug]);
 
-    const handleStartRegistration = async (plan?: any) => {
+    const handleBuyNow = async (plan?: any) => {
+        const planData = plan ? {
+            name: plan.planType,
+            price: plan.discountedPrice || plan.price,
+            id: plan.id,
+            serviceSlug: serviceSlug,
+            serviceId: serviceData?.id
+        } : undefined;
+
         if (!isAuthenticated) {
-            const state = {
-                selectedService: serviceName,
-                selectedServiceSlug: serviceSlug,
-                selectedPlan: plan ? {
-                    name: plan.planType,
-                    price: plan.discountedPrice || plan.price,
-                    id: plan.id
-                } : undefined
-            };
-            navigate('/login', { state: { returnTo: '/dashboard', ...state } });
+            navigate('/login', { 
+                state: { 
+                    returnTo: '/dashboard', 
+                    selectedService: serviceName,
+                    selectedServiceSlug: serviceSlug,
+                    selectedPlan: planData
+                } 
+            });
             return;
         }
 
@@ -78,8 +88,19 @@ export function ServicePricing({ serviceSlug, serviceName, fallbackContent }: Se
 
         } catch (error) {
             console.error('Error selecting service:', error);
-            alert('Failed to select service. Please try again.');
+            toast.error('Failed to select service. Please try again.');
         }
+    };
+
+    const handleAddToCart = (plan: any) => {
+        const planData = {
+            id: plan.id,
+            name: plan.planType,
+            price: plan.discountedPrice || plan.price,
+            serviceSlug: serviceSlug,
+            serviceId: serviceData?.id
+        };
+        addToCart(planData);
     };
 
     if (loading) return <div className="flex justify-center py-12"><Loader2 className="animate-spin w-8 h-8 text-primary" /></div>;
@@ -126,15 +147,28 @@ export function ServicePricing({ serviceSlug, serviceName, fallbackContent }: Se
                                 <span className="text-[10px] text-gray-500 block mt-1 font-medium">+ Govt Fees Actuals</span>
                             </div>
 
-                            <button
-                                onClick={() => handleStartRegistration(plan)}
-                                className={`w-full py-2.5 rounded-lg font-bold text-sm mb-4 transition-all shadow-sm ${plan.planType === 'PREMIUM'
-                                    ? 'bg-accent text-white hover:bg-accent/90 shadow-md hover:shadow-lg'
-                                    : 'bg-primary/10 text-primary hover:bg-primary hover:text-white'
-                                    }`}
-                            >
-                                Get Started
-                            </button>
+                            <div className="flex flex-col gap-2 mb-4">
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); handleAddToCart(plan); }}
+                                    className={`w-full py-2.5 rounded-lg font-bold text-sm transition-all shadow-sm flex items-center justify-center gap-2 border-2 
+                                        ${plan.planType === 'PREMIUM'
+                                            ? 'border-accent text-accent hover:bg-accent hover:text-white'
+                                            : 'border-primary text-primary hover:bg-primary hover:text-white'
+                                        }`}
+                                >
+                                    <ShoppingCart className="w-4 h-4" /> Add to Cart
+                                </button>
+                                <button
+                                    onClick={() => handleBuyNow(plan)}
+                                    className={`w-full py-2.5 rounded-lg font-bold text-sm transition-all shadow-sm flex items-center justify-center gap-2 
+                                        ${plan.planType === 'PREMIUM'
+                                            ? 'bg-accent text-white hover:bg-accent/90 shadow-md hover:shadow-lg'
+                                            : 'bg-primary text-white hover:bg-primary/90 shadow-md'
+                                        }`}
+                                >
+                                    <PlayCircle className="w-4 h-4" /> Buy Now
+                                </button>
+                            </div>
 
                             <div className="flex-1 min-h-0 border-t border-gray-100 pt-3 mt-1">
                                 <p className="text-[10px] font-bold text-gray-900 uppercase mb-2">Includes:</p>
@@ -168,3 +202,8 @@ export function ServicePricing({ serviceSlug, serviceName, fallbackContent }: Se
         </div>
     );
 }
+
+
+
+
+

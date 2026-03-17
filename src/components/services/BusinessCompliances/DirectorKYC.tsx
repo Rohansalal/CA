@@ -1,6 +1,6 @@
 import { UserCheck, CheckCircle, Clock, ArrowRight, AlertCircle, FileText, Info } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function DirectorKYC() {
     const navigate = useNavigate();
@@ -222,3 +222,8 @@ export function DirectorKYC() {
         </div>
     );
 }
+
+
+
+
+

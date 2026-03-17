@@ -1,6 +1,6 @@
 import { Receipt, CheckCircle, FileText, Clock, ArrowRight, AlertCircle, TrendingUp, Shield, Globe, ShoppingCart, Percent, BookOpen, Calculator, PieChart, Users, Smartphone } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function BookKeeping() {
     const navigate = useNavigate();
@@ -547,3 +547,8 @@ export function BookKeeping() {
         </div>
     );
 }
+
+
+
+
+

@@ -1,6 +1,6 @@
 import { MapPin, CheckCircle, Clock, ArrowRight, Building, FileText, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function RegisteredOfficeChange() {
     const navigate = useNavigate();
@@ -235,3 +235,8 @@ export function RegisteredOfficeChange() {
         </div>
     );
 }
+
+
+
+
+

@@ -1,6 +1,6 @@
 import { Factory, CheckCircle, FileText, Clock, ArrowRight, Shield, RefreshCcw, Landmark, Award, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function MSMERegistration() {
     const navigate = useNavigate();
@@ -403,3 +403,8 @@ export function MSMERegistration() {
         </div>
     );
 }
+
+
+
+
+

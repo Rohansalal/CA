@@ -1,6 +1,6 @@
 import { PenTool, CheckCircle, FileText, Clock, ArrowRight, Shield, Lock, Laptop, Key, FileCheck } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function DSCRegistration() {
     const navigate = useNavigate();
@@ -382,3 +382,8 @@ export function DSCRegistration() {
         </div>
     );
 }
+
+
+
+
+

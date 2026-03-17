@@ -1,6 +1,6 @@
 import { Utensils, CheckCircle, FileText, Clock, ArrowRight, AlertCircle, Shield, Award, ChefHat, Store, Factory } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function FSSAIRegistration() {
     const navigate = useNavigate();
@@ -470,3 +470,8 @@ export function FSSAIRegistration() {
         </div>
     );
 }
+
+
+
+
+

@@ -1,6 +1,6 @@
 import { Factory, CheckCircle, FileText, Clock, ArrowRight, Shield, Leaf, Droplets, Wind } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function PollutionControlLicense() {
     const navigate = useNavigate();
@@ -364,3 +364,8 @@ export function PollutionControlLicense() {
         </div>
     );
 }
+
+
+
+
+

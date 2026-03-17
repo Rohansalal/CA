@@ -1,6 +1,6 @@
 import { Eye, CheckCircle, FileText, Clock, ArrowRight, Shield, AlertTriangle, Search, TrendingUp, Users, ClipboardCheck, BookOpen } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function BookSupervision() {
     const navigate = useNavigate();
@@ -541,3 +541,7 @@ export function BookSupervision() {
         </div>
     );
 }
+
+
+
+

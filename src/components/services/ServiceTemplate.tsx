@@ -9,8 +9,8 @@ import {
     AlertCircle
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
-import { useCart } from '../../contexts/CartContext';
+import { useAuth } from '../../user-panel/contexts/AuthContext';
+import { useCart } from '../../user-panel/contexts/CartContext';
 
 
 // --- Types ---
@@ -734,3 +734,8 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
         </div>
     );
 }
+
+
+
+
+

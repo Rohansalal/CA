@@ -1,6 +1,6 @@
 import { Search, CheckCircle, FileText, Clock, ArrowRight, Shield, AlertTriangle, Calculator, DollarSign, TrendingUp } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function TaxAudit() {
     const navigate = useNavigate();
@@ -432,3 +432,7 @@ export function TaxAudit() {
         </div>
     );
 }
+
+
+
+

@@ -1,6 +1,6 @@
 import { Copyright, CheckCircle, FileText, Clock, ArrowRight, Shield, Globe, Award, AlertTriangle, Layers } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function TrademarkRegistration() {
     const navigate = useNavigate();
@@ -403,3 +403,8 @@ export function TrademarkRegistration() {
         </div>
     );
 }
+
+
+
+
+

@@ -1,6 +1,6 @@
 import { Users, CheckCircle, FileText, Clock, ArrowRight, Home, AlertCircle, Award } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function SocietyRegistration() {
     const navigate = useNavigate();
@@ -400,3 +400,8 @@ export function SocietyRegistration() {
         </div>
     );
 }
+
+
+
+
+

@@ -1,6 +1,6 @@
 import { Building2, CheckCircle, FileText, Clock, ArrowRight, TrendingUp, AlertCircle, ShoppingBag, Globe, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function PublicLimitedCompany() {
     const navigate = useNavigate();
@@ -406,3 +406,8 @@ export function PublicLimitedCompany() {
         </div>
     );
 }
+
+
+
+
+

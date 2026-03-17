@@ -1,6 +1,6 @@
 import { User, CheckCircle, FileText, Clock, ArrowRight, TrendingUp, AlertCircle, ShoppingBag, HelpCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../user-panel/contexts/AuthContext';
 
 export function SoleProprietorship() {
     const navigate = useNavigate();
@@ -398,3 +398,8 @@ export function SoleProprietorship() {
         </div>
     );
 }
+
+
+
+
+
