@@ -1,44 +1,27 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
 
 @theme {
-  /* Colors - CA Firm Brand Palette */
-  --color-primary: #0B1F3A;
-  --color-secondary: #0F3D2E;
-  --color-accent: #C9A24D;
-  --color-neutral-50: #F4F6F8;
-  --color-neutral-100: #E5E8EC;
-  --color-neutral-200: #D1D6DC;
-  --color-neutral-300: #B8BFC7;
-  --color-neutral-400: #9BA3AD;
-  --color-neutral-500: #7E8693;
-  --color-neutral-600: #646C78;
-  --color-neutral-700: #4A525D;
-  --color-neutral-800: #2B2B2B;
-  --color-neutral-900: #1A1A1A;
-  --color-white: #FFFFFF;
+  /* Colors - Modern Financial/Enterprise Palette */
+  --color-primary: #0F172A;
+  --color-secondary: #6366F1;
+  --color-success: #10B981;
+  --color-warning: #F59E0B;
+  --color-danger: #F43F5E;
+  --color-bg-slate: #F8FAFC;
+  --color-surface: #FFFFFF;
+  --color-border-slate: #E2E8F0;
   
-  /* Typography - Professional CA Firm */
-  --font-family-display: 'Playfair Display', serif;
-  --font-family-sans: 'Inter', system-ui, sans-serif;
+  /* Brand Specifics */
+  --color-enterprise-blue: #0F172A;
+  --color-indigo-glow: #6366F1;
+  
+  /* Typography - Font: Outfit */
+  --font-family-sans: 'Outfit', 'Inter', system-ui, sans-serif;
+  --font-family-display: 'Outfit', 'Playfair Display', serif;
 }
 
 @layer base {
-  @font-face {
-    font-family: 'Playfair Display';
-    font-style: normal;
-    font-weight: 400 700;
-    font-display: swap;
-    src: url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap');
-  }
-
-  @font-face {
-    font-family: 'Inter';
-    font-style: normal;
-    font-weight: 300 700;
-    font-display: swap;
-    src: url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-  }
-
   body {
     font-family: var(--font-family-sans);
     color: var(--color-neutral-800);

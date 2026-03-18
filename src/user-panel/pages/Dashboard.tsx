@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -11,9 +11,7 @@ import {
 import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { UniversalServicePanel } from './UniversalServicePanel';
-
-// API Configuration
-const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+import api from '../../utils/api';
 
 interface RoadmapStep {
   step: number;
@@ -42,6 +40,7 @@ interface UserService {
   documents?: Document[];
   price?: number;
   planName?: string;
+  quantity?: number;
 }
 
 interface Document {
@@ -86,7 +85,7 @@ interface ServiceCategory {
 }
 
 export const Dashboard: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, loading: authLoading, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -137,7 +136,27 @@ export const Dashboard: React.FC = () => {
   const [paymentProofFile, setPaymentProofFile] = useState<File | null>(null);
 
 
+  const expandedServices = useMemo(() => {
+    return userServices.flatMap(svc => {
+      const qty = svc.quantity || 1;
+      if (qty <= 1) return [svc];
+      
+      const copies = [];
+      for (let i = 0; i < qty; i++) {
+        copies.push({ 
+          ...svc, 
+          displayId: `${svc.id}-${i}`,
+          // Optional: distinguish them visually if needed
+          instanceNumber: i + 1
+        });
+      }
+      return copies;
+    });
+  }, [userServices]);
+
   useEffect(() => {
+    if (authLoading) return;
+
     if (!user) {
       if (location.pathname !== '/login') navigate('/login');
       return;
@@ -162,7 +181,18 @@ export const Dashboard: React.FC = () => {
     if (services.length === 0) {
       fetchData();
     }
-  }, [user, navigate, services, location.state]);
+  }, [user, authLoading, navigate, services, location.state]);
+
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <Loader className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
+          <p className="text-gray-600 font-medium">Synchronizing session...</p>
+        </div>
+      </div>
+    );
+  }
 
   const getAuthHeader = (includeIdempotencyKey = false) => {
     const token = localStorage.getItem('token');
@@ -182,76 +212,59 @@ export const Dashboard: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const headers = getAuthHeader();
-
       const [servicesRes, userServicesRes, docsRes, statsRes, ticketsRes, methodsRes, reportsRes] = await Promise.all([
-        fetch(`${API_URL}/services/categories`, { headers, credentials: 'include' }),
-        fetch(`${API_URL}/services/my-services`, { headers, credentials: 'include' }),
-        fetch(`${API_URL}/documents/my-documents`, { headers, credentials: 'include' }),
-        fetch(`${API_URL}/dashboard/user`, { headers, credentials: 'include' }),
-        fetch(`${API_URL}/tickets/my-tickets`, { headers, credentials: 'include' }),
-        fetch(`${API_URL}/payments/methods`, { headers, credentials: 'include' }),
-        fetch(`${API_URL}/documents/my-reports`, { headers, credentials: 'include' })
+        api.get('/services/categories'),
+        api.get('/services/my-services'),
+        api.get('/documents/my-documents'),
+        api.get('/dashboard/user'),
+        api.get('/tickets/my-tickets'),
+        api.get('/payments/methods'),
+        api.get('/documents/my-reports')
       ]);
 
-      if (servicesRes.ok) {
-        const data = await servicesRes.json();
-        const categoriesData = data.categories || [];
-        setCategories(categoriesData);
-        const allServices: Service[] = [];
-        if (Array.isArray(categoriesData)) {
-          categoriesData.forEach((cat: any) => {
-            if (cat.services && Array.isArray(cat.services)) {
-              cat.services.forEach((svc: any) => {
-                let displayPrice = 0;
-                let defaultPlanId = undefined;
-                if (svc.plans && svc.plans.length > 0) {
-                  displayPrice = svc.plans[0].price;
-                  defaultPlanId = svc.plans[0].id;
-                } else if (svc.price !== undefined && svc.price !== null) {
-                  displayPrice = Number(svc.price);
-                }
-                allServices.push({
-                  id: svc.id,
-                  name: svc.name,
-                  description: svc.description,
-                  price: displayPrice,
-                  defaultPlanId: defaultPlanId
-                });
+      const categoriesData = servicesRes.data.categories || [];
+      setCategories(categoriesData);
+      const allServices: Service[] = [];
+      if (Array.isArray(categoriesData)) {
+        categoriesData.forEach((cat: any) => {
+          if (cat.services && Array.isArray(cat.services)) {
+            cat.services.forEach((svc: any) => {
+              let displayPrice = 0;
+              let defaultPlanId = undefined;
+              if (svc.plans && svc.plans.length > 0) {
+                displayPrice = svc.plans[0].price;
+                defaultPlanId = svc.plans[0].id;
+              } else if (svc.price !== undefined && svc.price !== null) {
+                displayPrice = Number(svc.price);
+              }
+              allServices.push({
+                id: svc.id,
+                name: svc.name,
+                description: svc.description,
+                price: displayPrice,
+                defaultPlanId: defaultPlanId
               });
-            }
-          });
-        }
-        setServices(allServices);
+            });
+          }
+        });
       }
+      setServices(allServices);
 
-      if (userServicesRes.ok) setUserServices(await userServicesRes.json());
-      if (docsRes.ok) {
-        const docsData = await docsRes.json();
-        setDocuments(docsData.documents || []);
-      }
-      if (statsRes.ok) {
-        const statsData = await statsRes.json();
-        setStats(statsData.stats || { total: 0, active: 0, pending: 0, completed: 0 });
-      }
-      if (ticketsRes.ok) {
-        const ticketsData = await ticketsRes.json();
-        setTickets(ticketsData.tickets || []);
-      }
-      if (methodsRes.ok) {
-        const methods = await methodsRes.json();
-        setAvailablePaymentMethods(methods);
-        if (methods.razorpay) setSelectedPaymentMethod('razorpay');
-        else if (methods.stripe) setSelectedPaymentMethod('stripe');
-      }
-      if (reportsRes?.ok) {
-        const reportsData = await reportsRes.json();
-        setReports(reportsData.reports || []);
-      }
+      setUserServices(userServicesRes.data.userServices || userServicesRes.data || []);
+      setDocuments(docsRes.data.documents || []);
+      setStats(statsRes.data.stats || { total: 0, active: 0, pending: 0, completed: 0 });
+      setTickets(ticketsRes.data.tickets || []);
+      
+      const methods = methodsRes.data;
+      setAvailablePaymentMethods(methods);
+      if (methods.razorpay) setSelectedPaymentMethod('razorpay');
+      else if (methods.stripe) setSelectedPaymentMethod('stripe');
 
-    } catch (err) {
+      setReports(reportsRes.data.reports || []);
+
+    } catch (err: any) {
       console.error('Error fetching data:', err);
-      setError('Failed to load dashboard data. Please check connection.');
+      setError(err.response?.data?.message || err.message || 'Failed to load dashboard data. Please check connection.');
     } finally {
       setLoading(false);
     }
@@ -275,19 +288,19 @@ export const Dashboard: React.FC = () => {
   const handlePurchaseBySlug = async (slug: string, selectedPlan?: any) => {
     setLoading(true);
     try {
-      const headers = getAuthHeader();
-      let body: any = { serviceSlug: slug };
+      let body: any = { serviceSlug: slug, quantity: selectedPlan?.quantity || 1 };
 
       if (selectedPlan && selectedPlan.id && selectedPlan.serviceId) {
         body = {
           serviceId: selectedPlan.serviceId,
           planId: selectedPlan.id,
-          price: selectedPlan.price
+          price: selectedPlan.price,
+          quantity: selectedPlan.quantity || 1
         };
       } else if (selectedPlan && selectedPlan.name) {
         try {
-          const serviceRes = await fetch(`${API_URL}/services/slug/${slug}`);
-          const serviceData = await serviceRes.json();
+          const serviceRes = await api.get(`/services/slug/${slug}`);
+          const serviceData = serviceRes.data;
           if (serviceData.service) {
             const matchingPlan = serviceData.service.plans.find((p: any) =>
               (p.planType && p.planType.toLowerCase() === selectedPlan.name.toLowerCase()) ||
@@ -297,7 +310,8 @@ export const Dashboard: React.FC = () => {
               body = {
                 serviceId: serviceData.service.id,
                 planId: matchingPlan.id,
-                price: matchingPlan.discountedPrice || matchingPlan.price
+                price: matchingPlan.discountedPrice || matchingPlan.price,
+                quantity: selectedPlan.quantity || 1
               };
             }
           }
@@ -306,25 +320,13 @@ export const Dashboard: React.FC = () => {
         }
       }
 
-      const res = await fetch(`${API_URL}/services/select`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(body),
-        credentials: 'include'
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        if (res.status !== 400) {
-          throw new Error(err.error || 'Failed to select service');
-        }
-      }
+      await api.post('/services/select', body);
 
       await fetchData();
       setActiveTab('dashboard');
     } catch (err: any) {
       console.error('Auto-select error:', err);
-      setError(err.message || 'Failed to select service automatically');
+      setError(err.response?.data?.message || err.message || 'Failed to select service automatically');
     } finally {
       setLoading(false);
     }
@@ -334,20 +336,11 @@ export const Dashboard: React.FC = () => {
     if (!window.confirm('Are you sure you want to remove this service?')) return;
     setLoading(true);
     try {
-      const headers = getAuthHeader();
-      const res = await fetch(`${API_URL}/services/my-services/${userServiceId}`, {
-        method: 'DELETE',
-        headers,
-        credentials: 'include'
-      });
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Failed to delete service');
-      }
+      await api.delete(`/services/my-services/${userServiceId}`);
       await fetchData();
     } catch (err: any) {
       console.error(err);
-      alert(err.message || 'Failed to delete service');
+      alert(err.response?.data?.message || err.message || 'Failed to delete service');
     } finally {
       setLoading(false);
     }
@@ -365,17 +358,8 @@ export const Dashboard: React.FC = () => {
     setLoadingPlans(true);
 
     try {
-      const headers = getAuthHeader();
-      const response = await fetch(`${API_URL}/services/${service.id}/plans`, { 
-        headers,
-        credentials: 'include' 
-      });
-      
-      if (!response.ok) {
-        throw new Error('Failed to fetch plans');
-      }
-      
-      const data = await response.json();
+      const response = await api.get(`/services/${service.id}/plans`);
+      const data = response.data;
       const plans = data.plans || data || [];
       setAvailablePlans(plans);
       setServicePlanData(prev => ({ ...prev, [service.id]: plans }));
@@ -568,7 +552,8 @@ export const Dashboard: React.FC = () => {
   )).map((doc: any) => ({
     ...doc,
     // Normalise download URL — backend stores `filePath`, UI needs absolute URL
-    url: doc.url || (doc.filePath ? `${import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000'}${doc.filePath}` : '#')
+    // Normalise download URL — backend stores `filePath`, UI needs absolute proxy URL for R2/Decryption
+    url: doc.url || (doc.filePath ? `${import.meta.env.VITE_API_BASE_URL}/files/${doc.filePath.replace(/^\//, '')}` : '#')
   }));
 
   const NavItem = ({ id, label, icon: Icon }: { id: typeof activeTab, label: string, icon: any }) => (
@@ -1160,10 +1145,10 @@ export const Dashboard: React.FC = () => {
                     <button onClick={() => setActiveTab('billing')} className="px-6 py-2.5 bg-white border border-gray-200 text-[#0b1f3a] rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-50 transition-all shadow-sm">Detailed Ledger</button>
                   </div>
 
-                  {userServices.length > 0 ? (
+                  {expandedServices.length > 0 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                      {userServices.slice(0, 6).map(svc => (
-                        <div key={svc.id} className="bg-white rounded-[2.5rem] border border-gray-100 p-8 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col group h-full">
+                      {expandedServices.slice(0, 6).map(svc => (
+                        <div key={(svc as any).displayId || svc.id} className="bg-white rounded-[2.5rem] border border-gray-100 p-8 shadow-sm hover:shadow-xl transition-all duration-500 flex flex-col group h-full">
                           <div className="flex justify-between items-start mb-6">
                             <div className={`px-4 py-1.5 rounded-full text-[9px] font-black border ${getStatusColor(svc.status)} uppercase tracking-widest`}>
                               {svc.status.replace('_', ' ')}
@@ -1171,16 +1156,21 @@ export const Dashboard: React.FC = () => {
                             <span className="text-[10px] font-bold text-gray-400">{new Date(svc.createdAt).toLocaleDateString()}</span>
                           </div>
 
-                          <h4 className="text-lg font-black text-[#0b1f3a] mb-3 tracking-tight group-hover:text-primary transition-colors">{svc.service?.name}</h4>
-                          <div className="flex flex-col gap-1 mb-6">
-                            {svc.planName && (
-                              <div className="flex items-center gap-2">
-                                <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded">
-                                  {svc.planName} Plan
-                                </span>
-                              </div>
+                          <h4 className="text-lg font-black text-[#0b1f3a] mb-3 tracking-tight group-hover:text-primary transition-colors">
+                            {svc.service?.name} 
+                            {(svc as any).instanceNumber && (
+                              <span className="text-xs text-gray-400 ml-2 italic">#{ (svc as any).instanceNumber }</span>
                             )}
-                            <div className="flex items-center gap-2">
+                          </h4>
+                          <div className="flex flex-col gap-1 mb-6">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                {svc.planName && (
+                                  <span className="text-[10px] font-black text-primary uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded">
+                                    {svc.planName} Plan
+                                  </span>
+                                )}
+                              </div>
                               <span className="text-sm font-black text-[#0b1f3a]">
                                 ₹{Number(svc.price || 0).toLocaleString()}
                               </span>
@@ -1687,18 +1677,24 @@ export const Dashboard: React.FC = () => {
                           <tr className="border-b border-gray-50">
                             <th className="px-4 md:px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Service Insight</th>
                             <th className="px-4 md:px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Purchase Date</th>
-                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Investment</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Qty</th>
+                            <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Total Investment</th>
                             <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Service Status</th>
                             <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Payment Node</th>
                             <th className="px-8 py-5 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Actions</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
-                          {userServices.map(svc => (
-                            <tr key={svc.id} className="group hover:bg-gray-50/50 transition-colors">
+                          {expandedServices.map(svc => (
+                            <tr key={(svc as any).displayId || svc.id} className="group hover:bg-gray-50/50 transition-colors">
                               <td className="px-4 md:px-8 py-6">
                                 <div className="flex flex-col">
-                                  <span className="text-sm font-black text-[#0b1f3a] group-hover:text-primary transition-colors">{svc.service?.name}</span>
+                                  <span className="text-sm font-black text-[#0b1f3a] group-hover:text-primary transition-colors">
+                                    {svc.service?.name}
+                                    {(svc as any).instanceNumber && (
+                                      <span className="text-xs text-gray-400 ml-2 italic">#{ (svc as any).instanceNumber }</span>
+                                    )}
+                                  </span>
                                   <div className="flex items-center gap-2 mt-1">
                                     <span className="text-[10px] font-bold text-gray-400 uppercase">ID: #{svc.orderId}</span>
                                     {svc.planName && (
@@ -1716,7 +1712,12 @@ export const Dashboard: React.FC = () => {
                                 <span className="text-sm text-gray-500 font-medium">{new Date(svc.createdAt).toLocaleDateString()}</span>
                               </td>
                               <td className="px-4 md:px-8 py-6">
-                                <span className="text-sm font-black text-[#0b1f3a]">₹{Number(svc.price || 0).toLocaleString()}</span>
+                                <span className="text-sm font-black text-[#0b1f3a]">1</span>
+                              </td>
+                              <td className="px-4 md:px-8 py-6">
+                                <div className="flex flex-col">
+                                  <span className="text-sm font-black text-[#0b1f3a]">₹{Number(svc.price || 0).toLocaleString()}</span>
+                                </div>
                               </td>
                               <td className="px-4 md:px-8 py-6">
                                 <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-[9px] font-black border ${getStatusColor(svc.status)} uppercase tracking-widest`}>

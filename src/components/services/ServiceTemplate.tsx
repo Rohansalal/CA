@@ -84,7 +84,8 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
             name: plan.name,
             price: priceValue,
             serviceSlug: serviceSlug,
-            serviceId: serviceId
+            serviceId: serviceId,
+            quantity: 1
         };
         addToCart(planData);
     };

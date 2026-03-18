@@ -5,7 +5,7 @@ import { User, Mail, Phone, Calendar, Shield, ArrowLeft, Save, Edit2, ChevronRig
 
 export const UserProfile: React.FC = () => {
     const { username } = useParams<{ username: string }>();
-    const { user, setUserData } = useAuth();
+    const { user, loading: authLoading, setUserData } = useAuth();
     const navigate = useNavigate();
 
     const [isEditing, setIsEditing] = useState(false);
@@ -24,6 +24,12 @@ export const UserProfile: React.FC = () => {
     });
 
     useEffect(() => {
+        if (!authLoading && !user) {
+            navigate('/login');
+        }
+    }, [user, authLoading, navigate]);
+
+    useEffect(() => {
         if (user) {
             setFormData({
                 name: user.name || '',
@@ -39,6 +45,17 @@ export const UserProfile: React.FC = () => {
             });
         }
     }, [user]);
+
+    if (authLoading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-gray-50">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
+                    <p className="text-gray-600 font-medium">Verifying identity...</p>
+                </div>
+            </div>
+        );
+    }
 
     const handleSave = async () => {
         setLoading(true);
@@ -497,7 +514,7 @@ const PaymentHistoryList = () => {
                                 <td className="px-10 py-6 text-right">
                                     {payment.paymentProof ? (
                                         <a
-                                            href={`${import.meta.env.VITE_API_BASE_URL.replace('/api', '')}${payment.paymentProof}`}
+                                            href={`${import.meta.env.VITE_API_BASE_URL}/files/${payment.paymentProof.replace(/^\//, '')}`}
                                             target="_blank"
                                             rel="noreferrer"
                                             className="inline-flex items-center gap-2 text-xs font-black text-primary hover:text-[#0b1f3a] uppercase tracking-widest transition-all hover:translate-x-1"

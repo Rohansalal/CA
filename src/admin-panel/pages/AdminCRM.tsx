@@ -18,80 +18,109 @@ export function AdminCRM() {
         }
     }, [location.state]);
 
+    const navItems = [
+        { id: 'tasks', label: 'Task Management', icon: CheckSquare, description: 'Workflow & compliance tracking' },
+        { id: 'leads', label: 'Lead Pipeline', icon: Target, description: 'Client acquisition funnel' },
+        { id: 'orders', label: 'Process Orders', icon: ShoppingBag, description: 'Service fulfillment engine' },
+        { id: 'notifications', label: 'Communication Hub', icon: Bell, description: 'System alerts & broadcasts' },
+    ] as const;
+
     return (
-        <div className="flex min-h-screen bg-neutral-50 font-inter">
+        <div className="flex min-h-screen bg-slate-50/50 font-outfit">
             {/* Sidebar Navigation */}
-            <div className="w-64 bg-white border-r border-neutral-200 flex flex-col shadow-sm hidden md:flex">
-                <div className="p-6 border-b border-neutral-200">
+            <div className="w-72 bg-[#0F172A] flex flex-col shadow-2xl hidden md:flex">
+                <div className="p-8 border-b border-slate-800/50">
                     <button
                         onClick={() => navigate('/admin/dashboard')}
-                        className="flex items-center text-neutral-500 hover:text-[#1e40af] transition-colors mb-4 text-sm font-medium"
+                        className="flex items-center text-slate-400 hover:text-white transition-all mb-8 text-xs font-bold uppercase tracking-widest group"
                     >
-                        <ArrowLeft className="w-4 h-4 mr-1" />
-                        Back to Admin Dashboard
+                        <ArrowLeft className="w-3.5 h-3.5 mr-2 group-hover:-translate-x-1 transition-transform" />
+                        Main Dashboard
                     </button>
-                    <h2 className="text-xl font-bold text-[#1e40af] flex items-center gap-2">
-                        <LayoutDashboard className="w-6 h-6" />
-                        CRM Portal
-                    </h2>
+                    <div className="flex items-center gap-3">
+                        <div className="p-2 bg-indigo-500/10 rounded-xl border border-indigo-500/20">
+                            <LayoutDashboard className="w-6 h-6 text-indigo-400" />
+                        </div>
+                        <div>
+                            <h2 className="text-lg font-bold text-white tracking-tight">CRM Portal</h2>
+                            <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">Management Suite</p>
+                        </div>
+                    </div>
                 </div>
-                <div className="flex-1 overflow-y-auto py-6 px-4 space-y-2">
-                    <button
-                        onClick={() => setActiveTab('tasks')}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${activeTab === 'tasks' ? 'bg-blue-50 text-[#1e40af] shadow-sm ring-1 ring-blue-200' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'}`}
-                    >
-                        <CheckSquare className="w-5 h-5" />
-                        Task Management
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('leads')}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${activeTab === 'leads' ? 'bg-blue-50 text-[#1e40af] shadow-sm ring-1 ring-blue-200' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'}`}
-                    >
-                        <Target className="w-5 h-5" />
-                        Lead Pipeline
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('orders')}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${activeTab === 'orders' ? 'bg-blue-50 text-[#1e40af] shadow-sm ring-1 ring-blue-200' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'}`}
-                    >
-                        <ShoppingBag className="w-5 h-5" />
-                        Process Orders
-                    </button>
-                    <button
-                        onClick={() => setActiveTab('notifications')}
-                        className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg font-semibold transition-all ${activeTab === 'notifications' ? 'bg-blue-50 text-[#1e40af] shadow-sm ring-1 ring-blue-200' : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900'}`}
-                    >
-                        <Bell className="w-5 h-5" />
-                        Communication Hub
-                    </button>
+
+                <div className="flex-1 overflow-y-auto py-8 px-4 space-y-2">
+                    {navItems.map((item) => (
+                        <button
+                            key={item.id}
+                            onClick={() => setActiveTab(item.id)}
+                            className={`w-full group flex flex-col p-4 rounded-2xl transition-all duration-200 border ${activeTab === item.id
+                                ? 'bg-indigo-500/10 border-indigo-500/30 text-white shadow-lg shadow-indigo-500/5'
+                                : 'border-transparent text-slate-400 hover:bg-white/5 hover:text-slate-200'
+                                }`}
+                        >
+                            <div className="flex items-center gap-3 w-full">
+                                <item.icon className={`w-5 h-5 transition-colors ${activeTab === item.id ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
+                                <span className="font-bold text-sm">{item.label}</span>
+                            </div>
+                            <span className={`text-[10px] mt-1 ml-8 font-medium transition-colors ${activeTab === item.id ? 'text-indigo-300/60' : 'text-slate-600'}`}>
+                                {item.description}
+                            </span>
+                        </button>
+                    ))}
+                </div>
+
+                {/* Sidebar Footer */}
+                <div className="p-6 border-t border-slate-800/50">
+                    <div className="bg-slate-800/40 rounded-xl p-4 border border-slate-700/30">
+                        <p className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">System Status</p>
+                        <div className="flex items-center gap-2">
+                            <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                            <span className="text-xs font-semibold text-slate-300">Operations Online</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
             {/* Main Content Area */}
-            <div className="flex-1 overflow-y-auto w-full">
+            <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
                 {/* Mobile Header */}
-                <div className="md:hidden bg-white border-b border-neutral-200 p-4 shrink-0 flex items-center justify-between">
-                    <h2 className="text-xl font-bold text-[#1e40af] flex items-center gap-2">
-                        <LayoutDashboard className="w-6 h-6" />
-                        CRM Portal
-                    </h2>
-                    <button onClick={() => navigate('/admin/dashboard')} className="p-2 text-neutral-500 rounded-lg hover:bg-neutral-100">
+                <div className="md:hidden bg-[#0F172A] border-b border-slate-800 p-4 shrink-0 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <LayoutDashboard className="w-6 h-6 text-indigo-400" />
+                        <h2 className="text-lg font-bold text-white tracking-tight">CRM Portal</h2>
+                    </div>
+                    <button
+                        onClick={() => navigate('/admin/dashboard')}
+                        className="p-2 text-slate-400 rounded-xl bg-white/5 border border-white/10"
+                    >
                         <ArrowLeft className="w-5 h-5" />
                     </button>
                 </div>
-                {/* Mobile Navigation */}
-                <div className="md:hidden flex overflow-x-auto bg-white border-b border-neutral-200">
-                    <button onClick={() => setActiveTab('tasks')} className={`px-4 py-3 font-semibold whitespace-nowrap border-b-2 transition-colors ${activeTab === 'tasks' ? 'border-[#1e40af] text-[#1e40af]' : 'border-transparent text-neutral-500'}`}>Tasks</button>
-                    <button onClick={() => setActiveTab('leads')} className={`px-4 py-3 font-semibold whitespace-nowrap border-b-2 transition-colors ${activeTab === 'leads' ? 'border-[#1e40af] text-[#1e40af]' : 'border-transparent text-neutral-500'}`}>Leads</button>
-                    <button onClick={() => setActiveTab('orders')} className={`px-4 py-3 font-semibold whitespace-nowrap border-b-2 transition-colors ${activeTab === 'orders' ? 'border-[#1e40af] text-[#1e40af]' : 'border-transparent text-neutral-500'}`}>Orders</button>
-                    <button onClick={() => setActiveTab('notifications')} className={`px-4 py-3 font-semibold whitespace-nowrap border-b-2 transition-colors ${activeTab === 'notifications' ? 'border-[#1e40af] text-[#1e40af]' : 'border-transparent text-neutral-500'}`}>Alerts</button>
+
+                {/* Mobile Navigation Tabs */}
+                <div className="md:hidden flex overflow-x-auto bg-[#0F172A] border-b border-slate-800 scrollbar-hide">
+                    {navItems.map((item) => (
+                        <button
+                            key={item.id}
+                            onClick={() => setActiveTab(item.id)}
+                            className={`px-6 py-4 font-bold text-xs uppercase tracking-widest whitespace-nowrap border-b-2 transition-all ${activeTab === item.id
+                                ? 'border-indigo-500 text-white bg-indigo-500/5'
+                                : 'border-transparent text-slate-500'
+                                }`}
+                        >
+                            {item.id}
+                        </button>
+                    ))}
                 </div>
 
-                <div className="h-full">
-                    {activeTab === 'tasks' && <AdminTasks />}
-                    {activeTab === 'leads' && <AdminLeads />}
-                    {activeTab === 'orders' && <AdminOrders />}
-                    {activeTab === 'notifications' && <AdminNotifications />}
+                {/* Tab Content */}
+                <div className="flex-1 overflow-y-auto">
+                    <div className="h-full animate-in fade-in duration-500">
+                        {activeTab === 'tasks' && <AdminTasks />}
+                        {activeTab === 'leads' && <AdminLeads />}
+                        {activeTab === 'orders' && <AdminOrders />}
+                        {activeTab === 'notifications' && <AdminNotifications />}
+                    </div>
                 </div>
             </div>
         </div>

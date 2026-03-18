@@ -50,3 +50,8 @@ export const commonClasses = {
   border: 'border border-neutral-200',
   transition: 'transition-all duration-300',
 };
+
+// API Configuration
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+export const API_TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT) || 30000;
+export const IS_DEV = import.meta.env.DEV;

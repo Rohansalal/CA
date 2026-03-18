@@ -1,17 +1,17 @@
 import React from 'react';
 import { useCart, CartItem } from '../contexts/CartContext';
 import { useNavigate } from 'react-router-dom';
-import { Trash2, ArrowRight, ShoppingCart } from 'lucide-react';
+import { Trash2, ArrowRight, ShoppingCart, Minus, Plus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { toast } from 'sonner';
 
 export function Cart() {
-    const { cart, removeFromCart, cartTotal, clearCart } = useCart();
+    const { cart, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
 
     const handleCheckout = (item: CartItem) => {
-        navigate(isAuthenticated ? '/dashboard' : '/login', {
+        navigate(isAuthenticated ? '/dashboard' : '/register', {
             state: {
                 returnTo: '/dashboard',
                 selectedServiceSlug: item.serviceSlug,
@@ -20,7 +20,8 @@ export function Cart() {
                     name: item.name,
                     price: item.price,
                     serviceSlug: item.serviceSlug,
-                    serviceId: item.serviceId
+                    serviceId: item.serviceId,
+                    quantity: item.quantity
                 }
             }
         });
@@ -28,7 +29,7 @@ export function Cart() {
 
     const handleCheckoutAll = async () => {
         if (!isAuthenticated) {
-            navigate('/login', {
+            navigate('/register', {
                 state: { returnTo: '/cart' }
             });
             return;
@@ -97,25 +98,49 @@ export function Cart() {
                                             </span>
                                         </div>
                                         <h3 className="text-xl font-bold text-gray-900">{item.name}</h3>
+                                        <p className="text-sm text-gray-500 mt-1">₹{item.price.toLocaleString()} per unit</p>
                                     </div>
-                                    <div className="flex items-center justify-between w-full sm:w-auto gap-6 mt-4 sm:mt-0">
-                                        <div className="text-right">
-                                            <span className="block text-sm text-gray-500 mb-0.5">Price</span>
-                                            <span className="text-2xl font-bold text-primary">₹{item.price.toLocaleString()}</span>
+                                    
+                                    <div className="flex items-center gap-4 sm:gap-8">
+                                        <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden bg-white">
+                                            <button 
+                                                onClick={() => updateQuantity(index, item.quantity - 1)}
+                                                className="p-2 hover:bg-gray-50 text-gray-600 transition-colors border-r border-gray-200"
+                                                aria-label="Decrease quantity"
+                                            >
+                                                <Minus className="w-4 h-4" />
+                                            </button>
+                                            <span className="px-4 py-2 font-bold text-gray-900 min-w-[3rem] text-center">
+                                                {item.quantity}
+                                            </span>
+                                            <button 
+                                                onClick={() => updateQuantity(index, item.quantity + 1)}
+                                                className="p-2 hover:bg-gray-50 text-gray-600 transition-colors border-l border-gray-200"
+                                                aria-label="Increase quantity"
+                                            >
+                                                <Plus className="w-4 h-4" />
+                                            </button>
                                         </div>
-                                        <div className="flex flex-col gap-2">
-                                            <button
-                                                onClick={() => handleCheckout(item)}
-                                                className="px-6 py-2 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-colors text-sm w-full sm:w-auto text-center"
-                                            >
-                                                Proceed
-                                            </button>
-                                            <button
-                                                onClick={() => removeFromCart(index)}
-                                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center gap-1 text-sm w-full sm:w-auto"
-                                            >
-                                                <Trash2 className="w-4 h-4" /> Remove
-                                            </button>
+
+                                        <div className="flex items-center justify-between w-full sm:w-auto gap-6 mt-4 sm:mt-0">
+                                            <div className="text-right min-w-[100px]">
+                                                <span className="block text-sm text-gray-500 mb-0.5">Subtotal</span>
+                                                <span className="text-2xl font-bold text-primary">₹{(item.price * item.quantity).toLocaleString()}</span>
+                                            </div>
+                                            <div className="flex flex-col gap-2">
+                                                <button
+                                                    onClick={() => handleCheckout(item)}
+                                                    className="px-6 py-2 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-colors text-sm w-full sm:w-auto text-center"
+                                                >
+                                                    Proceed
+                                                </button>
+                                                <button
+                                                    onClick={() => removeFromCart(index)}
+                                                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors flex items-center justify-center gap-1 text-sm w-full sm:w-auto"
+                                                >
+                                                    <Trash2 className="w-4 h-4" /> Remove
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

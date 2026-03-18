@@ -1,12 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
-
-interface ImportMetaEnv {
-  readonly VITE_API_BASE_URL: string;
-}
-
-interface ImportMeta {
-  readonly env: ImportMetaEnv;
-}
+import api from '../../utils/api';
+import { API_BASE_URL } from '../../utils/constants';
 
 interface AdminUser {
   id: number;
@@ -15,6 +9,7 @@ interface AdminUser {
   isAdmin: boolean;
   name: string;
   email: string;
+  avatar?: string;
 }
 
 interface AdminContextType {
@@ -43,6 +38,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           isAdmin: true,
           name: admin.name,
           email: admin.email,
+          avatar: admin.avatar,
         };
       } catch (e) {
         return null;
@@ -59,27 +55,18 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     const checkAdminAuth = async () => {
       setLoading(true);
       try {
-        const token = localStorage.getItem('adminToken');
-        const headers: HeadersInit = {};
-        if (token) headers['Authorization'] = `Bearer ${token}`;
-
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/profile`, {
-          headers,
-          credentials: 'include'
+        const response = await api.get('/admin/profile');
+        const data = response.data;
+        const admin = data.admin || data;
+        setAdminUser({
+          id: admin.id,
+          userId: admin.id,
+          role: admin.role,
+          isAdmin: true,
+          name: admin.name,
+          email: admin.email,
+          avatar: admin.avatar,
         });
-
-        if (response.ok) {
-          const data = await response.json();
-          const admin = data.admin || data;
-          setAdminUser({
-            id: admin.id,
-            userId: admin.id,
-            role: admin.role,
-            isAdmin: true,
-            name: admin.name,
-            email: admin.email,
-          });
-        }
       } catch (err) {
         console.error('Admin session check failed', err);
       } finally {
@@ -97,30 +84,12 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/auth/admin/login`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password }),
-          credentials: 'include'
-        }
-      );
+      // The admin login route in the backend is actually under /api/auth/admin/login
+      const response = await api.post('/auth/admin/login', { email, password });
+      const data = response.data;
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Admin login failed');
-      }
-
-      // Save admin data
+      localStorage.setItem('adminToken', data.token);
       localStorage.setItem('adminData', JSON.stringify(data.admin));
-      if (data.token) {
-        localStorage.setItem('adminToken', data.token);
-      }
-
       setAdminUser({
         id: data.admin.id,
         userId: data.admin.id,
@@ -128,25 +97,18 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         isAdmin: true,
         name: data.admin.name,
         email: data.admin.email,
+        avatar: data.admin.avatar,
       });
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Admin login failed';
-      setError(errorMessage);
-      throw err;
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.message || err.message || 'Admin login failed';
+      setError(errorMsg);
+      throw new Error(errorMsg);
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const adminLogout = useCallback(async () => {
-    try {
-      await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
-      });
-    } catch (err) {
-      console.error('Logout failed:', err);
-    }
+  const adminLogout = useCallback(() => {
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminData');
     setAdminUser(null);
@@ -160,7 +122,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       if (token) headers['Authorization'] = `Bearer ${token}`;
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/admin/profile`, // Updated verify endpoint
+        `${API_BASE_URL}/admin/profile`, // Updated verify endpoint to use consistent base URL
         {
           method: 'GET',
           headers,
@@ -184,6 +146,7 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
           isAdmin: true,
           name: admin.name,
           email: admin.email,
+          avatar: admin.avatar,
         });
         return true;
       }

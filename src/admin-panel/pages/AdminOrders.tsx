@@ -3,6 +3,7 @@ import { PackageSearch, Search, AlertCircle, FileText, ExternalLink, Calendar, C
 import { useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
 import { toast } from 'sonner';
+import { API_BASE_URL } from '../../utils/constants';
 
 interface Order {
     id: number;
@@ -137,9 +138,25 @@ export function AdminOrders() {
                                             <div className="text-xs text-neutral-500">{displayPhone}</div>
                                         </td>
                                         <td className="px-6 py-4 text-sm text-neutral-700">
-                                            {order.items.length > 0 ? order.items[0].serviceName || 'Service Package' : 'Unknown Service'}
+                                            <div className="flex flex-col">
+                                                <span>{order.items.length > 0 ? order.items[0].serviceName || 'Service Package' : 'Unknown Service'}</span>
+                                                {order.items.length > 0 && order.items[0].quantity > 1 && (
+                                                    <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest mt-0.5">
+                                                        Quantity: {order.items[0].quantity}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </td>
-                                        <td className="px-6 py-4 font-semibold text-neutral-800 text-sm">₹{order.totalAmount}</td>
+                                        <td className="px-6 py-4 font-semibold text-neutral-800 text-sm">
+                                            <div className="flex flex-col">
+                                                <span>₹{order.totalAmount}</span>
+                                                {order.items.length > 0 && order.items[0].quantity > 1 && (
+                                                    <span className="text-[9px] font-bold text-neutral-400 italic mt-0.5">
+                                                        ₹{(order.totalAmount / order.items[0].quantity).toLocaleString()} / unit
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </td>
                                         <td className="px-6 py-4">
                                             <span className={`text-[10px] font-bold px-2.5 py-1 rounded border uppercase tracking-wider ${getStatusColor(order.status)}`}>
                                                 {order.status}
@@ -237,7 +254,7 @@ export function AdminOrders() {
                                                                     {order.documents.map((doc: any) => (
                                                                         <li key={doc.id} className="flex items-center justify-between text-xs bg-gray-50 p-2 rounded">
                                                                             <span className="truncate">{doc.documentType || doc.fileName}</span>
-                                                                            <a href={`${import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000'}${doc.filePath}`} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
+                                                                            <a href={`${API_BASE_URL}/files/${doc.filePath.replace(/^\//, '')}`} target="_blank" rel="noreferrer" className="text-blue-600 hover:underline">
                                                                                 View
                                                                             </a>
                                                                         </li>

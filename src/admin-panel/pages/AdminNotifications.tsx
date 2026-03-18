@@ -79,131 +79,178 @@ export function AdminNotifications() {
         }
     };
 
-    const getTypeIcon = (type: string) => {
-        switch (type) {
-            case 'DEADLINE': return <AlertTriangle className="w-5 h-5 text-red-500" />;
-            case 'PAYMENT': return <CheckCircle className="w-5 h-5 text-green-500" />;
-            default: return <MessageSquare className="w-5 h-5 text-blue-500" />;
-        }
-    };
-
     return (
-        <div className="p-6 max-w-7xl mx-auto">
-            <div className="flex items-center justify-between mb-8">
+        <div className="min-h-screen bg-slate-50/50 p-6 lg:p-8">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold text-neutral-900">Communication Hub</h1>
-                    <p className="text-neutral-500 text-sm mt-1">Send alerts, reminders, and broadcast updates</p>
+                    <h1 className="text-3xl font-bold text-slate-900 tracking-tight">Communication Hub</h1>
+                    <p className="text-slate-500 mt-1">Manage system-wide alerts, broadcast updates, and automated reminders.</p>
                 </div>
-                <button
-                    onClick={handleTriggerAlerts}
-                    className="bg-red-50 text-red-600 px-4 py-2 rounded-lg font-bold border border-red-200 hover:bg-red-100 transition-colors flex items-center gap-2 shadow-sm"
-                >
-                    <Bell className="w-5 h-5" />
-                    Trigger Auto 24h Alerts
-                </button>
+                <div className="flex items-center gap-3">
+                    <button
+                        onClick={handleTriggerAlerts}
+                        className="inline-flex items-center gap-2 px-4 py-2.5 bg-white border border-rose-200 text-rose-600 rounded-xl font-semibold text-sm hover:bg-rose-50 transition-all shadow-sm active:scale-95"
+                    >
+                        <Bell className="w-4 h-4" />
+                        Trigger 24h Alerts
+                    </button>
+                </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {/* Compose Panel */}
-                <div className="bg-white p-6 rounded-xl border border-neutral-200 shadow-sm">
-                    <h3 className="text-lg font-bold text-neutral-800 mb-6 flex items-center gap-2">
-                        <Send className="w-5 h-5 text-[#1e40af]" />
-                        Compose Notification
-                    </h3>
-
-                    <form onSubmit={handleSendNotification} className="space-y-5">
-                        <div>
-                            <label className="block text-sm font-semibold text-neutral-700 mb-2">Recipient</label>
-                            <select
-                                className="w-full p-3 border border-neutral-200 rounded-lg text-sm bg-neutral-50 outline-none focus:ring-2 focus:ring-blue-100 transition shadow-sm"
-                                value={formData.userId}
-                                onChange={e => setFormData({ ...formData, userId: e.target.value })}
-                            >
-                                <option value="all">📢 Broadcast to All Users</option>
-                                <optgroup label="Individual Clients">
-                                    {clients.map(c => (
-                                        <option key={c.id} value={c.id}>{c.name} ({c.email})</option>
-                                    ))}
-                                </optgroup>
-                            </select>
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                {/* Main Compose Panel */}
+                <div className="lg:col-span-7 xl:col-span-8">
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/30 flex items-center justify-between">
+                            <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+                                <div className="p-1.5 bg-indigo-50 rounded-lg">
+                                    <Send className="w-4 h-4 text-indigo-600" />
+                                </div>
+                                Compose New Broadcast
+                            </h3>
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-100 px-2 py-0.5 rounded-full">
+                                Internal System
+                            </span>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-semibold text-neutral-700 mb-2">Notice Type</label>
-                                <select
-                                    className="w-full p-3 border border-neutral-200 rounded-lg text-sm bg-neutral-50 outline-none focus:ring-2 focus:ring-blue-100 shadow-sm"
-                                    value={formData.type}
-                                    onChange={e => setFormData({ ...formData, type: e.target.value })}
-                                >
-                                    <option value="GENERAL">General Notice</option>
-                                    <option value="DEADLINE">Deadline Alert (Red)</option>
-                                    <option value="PAYMENT">Payment Reminder (Green)</option>
-                                </select>
+                        <form onSubmit={handleSendNotification} className="p-6 space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {/* Recipient Selection */}
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                                        <Users className="w-4 h-4 text-slate-400" />
+                                        Recipient Target
+                                    </label>
+                                    <select
+                                        className="w-full h-11 px-4 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer"
+                                        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1rem' }}
+                                        value={formData.userId}
+                                        onChange={e => setFormData({ ...formData, userId: e.target.value })}
+                                    >
+                                        <option value="all">Global Broadcast (All Clients)</option>
+                                        <optgroup label="Individual Clients">
+                                            {clients.map(c => (
+                                                <option key={c.id} value={c.id}>{c.name}</option>
+                                            ))}
+                                        </optgroup>
+                                    </select>
+                                </div>
+
+                                {/* Alert Type Selection */}
+                                <div className="space-y-2">
+                                    <label className="text-sm font-medium text-slate-700 flex items-center gap-2">
+                                        <AlertTriangle className="w-4 h-4 text-slate-400" />
+                                        Message Severity
+                                    </label>
+                                    <select
+                                        className="w-full h-11 px-4 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all appearance-none cursor-pointer"
+                                        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2364748b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 1rem center', backgroundSize: '1rem' }}
+                                        value={formData.type}
+                                        onChange={e => setFormData({ ...formData, type: e.target.value })}
+                                    >
+                                        <option value="GENERAL">Standard Notice</option>
+                                        <option value="DEADLINE">High Priority Deadline</option>
+                                        <option value="PAYMENT">Financial Remittance</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
 
-                        <div>
-                            <label className="block text-sm font-semibold text-neutral-700 mb-2">Message Content</label>
-                            <textarea
-                                required
-                                rows={4}
-                                placeholder="Type your alert message here..."
-                                className="w-full p-3 border border-neutral-200 rounded-lg text-sm outline-none focus:ring-2 focus:ring-blue-100 transition shadow-sm"
-                                value={formData.message}
-                                onChange={e => setFormData({ ...formData, message: e.target.value })}
-                            ></textarea>
-                        </div>
+                            {/* Message Content */}
+                            <div className="space-y-2">
+                                <label className="text-sm font-medium text-slate-700">Message Content</label>
+                                <textarea
+                                    required
+                                    rows={5}
+                                    placeholder="Enter your system notification here. Be clear and professional..."
+                                    className="w-full p-4 bg-white border border-slate-200 rounded-xl text-sm text-slate-900 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all resize-none"
+                                    value={formData.message}
+                                    onChange={e => setFormData({ ...formData, message: e.target.value })}
+                                ></textarea>
+                                <div className="flex justify-between items-center text-[11px] text-slate-400 font-medium px-1">
+                                    <span>Supports plain text messaging</span>
+                                    <span>{formData.message.length} characters</span>
+                                </div>
+                            </div>
 
-                        <button
-                            type="submit"
-                            disabled={loading}
-                            className="w-full bg-[#1e40af] text-white py-3 rounded-lg text-sm font-bold shadow hover:bg-blue-800 transition disabled:opacity-50 flex justify-center items-center gap-2"
-                        >
-                            {loading ? 'Sending...' : (
-                                <>
-                                    <Send className="w-4 h-4" />
-                                    Send {formData.userId === 'all' ? 'Broadcast' : 'Alert'}
-                                </>
-                            )}
-                        </button>
-                    </form>
+                            <div className="pt-2">
+                                <button
+                                    type="submit"
+                                    disabled={loading || !formData.message}
+                                    className="w-full h-12 bg-[#0F172A] text-white rounded-xl font-bold text-sm shadow-lg shadow-slate-200 hover:bg-slate-800 hover:translate-y-[-1px] active:translate-y-[0px] transition-all disabled:opacity-50 disabled:hover:translate-y-0 flex justify-center items-center gap-2"
+                                >
+                                    {loading ? (
+                                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                    ) : (
+                                        <>
+                                            <Send className="w-4 h-4" />
+                                            Dispatch {formData.userId === 'all' ? 'System Broadcast' : 'Direct Notification'}
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
                 </div>
 
-                {/* Guidelines / Tips Panel */}
-                <div className="space-y-6">
-                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-6 rounded-xl border border-blue-100 shadow-sm">
-                        <h3 className="text-lg font-bold text-blue-900 mb-4 flex items-center gap-2">
-                            <Users className="w-5 h-5 text-blue-600" />
-                            Guidelines & Tips
-                        </h3>
+                {/* Sidebar Info/Status */}
+                <div className="lg:col-span-5 xl:col-span-4 space-y-6">
+                    {/* Visual Guidelines */}
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/30">
+                            <h3 className="font-semibold text-slate-800 flex items-center gap-2">
+                                <MessageSquare className="w-4 h-4 text-indigo-600" />
+                                Alert Protocols
+                            </h3>
+                        </div>
+                        <div className="p-6 space-y-5">
+                            <div className="flex gap-4 group">
+                                <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center shrink-0 border border-rose-100 group-hover:scale-110 transition-transform">
+                                    <AlertTriangle className="w-5 h-5 text-rose-600" />
+                                </div>
+                                <div className="space-y-1">
+                                    <h4 className="text-sm font-bold text-slate-900">Deadline Alerts</h4>
+                                    <p className="text-xs text-slate-500 leading-relaxed">Urgent compliance alerts (DSC, ROC, Tax filings). These trigger high-visibility system flags for clients.</p>
+                                </div>
+                            </div>
 
-                        <ul className="space-y-4">
-                            <li className="flex gap-3 text-sm text-blue-800">
-                                <AlertTriangle className="w-5 h-5 text-red-500 shrink-0" />
-                                <div>
-                                    <strong>Deadline Alerts:</strong> Urgent action required. Appears with high visibility warning styling. Use for expiring DSC, ROC filing dates, etc.
+                            <div className="flex gap-4 group">
+                                <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0 border border-indigo-100 group-hover:scale-110 transition-transform">
+                                    <MessageSquare className="w-5 h-5 text-indigo-600" />
                                 </div>
-                            </li>
-                            <li className="flex gap-3 text-sm text-blue-800">
-                                <MessageSquare className="w-5 h-5 text-blue-500 shrink-0" />
-                                <div>
-                                    <strong>General Broadcasts:</strong> General updates for all clients. Office closure, new GST rules, Budget 2026 highlights.
+                                <div className="space-y-1">
+                                    <h4 className="text-sm font-bold text-slate-900">General Notices</h4>
+                                    <p className="text-xs text-slate-500 leading-relaxed">System updates, policy changes, or firm announcements. Displayed in standard dashboard feed.</p>
                                 </div>
-                            </li>
-                            <li className="flex gap-3 text-sm text-blue-800">
-                                <CheckCircle className="w-5 h-5 text-green-500 shrink-0" />
-                                <div>
-                                    <strong>Payment Reminders:</strong> Friendly nudge for unpaid invoices or advance tax dues.
+                            </div>
+
+                            <div className="flex gap-4 group">
+                                <div className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center shrink-0 border border-emerald-100 group-hover:scale-110 transition-transform">
+                                    <CheckCircle className="w-5 h-5 text-emerald-600" />
                                 </div>
-                            </li>
-                            <li className="flex gap-3 mt-6 pt-4 border-t border-blue-200">
-                                <Bell className="w-5 h-5 text-neutral-600 shrink-0 animate-bounce" />
-                                <div className="text-neutral-700 text-sm">
-                                    <strong>Auto 24h Alerts Button:</strong> Clicking this scans the `Tasks` table and automatically sends a notification to any client whose task is due tomorrow and not marked COMPLETED.
+                                <div className="space-y-1">
+                                    <h4 className="text-sm font-bold text-slate-900">Financial Remittance</h4>
+                                    <p className="text-xs text-slate-500 leading-relaxed">Professional reminders for outstanding invoices or advance tax payments due for reconciliation.</p>
                                 </div>
-                            </li>
-                        </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Quick Stats/Info */}
+                    <div className="bg-[#0F172A] rounded-2xl p-6 text-white shadow-xl shadow-slate-200 relative overflow-hidden">
+                        <div className="relative z-10">
+                            <h4 className="text-indigo-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-2">Automated Engine</h4>
+                            <h3 className="text-lg font-bold mb-4">Smart Task Monitoring</h3>
+                            <p className="text-slate-400 text-xs leading-relaxed mb-6">
+                                The system automatically monitors all active tasks. Clicking "Trigger 24h Alerts" will identify tasks due within the next business day and dispatch reminders to assigned clients.
+                            </p>
+                            <div className="flex items-center gap-2 text-[11px] font-medium text-slate-300 bg-white/5 border border-white/10 w-fit px-3 py-1.5 rounded-lg">
+                                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                                System Status: Monitoring Active
+                            </div>
+                        </div>
+                        {/* Decorative background element */}
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl -mr-16 -mt-16" />
                     </div>
                 </div>
             </div>

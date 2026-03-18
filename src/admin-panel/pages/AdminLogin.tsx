@@ -24,7 +24,7 @@ export const AdminLogin: React.FC = () => {
 
     try {
       setLoading(true);
-      // Use the dedicated admin login function which hits /api/admin/login
+      // Use the dedicated admin login function which hits /api/auth/admin/login
       await adminLogin(email, password);
       // If successful, adminLogin sets the token effectively in AdminContext
       navigate('/admin/dashboard');

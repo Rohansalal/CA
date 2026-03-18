@@ -4,6 +4,7 @@ import { AdminProvider } from './admin-panel/contexts/AdminContext';
 import { ProtectedRoute } from './user-panel/components/ProtectedRoute';
 import { AdminProtectedRoute } from './admin-panel/components/AdminProtectedRoute';
 import { CartProvider } from './user-panel/contexts/CartContext';
+import { ThemeProvider } from './components/theme-provider';
 
 // Auth Pages
 import { Login } from './user-panel/pages/Login';
@@ -19,16 +20,16 @@ import { OrderSubmitDetails } from './user-panel/pages/OrderSubmitDetails';
 // Admin Pages
 import { AdminLogin } from './admin-panel/pages/AdminLogin';
 import { AdminDashboard } from './admin-panel/pages/AdminDashboard';
-import { AdminUsers } from './admin-panel/pages/AdminUsers';
+import { AdminUsersServices } from './admin-panel/pages/AdminUsersServices';
 import { AdminAnalytics } from './admin-panel/pages/AdminAnalytics';
 import { AdminTickets } from './admin-panel/pages/AdminTickets';
-import { AdminServices } from './admin-panel/pages/AdminServices';
-import { AdminProfile } from './admin-panel/pages/AdminProfile'; // Import AdminProfile
+import { AdminProfile } from './admin-panel/pages/AdminProfile';
 import { AdminTasks } from './admin-panel/pages/AdminTasks';
 import { AdminLeads } from './admin-panel/pages/AdminLeads';
-import { AdminOrders } from './admin-panel/pages/AdminOrders';
+import { AdminPayments } from './admin-panel/pages/AdminPayments';
 import { AdminNotifications } from './admin-panel/pages/AdminNotifications';
 import { AdminCRM } from './admin-panel/pages/AdminCRM';
+import { AdminAssets } from './admin-panel/pages/AdminAssets';
 
 import { MyTasks } from './user-panel/pages/MyTasks';
 import { MyNotifications } from './user-panel/pages/MyNotifications';
@@ -225,7 +226,7 @@ function AppContent() {
             path="/admin/users"
             element={
               <AdminProtectedRoute>
-                <AdminUsers />
+                <AdminUsersServices />
               </AdminProtectedRoute>
             }
           />
@@ -249,7 +250,7 @@ function AppContent() {
             path="/admin/services"
             element={
               <AdminProtectedRoute>
-                <AdminServices />
+                <AdminUsersServices />
               </AdminProtectedRoute>
             }
           />
@@ -281,7 +282,7 @@ function AppContent() {
             path="/admin/orders"
             element={
               <AdminProtectedRoute>
-                <AdminOrders />
+                <AdminPayments />
               </AdminProtectedRoute>
             }
           />
@@ -299,6 +300,15 @@ function AppContent() {
             element={
               <AdminProtectedRoute>
                 <AdminCRM />
+              </AdminProtectedRoute>
+            }
+          />
+          {/* Asset Repository Admin Route */}
+          <Route
+            path="/admin/assets"
+            element={
+              <AdminProtectedRoute>
+                <AdminAssets />
               </AdminProtectedRoute>
             }
           />

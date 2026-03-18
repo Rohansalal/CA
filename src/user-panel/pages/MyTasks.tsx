@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, Clock, Calendar, AlertCircle, ArrowLeft } from 'lucide-react';
+import { CheckCircle, Clock, Calendar, AlertCircle, ArrowLeft, Loader } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../utils/api';
 import { toast } from 'sonner';
+import { useAuth } from '../contexts/AuthContext';
 
 interface Task {
     id: number;
@@ -17,6 +18,7 @@ interface Task {
 
 export function MyTasks() {
     const navigate = useNavigate();
+    const { user, loading: authLoading } = useAuth();
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -32,8 +34,16 @@ export function MyTasks() {
     };
 
     useEffect(() => {
-        fetchTasks();
-    }, []);
+        if (!authLoading && !user) {
+            navigate('/login');
+        }
+    }, [user, authLoading, navigate]);
+
+    useEffect(() => {
+        if (user) {
+            fetchTasks();
+        }
+    }, [user]);
 
     const getStatusBadge = (status: string) => {
         switch (status) {
@@ -43,7 +53,14 @@ export function MyTasks() {
         }
     };
 
-    if (loading) return <div className="p-8 text-center text-neutral-500">Loading your tasks...</div>;
+    if (authLoading || (loading && user)) return (
+        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+            <div className="text-center">
+                <Loader className="w-12 h-12 text-primary animate-spin mx-auto mb-4" />
+                <p className="text-gray-600 font-medium">Loading your tasks...</p>
+            </div>
+        </div>
+    );
 
     return (
         <div className="p-6 max-w-7xl mx-auto">

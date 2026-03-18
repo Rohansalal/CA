@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import api from '../../utils/api';
 
 interface UserProfile {
   businessName?: string;
@@ -45,25 +46,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     const checkAuth = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/me`, {
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          // Send cookies
-          credentials: 'include',
-        });
-
-        if (response.ok) {
-          const data = await response.json();
-          setUser(data.user);
-        } else {
-          // If not ok, clear any stale user data
-          setUser(null);
-          localStorage.removeItem('user');
+        const response = await api.get('/auth/me');
+        setUser(response.data.user);
+      } catch (err: any) {
+        // Silent fail for 401/403 as it just means user isn't logged in
+        if (err.response?.status !== 401 && err.response?.status !== 403) {
+          console.error('Network or system error during auth check:', err);
         }
-      } catch (err) {
-        console.error('Session verification failed:', err);
         setUser(null);
+        localStorage.removeItem('user');
       } finally {
         setLoading(false);
       }
@@ -77,61 +68,35 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setError(null);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-        credentials: 'include', // Important for cookies
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Login failed');
-      }
+      const response = await api.post('/auth/login', { email, password });
+      const data = response.data;
 
       // Save user data (no need for token, it's in cookie)
       localStorage.setItem('user', JSON.stringify(data.user));
-
       setUser(data.user);
       return data.user;
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Login failed';
-      setError(errorMessage);
-      throw err;
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.error || err.message || 'Login failed';
+      setError(errorMsg);
+      throw new Error(errorMsg);
     } finally {
       setLoading(false);
     }
   };
 
-  const register = async (name: string, email: string, phone: string, password: string) => {
+  const register = async (name: string, email: string, phone: string, password: string): Promise<void> => {
     setLoading(true);
     setError(null);
-
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/register`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ name, email, phone, password }),
-        credentials: 'include',
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Registration failed');
-      }
-
+      const response = await api.post('/auth/register', { name, email, phone, password });
+      const data = response.data;
+      
       localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Registration failed';
-      setError(errorMessage);
-      throw err;
+    } catch (err: any) {
+      const errorMsg = err.response?.data?.error || err.message || 'Registration failed';
+      setError(errorMsg);
+      throw new Error(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -139,16 +104,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   const logout = async () => {
     try {
-      await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/logout`, {
-        method: 'POST',
-        credentials: 'include',
-      });
+      await api.post('/auth/logout');
     } catch (err) {
-      console.error('Logout failed:', err);
+      console.error('Logout request failed:', err);
+    } finally {
+      setUser(null);
+      localStorage.removeItem('user');
+      localStorage.removeItem('token');
+      setError(null);
     }
-    localStorage.removeItem('user');
-    setUser(null);
-    setError(null);
   };
 
   const clearError = () => {

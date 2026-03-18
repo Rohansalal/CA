@@ -1185,7 +1185,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
               >
                 <ShoppingCart className="w-5 h-5 text-gray-700" />
                 {cart.length > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-accent text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm">
+                  <span className="absolute -top-1 -right-1 bg-accent text-white text-[9px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shadow-md ring-2 ring-white">
                     {cart.length}
                   </span>
                 )}
@@ -1299,7 +1299,7 @@ export default function Navigation({ currentPage = '', onNavigate = () => { } }:
               >
                 <ShoppingCart className="w-5 h-5 text-gray-700" />
                 {cart.length > 0 && (
-                  <span className="absolute -top-1.5 -right-1.5 bg-accent text-white text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center shadow-sm">
+                  <span className="absolute -top-1 -right-1 bg-accent text-white text-[9px] font-black w-4.5 h-4.5 rounded-full flex items-center justify-center shadow-md ring-2 ring-white">
                     {cart.length}
                   </span>
                 )}

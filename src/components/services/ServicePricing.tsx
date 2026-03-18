@@ -5,6 +5,7 @@ import { useAuth } from '../../user-panel/contexts/AuthContext';
 import { useCart } from '../../user-panel/contexts/CartContext';
 import { ShoppingCart, PlayCircle } from 'lucide-react';
 import { toast } from 'sonner';
+import api from '../../utils/api';
 
 interface ServicePricingProps {
     serviceSlug: string;
@@ -22,11 +23,8 @@ export function ServicePricing({ serviceSlug, serviceName, fallbackContent }: Se
     useEffect(() => {
         const fetchService = async () => {
             try {
-                // Ensure the URL is correct based on environment
-                const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
-                const response = await fetch(`${baseUrl}/services/slug/${serviceSlug}`);
-                const data = await response.json();
-                if (data.service) setServiceData(data.service);
+                const response = await api.get(`/services/slug/${serviceSlug}`);
+                if (response.data.service) setServiceData(response.data.service);
             } catch (e) {
                 console.error("Failed to fetch service pricing", e);
             } finally {
@@ -59,23 +57,12 @@ export function ServicePricing({ serviceSlug, serviceName, fallbackContent }: Se
 
         // Call API to create order
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/services/select`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('authToken')}`
-                },
-                body: JSON.stringify({
-                    serviceId: serviceData.id,
-                    planId: plan.id
-                })
+            const response = await api.post('/services/select', {
+                serviceId: serviceData.id,
+                planId: plan.id
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to select service');
-            }
-
-            const data = await response.json();
+            const data = response.data;
 
             // Redirect to dashboard with order ID
             navigate('/dashboard', {
@@ -86,9 +73,9 @@ export function ServicePricing({ serviceSlug, serviceName, fallbackContent }: Se
                 }
             });
 
-        } catch (error) {
+        } catch (error: any) {
             console.error('Error selecting service:', error);
-            toast.error('Failed to select service. Please try again.');
+            toast.error(error.response?.data?.message || 'Failed to select service. Please try again.');
         }
     };
 
@@ -98,7 +85,8 @@ export function ServicePricing({ serviceSlug, serviceName, fallbackContent }: Se
             name: plan.planType,
             price: plan.discountedPrice || plan.price,
             serviceSlug: serviceSlug,
-            serviceId: serviceData?.id
+            serviceId: serviceData?.id,
+            quantity: 1
         };
         addToCart(planData);
     };
