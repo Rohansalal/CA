@@ -5,6 +5,8 @@ import {
     User, Phone, Mail, CreditCard, Loader2, ArrowLeft
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { DirectorshipsSection } from './DirectorshipsSection';
+import { ForeignIncomeSection } from './ForeignIncomeSection';
 
 // --------------------- Field / Doc type definitions ---------------------
 interface FormField {
@@ -22,6 +24,33 @@ interface DocRequirement {
     hint?: string;
 }
 
+interface Directorship {
+    companyName: string;
+    companyPan: string;
+    companyType: string;
+    isListed: boolean;
+    din: string;
+    openingNoOfShares: number;
+    openingCostOfAcquisition: number;
+    acquiredNoOfShares: number;
+    acquiredDate: string;
+    acquiredFaceValue: number;
+    acquiredIssuePrice: number;
+    acquiredPurchasePrice: number;
+    transferredNoOfShares: number;
+    transferredSaleConsideration: number;
+    closingNoOfShares: number;
+    closingCostOfAcquisition: number;
+}
+
+interface ForeignAsset {
+    assetType: string;
+    countryName: string;
+    incomeSource: string;
+    amount: number;
+    remark: string;
+}
+
 // --------------------- Per-plan config ---------------------
 const PLAN_CONFIG: Record<string, {
     title: string;
@@ -31,36 +60,75 @@ const PLAN_CONFIG: Record<string, {
     docs: DocRequirement[];
 }> = {
     BASIC: {
-        title: 'Basic Plan – Personal Details',
-        subtitle: 'For Salary income with single Form 16',
+        title: 'Salary / Pension Plan',
+        subtitle: 'Single Form 16, Savings Interest & One House Property',
         accentColor: 'from-blue-600 to-blue-400',
         fields: [
             { label: 'Full Name', name: 'fullName', type: 'text', required: true, placeholder: 'Enter your full name' },
             { label: 'Mobile Number', name: 'mobileNo', type: 'tel', required: true, placeholder: 'Enter 10-digit mobile number' },
             { label: 'Email ID', name: 'emailId', type: 'email', required: true, placeholder: 'Enter email address' },
-            { label: 'PAN Number', name: 'panNumber', type: 'text', required: false, placeholder: 'ABCDE1234F (optional)' },
-            { label: 'Aadhaar Number', name: 'aadhaarNumber', type: 'text', required: false, placeholder: '12-digit aadhaar (optional)' },
-            { label: 'Other Remarks', name: 'remarks', type: 'textarea', required: false, placeholder: 'Any special instructions or remarks...' },
+            { label: 'PAN Number', name: 'panNumber', type: 'text', required: true, placeholder: 'ABCDE1234F' },
+            { label: 'Aadhaar Number', name: 'aadhaarNumber', type: 'text', required: true, placeholder: '12-digit aadhaar' },
+            { label: 'Other Notes / Remarks', name: 'remarks', type: 'textarea', required: false, placeholder: 'Any specialized instructions...' },
         ],
         docs: [
-            { name: 'PAN Card', key: 'pan_file', required: true, hint: 'Front side as PDF/Image' },
-            { name: 'Aadhaar Card', key: 'aadhaar_file', required: true, hint: 'Front & Back as PDF/Image' },
-            { name: 'Form 16', key: 'form16_file', required: false, hint: 'Issued by employer (optional)' },
-            { name: 'Additional Document', key: 'other_document', required: false, hint: 'Any supporting doc (optional)' },
+            { name: 'PAN Card', key: 'pan_file', required: true, hint: 'Clear front copy' },
+            { name: 'Aadhaar Card', key: 'aadhaar_file', required: true, hint: 'Front & Back' },
+            { name: 'Form 16', key: 'form16_file', required: true, hint: 'Issued by employer' },
+            { name: 'Additional Document', key: 'other_document', required: false },
         ],
     },
     STANDARD: {
-        title: 'Salary / Pension Plan – Personal Details',
-        subtitle: 'For multiple Form 16s, House Property & Capital Gains',
+        title: 'Elite ITR Plan',
+        subtitle: 'High Net Worth Individuals & Global Compliance',
+        accentColor: 'from-amber-600 to-yellow-500',
+        fields: [
+            { label: 'Full Name', name: 'fullName', type: 'text', required: true, placeholder: 'Enter your full name' },
+            { label: 'Mobile Number', name: 'mobileNo', type: 'tel', required: true, placeholder: 'Enter 10-digit mobile number' },
+            { label: 'Email ID', name: 'emailId', type: 'email', required: true, placeholder: 'Enter email address' },
+            { label: 'PAN Number', name: 'panNumber', type: 'text', required: true, placeholder: 'ABCDE1234F' },
+            { label: 'Aadhaar Number', name: 'aadhaarNumber', type: 'text', required: true, placeholder: '12-digit aadhaar' },
+            { label: 'Other Notes / Remarks', name: 'remarks', type: 'textarea', required: false, placeholder: 'Any specialized instructions...' },
+        ],
+        docs: [
+            { name: 'PAN Card (Front & Back)', key: 'pan_file', required: true },
+            { name: 'Aadhaar Card (Front & Back)', key: 'aadhaar_file', required: true },
+            { name: 'Global Income Proof', key: 'income_proof', required: true },
+            { name: 'Foreign Asset Evidence', key: 'foreign_doc', required: true },
+            { name: 'Full Year Bank Statement', key: 'bank_statement', required: true },
+        ],
+    },
+    PREMIUM: {
+        title: 'Premium ITR Plan',
+        subtitle: 'Foreign Income, Assets & Complex Tax Filing',
+        accentColor: 'from-purple-600 to-indigo-500',
+        fields: [
+            { label: 'Full Name', name: 'fullName', type: 'text', required: true, placeholder: 'Enter your full name' },
+            { label: 'Mobile Number', name: 'mobileNo', type: 'tel', required: true, placeholder: 'Enter 10-digit mobile number' },
+            { label: 'Email ID', name: 'emailId', type: 'email', required: true, placeholder: 'Enter email address' },
+            { label: 'PAN Number', name: 'panNumber', type: 'text', required: true, placeholder: 'ABCDE1234F' },
+            { label: 'Aadhaar Number', name: 'aadhaarNumber', type: 'text', required: true, placeholder: '12-digit aadhaar' },
+            { label: 'Other Notes / Remarks', name: 'remarks', type: 'textarea', required: false, placeholder: 'Any additional details or context...' },
+        ],
+        docs: [
+            { name: 'PAN Card (Front & Back)', key: 'pan_file', required: true, hint: 'Clear copy' },
+            { name: 'Aadhaar Card (Front & Back)', key: 'aadhaar_file', required: true, hint: 'Front & Back' },
+            { name: 'Form 16 / Income Proof', key: 'income_proof', required: true, hint: 'All sources of income' },
+            { name: 'Foreign Asset Evidence', key: 'foreign_doc', required: false, hint: 'Statements/Certificates (optional)' },
+            { name: 'Bank Statement', key: 'bank_statement', required: true, hint: 'Full year April–March' },
+        ],
+    },
+    ELITE: {
+        title: 'Salary / Pension Plus',
+        subtitle: 'Multiple Form 16s, Multiple House Properties & Capital Gains',
         accentColor: 'from-emerald-600 to-teal-400',
         fields: [
             { label: 'Full Name', name: 'fullName', type: 'text', required: true, placeholder: 'Enter your full name' },
             { label: 'Mobile Number', name: 'mobileNo', type: 'tel', required: true, placeholder: 'Enter 10-digit mobile number' },
             { label: 'Email ID', name: 'emailId', type: 'email', required: true, placeholder: 'Enter email address' },
-            { label: 'PAN Number', name: 'panNumber', type: 'text', required: false, placeholder: 'ABCDE1234F (optional)' },
-            { label: 'Aadhaar Number', name: 'aadhaarNumber', type: 'text', required: false, placeholder: '12-digit aadhaar (optional)' },
-            { label: 'Employer Name', name: 'employerName', type: 'text', required: false, placeholder: 'Current/Last employer name' },
-            { label: 'Other Remarks', name: 'remarks', type: 'textarea', required: false, placeholder: 'Nature of income, special cases...' },
+            { label: 'PAN Number', name: 'panNumber', type: 'text', required: true, placeholder: 'ABCDE1234F' },
+            { label: 'Aadhaar Number', name: 'aadhaarNumber', type: 'text', required: true, placeholder: '12-digit aadhaar' },
+            { label: 'Other Notes / Remarks', name: 'remarks', type: 'textarea', required: false, placeholder: 'Any specialized instructions...' },
         ],
         docs: [
             { name: 'PAN Card', key: 'pan_file', required: true, hint: 'Clear front copy' },
@@ -68,31 +136,6 @@ const PLAN_CONFIG: Record<string, {
             { name: 'Form 16 (All Employers)', key: 'form16_file', required: true, hint: 'All Form 16s for the year' },
             { name: 'Bank Statement (Savings)', key: 'bank_statement', required: true, hint: 'April to March statement' },
             { name: 'Interest Certificates', key: 'interest_cert', required: false, hint: 'FD/Savings interest (optional)' },
-            { name: 'Capital Gain Statement', key: 'capital_gain', required: false, hint: 'Broker / CAMS report (optional)' },
-        ],
-    },
-    PREMIUM: {
-        title: 'Presumptive Business Plan – Details',
-        subtitle: 'For Freelancers, Consultants & Small Business Owners',
-        accentColor: 'from-purple-600 to-indigo-500',
-        fields: [
-            { label: 'Full Name', name: 'fullName', type: 'text', required: true, placeholder: 'Enter your full name' },
-            { label: 'Mobile Number', name: 'mobileNo', type: 'tel', required: true, placeholder: 'Enter 10-digit mobile number' },
-            { label: 'Email ID', name: 'emailId', type: 'email', required: true, placeholder: 'Enter email address' },
-            { label: 'PAN Number', name: 'panNumber', type: 'text', required: false, placeholder: 'ABCDE1234F (optional)' },
-            { label: 'Aadhaar Number', name: 'aadhaarNumber', type: 'text', required: false, placeholder: '12-digit aadhaar (optional)' },
-            { label: 'Business / Profession Name', name: 'businessName', type: 'text', required: true, placeholder: 'E.g., Raja Consulting, Freelance Designer' },
-            { label: 'Annual Turnover (Approx.)', name: 'turnover', type: 'text', required: false, placeholder: 'E.g., ₹20 Lakhs' },
-            { label: 'GST Number', name: 'gstNumber', type: 'text', required: false, placeholder: 'If registered (optional)' },
-            { label: 'Other Remarks', name: 'remarks', type: 'textarea', required: false, placeholder: 'Nature of business, special instructions...' },
-        ],
-        docs: [
-            { name: 'PAN Card', key: 'pan_file', required: true, hint: 'Clear front copy' },
-            { name: 'Aadhaar Card', key: 'aadhaar_file', required: true, hint: 'Front & Back' },
-            { name: 'Bank Statement (Business A/C)', key: 'bank_statement', required: true, hint: 'Full year April–March' },
-            { name: 'Business Documents / Invoices', key: 'business_documents', required: true, hint: 'Income proof – invoices, contracts' },
-            { name: 'Expense Proof / Receipts', key: 'expense_proof', required: false, hint: 'Deductable business expenses (optional)' },
-            { name: 'GST Returns (if any)', key: 'gst_returns', required: false, hint: 'GSTR-1 / GSTR-3B (optional)' },
         ],
     },
     DEFAULT: {
@@ -119,6 +162,8 @@ export const OrderSubmitDetails = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<Record<string, string>>({});
+    const [directorships, setDirectorships] = useState<Directorship[]>([]);
+    const [foreignAssets, setForeignAssets] = useState<ForeignAsset[]>([]);
     const [files, setFiles] = useState<Record<string, File>>({});
     const [order, setOrder] = useState<any>(null);
     const [submitting, setSubmitting] = useState(false);
@@ -145,10 +190,11 @@ export const OrderSubmitDetails = () => {
 
     // Map plan type to config key
     const getPlanKey = (): string => {
-        const planType = (order?.items?.[0]?.planType || '').toUpperCase();
-        if (planType === 'BASIC') return 'BASIC';
-        if (planType === 'STANDARD') return 'STANDARD';
-        if (planType === 'PREMIUM' || planType === 'PROFESSIONAL') return 'PREMIUM';
+        const pType = (order?.items?.[0]?.planType || '').toUpperCase();
+        if (pType.includes('ELITE')) return 'ELITE';
+        if (pType.includes('PREMIUM') || pType.includes('PROFESSIONAL')) return 'PREMIUM';
+        if (pType.includes('STANDARD')) return 'STANDARD';
+        if (pType.includes('BASIC')) return 'BASIC';
         return 'DEFAULT';
     };
 
@@ -180,6 +226,14 @@ export const OrderSubmitDetails = () => {
         const submissionData = new FormData();
         Object.entries(formData).forEach(([key, val]) => submissionData.append(key, val));
         Object.entries(files).forEach(([key, file]) => submissionData.append(key, file));
+        
+        if (planKey === 'STANDARD' || planKey === 'PREMIUM' || planKey === 'ELITE') {
+            submissionData.append('directorships', JSON.stringify(directorships));
+        }
+
+        if (planKey === 'PREMIUM' || planKey === 'ELITE') {
+            submissionData.append('foreignAssets', JSON.stringify(foreignAssets));
+        }
 
         try {
             const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user/orders/${id}/submit-all`, {
@@ -228,20 +282,20 @@ export const OrderSubmitDetails = () => {
                 </button>
 
                 {/* Page Header */}
-                <div className={`bg-gradient-to-r ${config.accentColor} rounded-2xl p-8 mb-8 text-white shadow-xl`}>
+                <div className={`bg-gradient-to-r ${config.accentColor} rounded-2xl p-8 mb-8 text-black shadow-xl`}>
                     <div className="flex items-start justify-between flex-wrap gap-4">
                         <div>
-                            <p className="text-white/70 text-xs font-bold uppercase tracking-widest mb-1">
+                            <p className="text-black/70 text-xs font-bold uppercase tracking-widest mb-1">
                                 {orderItem?.serviceName || 'ITR Filing'} &mdash; Submit Your Details
                             </p>
                             <h1 className="text-2xl md:text-3xl font-black mb-1">{config.title}</h1>
-                            <p className="text-white/80 text-sm font-medium">{config.subtitle}</p>
+                            <p className="text-black/80 text-sm font-medium">{config.subtitle}</p>
                         </div>
                         {orderItem && (
                             <div className="bg-white/20 rounded-xl px-5 py-3 text-right backdrop-blur-sm">
-                                <p className="text-white/70 text-[10px] font-black uppercase tracking-widest">Selected Plan</p>
+                                <p className="text-black text-[10px] font-black uppercase tracking-widest">Selected Plan</p>
                                 <p className="font-black text-lg">{orderItem.planType || planKey}</p>
-                                <p className="text-white/80 text-sm font-semibold">₹{orderItem.price}</p>
+                                <p className="text-black text-sm font-semibold">₹{orderItem.price}</p>
                             </div>
                         )}
                     </div>
@@ -266,7 +320,7 @@ export const OrderSubmitDetails = () => {
                     <div className="lg:col-span-1">
                         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden sticky top-8">
                             <div className={`bg-gradient-to-r ${config.accentColor} p-5`}>
-                                <h3 className="text-white font-black text-base">Plan Summary</h3>
+                                <h3 className="text-black font-black text-base">Plan Summary</h3>
                             </div>
                             <div className="p-6">
                                 {orderItem?.plan?.scopes?.length > 0 ? (
@@ -349,6 +403,23 @@ export const OrderSubmitDetails = () => {
                             </div>
                         </div>
 
+
+                        {/* Directorship Section for Standard, Premium & Elite Plan */}
+                        {(planKey === 'STANDARD' || planKey === 'PREMIUM' || planKey === 'ELITE') && (
+                            <DirectorshipsSection
+                                data={directorships}
+                                onChange={setDirectorships}
+                            />
+                        )}
+
+                        {/* Foreign Assets Section for Premium & Elite Plan */}
+                        {(planKey === 'PREMIUM' || planKey === 'ELITE') && (
+                            <ForeignIncomeSection
+                                data={foreignAssets}
+                                onChange={setForeignAssets}
+                            />
+                        )}
+
                         {/* Document Upload Section */}
                         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
                             <div className="flex items-center gap-3 mb-6">
@@ -382,7 +453,7 @@ export const OrderSubmitDetails = () => {
                                             />
                                             <div className="flex items-start gap-3">
                                                 <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 transition-all
-                                                    ${uploaded ? 'bg-emerald-500 text-white' : 'bg-white text-gray-400 border border-gray-200 group-hover:border-primary/30 group-hover:text-primary'}`}
+                                                    ${uploaded ? 'bg-emerald-500 text-black' : 'bg-white text-gray-400 border border-gray-200 group-hover:border-primary/30 group-hover:text-primary'}`}
                                                 >
                                                     {uploaded ? <CheckCircle className="w-5 h-5" /> : <FileText className="w-5 h-5" />}
                                                 </div>
@@ -417,7 +488,7 @@ export const OrderSubmitDetails = () => {
                             <button
                                 type="submit"
                                 disabled={submitting}
-                                className={`flex items-center gap-3 px-8 py-3.5 rounded-xl font-black text-white text-sm shadow-lg transition-all
+                                className={`flex items-center gap-3 px-8 py-3.5 rounded-xl font-black text-black text-sm shadow-lg transition-all
                                     ${submitting
                                         ? 'bg-gray-400 cursor-not-allowed'
                                         : `bg-gradient-to-r ${config.accentColor} hover:shadow-xl hover:-translate-y-0.5 transform`

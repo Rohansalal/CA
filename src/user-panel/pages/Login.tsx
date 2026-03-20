@@ -28,13 +28,6 @@ export const Login: React.FC = () => {
       return;
     }
 
-    // Auto-intercept admin login attempts on the regular user page
-    if (email.toLowerCase() === 'admin@caavinash.in' || email.toLowerCase().startsWith('admin@')) {
-      toast.info('Redirecting to secure admin panel...');
-      navigate('/admin/login');
-      return;
-    }
-
     try {
       const loggedInUser = await login(email, password);
       toast.success('Welcome back!');
@@ -43,10 +36,9 @@ export const Login: React.FC = () => {
         if (loggedInUser?.role === 'ADMIN') {
           navigate('/admin/dashboard', { replace: true });
         } else {
-          // Redirect to the intended destination with service info
           navigate(returnTo, {
             state: { selectedService, selectedServiceSlug, companyType, selectedPlan },
-            replace: true
+            replace: true,
           });
         }
       }, 800);

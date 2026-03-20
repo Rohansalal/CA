@@ -12,6 +12,7 @@ import { DayPicker } from 'react-day-picker';
 import 'react-day-picker/dist/style.css';
 import { UniversalServicePanel } from './UniversalServicePanel';
 import api from '../../utils/api';
+const API_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 interface RoadmapStep {
   step: number;
@@ -1917,10 +1918,10 @@ export const Dashboard: React.FC = () => {
                 <div className="p-5 md:p-6 overflow-y-auto custom-scrollbar flex-1 relative">
                   <div className="flex justify-between items-center mb-6 border-b border-gray-50 pb-4">
                     <div>
-                      <h3 className="text-xl md:text-2xl font-black text-[#0b1f3a] tracking-tight">Financial Checkout</h3>
-                      <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Order Ref: #{selectedService.orderId}</p>
+                      <h3 className="text-xl md:text-2xl font-black text-black tracking-tight">Financial Checkout</h3>
+                      <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Order Ref: #{selectedService.orderId}</p>
                     </div>
-                    <button onClick={() => setShowPaymentModal(false)} className="p-2 hover:bg-gray-50 rounded-xl transition-colors"><XCircle className="w-6 h-6 text-gray-300" /></button>
+                    <button onClick={() => setShowPaymentModal(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-colors"><XCircle className="w-6 h-6 text-gray-400" /></button>
                   </div>
 
                   {(() => {
@@ -1930,21 +1931,21 @@ export const Dashboard: React.FC = () => {
                     return (
                       <div className="mb-6 rounded-2xl overflow-hidden shadow-xl shadow-blue-900/10">
                         {/* Service name header */}
-                        <div className="p-5 bg-[#0b1f3a] text-black">
-                          <p className="text-[10px] font-black text-blue-300 uppercase tracking-widest mb-1">Service Allocation</p>
+                        <div className="p-5 bg-white border-b border-gray-100">
+                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Service Allocation</p>
                           <p className="text-base md:text-lg font-black tracking-tight text-black">{selectedService.name}</p>
                         </div>
                         {/* Price breakdown */}
-                        <div className="bg-[#0f2844] px-5 py-4 space-y-2.5">
+                        <div className="bg-gray-50 px-5 py-4 space-y-2.5">
                           <div className="flex justify-between items-center">
-                            <span className="text-[11px] font-bold text-blue-300/80 uppercase tracking-widest">Base Amount</span>
+                            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">Base Amount</span>
                             <span className="text-sm font-black text-black">₹{basePrice.toLocaleString()}</span>
                           </div>
                           <div className="flex justify-between items-center">
-                            <span className="text-[11px] font-bold text-yellow-300/80 uppercase tracking-widest">GST @ 18%</span>
-                            <span className="text-sm font-black text-yellow-300">+ ₹{gstAmount.toLocaleString()}</span>
+                            <span className="text-[11px] font-bold text-gray-500 uppercase tracking-widest">GST @ 18%</span>
+                            <span className="text-sm font-black text-black">+ ₹{gstAmount.toLocaleString()}</span>
                           </div>
-                          <div className="flex justify-between items-center border-t border-blue-800/50 pt-3 mt-1">
+                          <div className="flex justify-between items-center border-t border-gray-200 pt-3 mt-1">
                             <span className="text-[11px] font-black text-black uppercase tracking-widest">Grand Total</span>
                             <span className="text-2xl md:text-3xl font-black text-black">₹{grandTotal.toLocaleString()}</span>
                           </div>
@@ -1967,8 +1968,21 @@ export const Dashboard: React.FC = () => {
                       </div>
                     </label>
                     {selectedPaymentMethod === 'manual_qr' && (
-                      <div className="mt-4 pl-9 animate-fade-in transition-all">
-                        <div className="p-3 bg-white rounded-xl border-2 border-primary/30 border-dashed relative group">
+                      <div className="mt-4 pl-9 animate-fade-in transition-all space-y-4">
+                        {availablePaymentMethods?.manual_qr?.qrCodeUrl && (
+                          <div className="flex flex-col items-center gap-4 p-6 bg-white rounded-2xl border-2 border-gray-100">
+                             <img 
+                               src={availablePaymentMethods.manual_qr.qrCodeUrl} 
+                               alt="Payment QR" 
+                               className="w-48 h-48 object-contain"
+                             />
+                             <div className="text-center">
+                               <p className="text-sm font-black text-black uppercase tracking-widest">Scan to Pay</p>
+                               <p className="text-[10px] font-bold text-gray-500 mt-1">UPI / All Bank Apps Supported</p>
+                             </div>
+                          </div>
+                        )}
+                        <div className="p-3 bg-white rounded-xl border-2 border-gray-200 border-dashed relative group">
                           <input
                             type="file"
                             accept="image/*,.pdf"
@@ -1976,7 +1990,7 @@ export const Dashboard: React.FC = () => {
                               const file = e.target.files?.[0];
                               if (file) setPaymentProofFile(file);
                             }}
-                            className="w-full text-[10px] font-black uppercase text-gray-400 cursor-pointer file:cursor-pointer file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-[10px] file:font-black file:bg-[#0b1f3a] file:text-white hover:file:bg-primary transition-all relative z-10"
+                            className="w-full text-[10px] font-black uppercase text-gray-500 cursor-pointer file:cursor-pointer file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-2 file:border-black file:text-[10px] file:font-black file:bg-white file:text-black hover:file:bg-gray-50 transition-all relative z-10"
                           />
                         </div>
                       </div>
@@ -2000,8 +2014,7 @@ export const Dashboard: React.FC = () => {
                     <button
                       onClick={handlePayment}
                       disabled={actionLoading}
-                      className="w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest text-white flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-50 shadow-xl"
-                      style={{ background: 'linear-gradient(135deg, #0b1f3a 0%, #1a6fa8 100%)' }}
+                      className="w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest text-black flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-50 shadow-xl bg-white border-2 border-black hover:bg-gray-50"
                     >
                       {actionLoading ? <Loader className="w-5 h-5 animate-spin" /> : <Shield className="w-5 h-5" />}
                       {selectedPaymentMethod === 'pay_later' ? 'Authorize Order - Pay Later' : 'Submit Payment - Pay Now'}
@@ -2018,8 +2031,8 @@ export const Dashboard: React.FC = () => {
             <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
               <div className="bg-white rounded-[2.5rem] max-w-lg w-full p-6 md:p-10 shadow-2xl">
                 <div className="mb-8">
-                  <h3 className="text-2xl font-black text-[#0b1f3a] tracking-tight">Initiate Support Node</h3>
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mt-1">Standard response time: &lt; 24 hours</p>
+                  <h3 className="text-2xl font-black text-black tracking-tight">Initiate Support Node</h3>
+                  <p className="text-[10px] font-black text-gray-500 uppercase tracking-widest mt-1">Standard response time: &lt; 24 hours</p>
                 </div>
                 <div className="space-y-6">
                   <div>
@@ -2043,7 +2056,7 @@ export const Dashboard: React.FC = () => {
                         setShowTicketModal(false);
                         setNewTicket({ subject: '', message: '' });
                       } catch (e) { alert('Transmission failed'); } finally { setActionLoading(false); }
-                    }} className="flex-1 py-5 bg-[#0b1f3a] text-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl shadow-blue-900/10 hover:bg-[#ee7228] transition-all">Send Message</button>
+                    }} className="flex-1 py-5 bg-white text-black border-2 border-black rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] shadow-xl hover:bg-gray-50 transition-all">Send Message</button>
                   </div>
                 </div>
               </div>
@@ -2056,12 +2069,12 @@ export const Dashboard: React.FC = () => {
             <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-[100] p-3">
               <div className="bg-white rounded-3xl w-full max-w-[95vw] max-h-[90vh] flex flex-col overflow-hidden shadow-2xl border border-gray-100">
                 {/* Header */}
-                <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center shrink-0 bg-gradient-to-r from-[#0b1f3a] to-[#136da1]">
+                <div className="px-8 py-6 border-b border-gray-100 flex justify-between items-center shrink-0 bg-white">
                   <div>
-                    <h3 className="text-2xl font-black text-white tracking-tight">Select Your Plan</h3>
-                    <p className="text-xs font-bold text-blue-200 mt-1">{selectedServiceForPlan.name}</p>
+                    <h3 className="text-2xl font-black text-black tracking-tight">Select Your Plan</h3>
+                    <p className="text-xs font-bold text-gray-500 mt-1">{selectedServiceForPlan.name}</p>
                   </div>
-                  <button onClick={() => setShowPlanModal(false)} className="p-2 hover:bg-white/10 rounded-xl transition-all"><X className="w-6 h-6 text-white" /></button>
+                  <button onClick={() => setShowPlanModal(false)} className="p-2 hover:bg-gray-100 rounded-xl transition-all"><X className="w-6 h-6 text-black" /></button>
                 </div>
 
                 {/* Plan Cards */}
@@ -2099,7 +2112,7 @@ export const Dashboard: React.FC = () => {
                           
                           <div className="p-6">
                             <div className="flex items-center justify-between mb-4">
-                              <span className="px-4 py-2 bg-[#0b1f3a] text-white rounded-xl text-xs font-black uppercase tracking-widest">
+                              <span className="px-4 py-2 bg-white border-2 border-black text-black rounded-xl text-xs font-black uppercase tracking-widest">
                                 {plan.planType}
                               </span>
                               {plan.isRecommended && (
@@ -2140,14 +2153,10 @@ export const Dashboard: React.FC = () => {
                             </div>
 
                             <button
-                              onClick={() => handleSelectPlan(plan)}
-                              disabled={actionLoading}
-                              className={`w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest transition-all shadow-md hover:shadow-lg ${
-                                index === 1 
-                                  ? 'bg-gradient-to-r from-[#ee7228] to-orange-500 text-white hover:from-orange-500 hover:to-orange-600' 
-                                  : 'bg-[#0b1f3a] text-white hover:bg-primary'
-                              } disabled:opacity-50 disabled:cursor-not-allowed`}
-                            >
+                               onClick={() => handleSelectPlan(plan)}
+                               disabled={actionLoading}
+                               className={`w-full py-4 rounded-xl font-black text-sm uppercase tracking-widest transition-all shadow-md hover:shadow-lg bg-white border-2 border-black text-black hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed`}
+                             >
                               {actionLoading ? (
                                 <span className="flex items-center justify-center gap-2">
                                   <Loader className="animate-spin w-4 h-4" /> Processing...

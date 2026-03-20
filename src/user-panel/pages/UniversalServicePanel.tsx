@@ -9,7 +9,7 @@ import { useForm, useFieldArray } from 'react-hook-form';
 // import { z } from 'zod';
 // import { zodResolver } from '@hookform/resolvers/zod';
 
-const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+const API_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
 // --- Types ---
 type OrderItem = {
@@ -83,7 +83,7 @@ const DynamicFormEngine = ({
                 <h3 className="text-sm font-black text-gray-400 uppercase tracking-widest">No Form Schema Configured</h3>
                 <p className="text-gray-500 mt-2 text-xs">The CA admin has not attached a dynamic form template to this plan yet.</p>
                 <div className="mt-6">
-                    <button onClick={onComplete} className="px-6 py-3 bg-[#0b1f3a] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#136da1] transition-colors">Bypass Form Step</button>
+                    <button onClick={onComplete} className="px-6 py-3 bg-white text-black border-2 border-black rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-50 transition-colors">Bypass Form Step</button>
                 </div>
             </div>
         )
@@ -96,13 +96,13 @@ const DynamicFormEngine = ({
                     <div className="absolute top-0 left-0 w-1 h-full bg-primary/20"></div>
                     <div className="flex items-center gap-3 mb-6">
                         <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center text-primary font-black text-sm">{sIdx + 1}</div>
-                        <h3 className="text-xl font-black text-slate-800 tracking-tight">{section.section}</h3>
+                        <h3 className="text-xl font-black text-black tracking-tight">{section.section}</h3>
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {section.fields.map((field: any, fIdx: number) => (
                             <div key={fIdx}>
-                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 pl-1">
+                                <label className="block text-[10px] font-black text-black uppercase tracking-widest mb-2 pl-1">
                                     {field.label} {field.required && <span className="text-red-500">*</span>}
                                 </label>
                                 <input
@@ -122,7 +122,7 @@ const DynamicFormEngine = ({
                 <button
                     type="submit"
                     disabled={saving}
-                    className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#0b1f3a] to-[#136da1] text-black rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-900/20 hover:shadow-2xl hover:scale-[1.02] transition-all disabled:opacity-50"
+                    className="flex items-center gap-2 px-8 py-4 bg-white text-black border-2 border-black rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-gray-50 hover:scale-[1.02] transition-all disabled:opacity-50"
                 >
                     {saving ? <Loader className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
                     Save Data & Continue
@@ -233,7 +233,7 @@ const DocumentUploader = ({
                                     )}
                                 </div>
                                 <div>
-                                    <p className="font-black text-sm text-slate-800">{doc}</p>
+                                    <p className="font-black text-sm text-black">{doc}</p>
                                     <p className={`text-[10px] font-bold uppercase tracking-widest mt-1 ${isUploaded ? 'text-emerald-600' : 'text-gray-400'}`}>
                                         {isUploaded ? 'Uploaded Successfully' : 'PDF, JPG, PNG up to 10MB'}
                                     </p>
@@ -261,7 +261,7 @@ const DocumentUploader = ({
                 <button
                     onClick={handleConfirm}
                     disabled={requiredDocs.length > 0 && !allUploaded}
-                    className="flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-[#0b1f3a] to-[#136da1] text-black rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-900/20 hover:shadow-2xl hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 px-8 py-4 bg-white text-black border-2 border-black rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl hover:bg-gray-50 hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     Confirm Documents
                     <ChevronRight className="w-4 h-4" />
@@ -411,10 +411,10 @@ export const UniversalServicePanel = ({
                 <div className="flex items-center justify-between bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm">
                     <div>
                         <div className="flex items-center gap-3 mb-2">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-primary rounded-full text-[10px] font-black uppercase tracking-widest">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 text-black border border-black rounded-full text-[10px] font-black uppercase tracking-widest">
                                 {activeWorkflowItem.planType} PLAN
                             </div>
-                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-gray-50 text-[#0b1f3a] rounded-full text-[10px] font-black uppercase tracking-widest">
+                            <div className="inline-flex items-center gap-2 px-3 py-1 bg-gray-100 text-black border border-black rounded-full text-[10px] font-black uppercase tracking-widest">
                                 ₹{activeWorkflowItem.price}
                             </div>
                         </div>
@@ -439,7 +439,7 @@ export const UniversalServicePanel = ({
                         { step: 3, label: 'Review & Pay', icon: DollarSign }
                     ].map((s) => (
                         <div key={s.step} className="flex flex-col items-center gap-3 bg-[#F1F5F9]/80 backdrop-blur pb-2 px-4 md:px-8">
-                            <div className={`w-12 h-12 rounded-full flex items-center justify-center font-black transition-all shadow-lg ${workflowState.currentStep >= s.step ? 'bg-primary text-white scale-110 shadow-primary/30' : 'bg-white text-gray-300 border-2 border-gray-100'}`}>
+                            <div className={`w-12 h-12 rounded-full flex items-center justify-center font-black transition-all shadow-lg ${workflowState.currentStep >= s.step ? 'bg-primary text-black scale-110 shadow-primary/30' : 'bg-white text-gray-300 border-2 border-gray-100'}`}>
                                 <s.icon className="w-5 h-5" />
                             </div>
                             <p className={`text-[10px] font-black uppercase tracking-widest ${workflowState.currentStep >= s.step ? 'text-primary' : 'text-gray-400'}`}>{s.label}</p>
@@ -480,14 +480,13 @@ export const UniversalServicePanel = ({
                                     <div className="bg-gray-50 rounded-2xl p-6 mb-10 border border-gray-100 flex justify-between items-center text-left">
                                         <div>
                                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Service Plan</p>
-                                            <p className="font-black text-lg text-slate-800">{activeWorkflowItem.planType.replace(/_/g, ' ')}</p>
+                                            <p className="font-black text-lg text-black">{activeWorkflowItem.planType.replace(/_/g, ' ')}</p>
                                         </div>
                                         <div className="text-right">
                                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Total Fee</p>
-                                            <p className="font-black text-2xl text-slate-800">₹{activeWorkflowItem.price}</p>
+                                            <p className="font-black text-2xl text-black">₹{activeWorkflowItem.price}</p>
                                         </div>
                                     </div>
-
                                     <button
                                         onClick={() => {
                                             if (onInitiatePayment) {
@@ -499,9 +498,10 @@ export const UniversalServicePanel = ({
                                                 });
                                             }
                                         }}
-                                        className="w-full flex items-center justify-center gap-3 px-8 py-5 bg-[#0b1f3a] text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-900/20 hover:scale-[1.02] transition-all"
+                                        className="w-full flex items-center justify-center gap-3 px-8 py-5 bg-white text-black border-2 border-black rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:bg-gray-50 hover:scale-[1.02] transition-all"
                                     >
                                         <DollarSign className="w-5 h-5" />
+                                        Complete Payment
                                     </button>
                                 </div>
                             )}
@@ -535,7 +535,7 @@ export const UniversalServicePanel = ({
                         <div key={item.id} className="bg-white rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:border-primary/30 transition-all group flex flex-col justify-between">
                             <div>
                                 <div className="flex justify-between items-start mb-6">
-                                    <div className="w-12 h-12 bg-blue-50 text-primary rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:bg-primary group-hover:text-white transition-all duration-500">
+                                    <div className="w-12 h-12 bg-blue-50 text-primary rounded-2xl flex items-center justify-center group-hover:scale-110 group-hover:bg-primary group-hover:text-black transition-all duration-500">
                                         <Building className="w-6 h-6" />
                                     </div>
                                     <div className="flex flex-col items-end gap-2">

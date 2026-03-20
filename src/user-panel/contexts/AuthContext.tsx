@@ -49,12 +49,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         const response = await api.get('/auth/me');
         setUser(response.data.user);
       } catch (err: any) {
-        // Silent fail for 401/403 as it just means user isn't logged in
         if (err.response?.status !== 401 && err.response?.status !== 403) {
           console.error('Network or system error during auth check:', err);
         }
         setUser(null);
-        localStorage.removeItem('user');
       } finally {
         setLoading(false);
       }
@@ -70,9 +68,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const response = await api.post('/auth/login', { email, password });
       const data = response.data;
-
-      // Save user data (no need for token, it's in cookie)
-      localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
       return data.user;
     } catch (err: any) {
@@ -89,10 +84,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setError(null);
     try {
       const response = await api.post('/auth/register', { name, email, phone, password });
-      const data = response.data;
-      
-      localStorage.setItem('user', JSON.stringify(data.user));
-      setUser(data.user);
+      setUser(response.data.user);
     } catch (err: any) {
       const errorMsg = err.response?.data?.error || err.message || 'Registration failed';
       setError(errorMsg);
@@ -109,8 +101,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       console.error('Logout request failed:', err);
     } finally {
       setUser(null);
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
       setError(null);
     }
   };
