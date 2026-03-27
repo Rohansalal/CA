@@ -46,7 +46,7 @@ export const AdminLogin: React.FC = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full mb-4 shadow-lg">
             <Shield className="w-8 h-8 text-primary" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-2">Admin Panel</h1>
+          <h1 className="text-4xl font-bold text-black mb-2">Admin Panel</h1>
           <p className="text-neutral-100">Precision Associates</p>
         </div>
 
@@ -111,7 +111,7 @@ export const AdminLogin: React.FC = () => {
             <button
               type="submit"
               disabled={!isFormValid}
-              className="w-full py-3 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full py-3 bg-gradient-to-r from-primary to-secondary text-black font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
               {loading ? (
                 <>

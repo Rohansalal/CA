@@ -121,7 +121,7 @@ export const AdminAssets: React.FC = () => {
                     size="sm"
                     className={cn(
                         "rounded-lg px-4 h-9 text-[11px] font-bold uppercase tracking-wider transition-all",
-                        filterType === type ? "bg-indigo-600 text-white shadow-md shadow-indigo-100" : "text-slate-500"
+                        filterType === type ? "bg-indigo-600 text-black shadow-md shadow-indigo-100" : "text-slate-500"
                     )}
                     onClick={() => setFilterType(type)}
                   >

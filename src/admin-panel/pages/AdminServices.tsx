@@ -74,7 +74,7 @@ export const AdminServices = () => {
         try {
             setLoading(true);
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/categories`, {
+            const response = await fetch(`/api/admin/categories`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -101,7 +101,7 @@ export const AdminServices = () => {
         try {
             setLoadingPlans(true);
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/services/${serviceId}/plans`, {
+            const response = await fetch(`/api/admin/services/${serviceId}/plans`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -126,7 +126,7 @@ export const AdminServices = () => {
     const handleSaveAllPlans = async () => {
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/services/${selectedServiceForPlans!.id}/plans`, {
+            const response = await fetch(`/api/admin/services/${selectedServiceForPlans!.id}/plans`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -196,7 +196,7 @@ export const AdminServices = () => {
         if (!window.confirm('Are you sure?')) return;
         try {
             const token = localStorage.getItem('adminToken');
-            await fetch(`${import.meta.env.VITE_API_BASE_URL}/admin/services/${id}`, {
+            await fetch(`/api/admin/services/${id}`, {
                 method: 'DELETE',
                 headers: { 'Authorization': `Bearer ${token}` }
             });
@@ -221,8 +221,8 @@ export const AdminServices = () => {
                 isActive: true
             };
             const url = editingService
-                ? `${import.meta.env.VITE_API_BASE_URL}/admin/services/${editingService.id}`
-                : `${import.meta.env.VITE_API_BASE_URL}/admin/services`;
+                ? `/api/admin/services/${editingService.id}`
+                : `/api/admin/services`;
 
             const res = await fetch(url, {
                 method: editingService ? 'PUT' : 'POST',
@@ -254,7 +254,7 @@ export const AdminServices = () => {
                             <p className="text-sm text-black">Configure offerings and pricing tiers</p>
                         </div>
                     </div>
-                    <button onClick={handleCreate} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition flex items-center gap-2 shadow-sm text-sm font-medium">
+                    <button onClick={handleCreate} className="px-4 py-2 bg-blue-600 text-black rounded-lg hover:bg-blue-700 transition flex items-center gap-2 shadow-sm text-sm font-medium">
                         <Plus className="w-4 h-4" /> New Service
                     </button>
                 </div>
@@ -369,7 +369,7 @@ export const AdminServices = () => {
                                 </button>
                                 <button
                                     onClick={handleSaveAllPlans}
-                                    className="px-4 py-1.5 sm:py-1 bg-green-500 text-white rounded hover:bg-green-600 text-xs font-extrabold flex items-center gap-1 shadow-sm uppercase tracking-wide transition-colors"
+                                    className="px-4 py-1.5 sm:py-1 bg-green-500 text-black rounded hover:bg-green-600 text-xs font-extrabold flex items-center gap-1 shadow-sm uppercase tracking-wide transition-colors"
                                 >
                                     <Save className="w-3 h-3 sm:w-4 sm:h-4" /> <span className="hidden sm:inline">Save</span>
                                 </button>
@@ -629,7 +629,7 @@ export const AdminServices = () => {
                             </button>
                             <button
                                 onClick={handleSaveAllPlans}
-                                className="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 text-sm font-black flex items-center gap-2 shadow-md uppercase tracking-wider transition-all hover:scale-105 active:scale-95"
+                                className="px-6 py-2 bg-green-500 text-black rounded-lg hover:bg-green-600 text-sm font-black flex items-center gap-2 shadow-md uppercase tracking-wider transition-all hover:scale-105 active:scale-95"
                             >
                                 <Save className="w-4 h-4" /> Save Changes
                             </button>

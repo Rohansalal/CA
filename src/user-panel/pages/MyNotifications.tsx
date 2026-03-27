@@ -109,7 +109,7 @@ export function MyNotifications() {
                         <div className="bg-blue-100 p-3 rounded-full relative">
                             <Bell className="w-6 h-6 text-blue-600" />
                             {unreadCount > 0 && (
-                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 rounded-full flex justify-center items-center font-bold border-2 border-white">
+                                <span className="absolute -top-1 -right-1 bg-red-500 text-black text-[10px] w-5 h-5 rounded-full flex justify-center items-center font-bold border-2 border-white">
                                     {unreadCount}
                                 </span>
                             )}

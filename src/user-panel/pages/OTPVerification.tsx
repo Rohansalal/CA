@@ -160,7 +160,7 @@ export const OTPVerification: React.FC<OTPVerificationProps> = (props) => {
             <div className="w-full max-w-md">
                 {/* Logo */}
                 <div className="text-center mb-8">
-                    <h1 className="text-4xl font-bold text-white mb-2">Precision Associates</h1>
+                    <h1 className="text-4xl font-bold text-black mb-2">Precision Associates</h1>
                     <p className="text-neutral-100">Professional CA Services</p>
                 </div>
 
@@ -214,7 +214,7 @@ export const OTPVerification: React.FC<OTPVerificationProps> = (props) => {
                     <button
                         onClick={() => handleSubmit()}
                         disabled={loading || otp.some(d => !d)}
-                        className="w-full py-3 bg-gradient-to-r from-primary to-secondary text-white font-semibold rounded-lg hover:shadow-lg transform hover:-translate-y-0.5 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mb-4"
+                        className="w-full py-3 bg-gradient-to-r from-primary to-secondary text-black font-semibold rounded-lg hover:shadow-lg transform hover:-translate-y-0.5 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mb-4"
                     >
                         {loading ? (
                             <>
@@ -253,7 +253,7 @@ export const OTPVerification: React.FC<OTPVerificationProps> = (props) => {
                 </div>
 
                 {/* Help Text */}
-                <p className="text-center text-white/80 text-sm mt-6">
+                <p className="text-center text-black/80 text-sm mt-6">
                     Check your spam folder if you don't see the email
                 </p>
             </div>

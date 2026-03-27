@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  CreditCard, 
-  Search, 
-  Filter, 
-  MoreHorizontal, 
-  Calendar, 
-  CheckCircle2, 
-  XCircle, 
-  Clock, 
-  Download, 
+import { useNavigate } from 'react-router-dom';
+import {
+  CreditCard,
+  Search,
+  Calendar,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  Download,
   Edit2,
-  ChevronLeft, 
-  ChevronRight,
   ChevronDown,
   FileText,
   ExternalLink,
   DollarSign,
-  TrendingUp,
   Receipt,
   User,
-  Package
+  Package,
+  ArrowUpRight,
+  BadgeCheck,
+  Layers,
 } from 'lucide-react';
 import { AdminLayout } from "../components/AdminLayout";
 import { Button } from "../../components/ui/button";
@@ -51,7 +50,32 @@ interface Order {
     documents: any[];
 }
 
+// ─── Plan helpers ─────────────────────────────────────────────────────────────
+const PLAN_BADGE: Record<string, { label: string; cls: string }> = {
+    BASIC:    { label: 'Basic',    cls: 'bg-blue-50 text-blue-700 border-blue-100' },
+    STANDARD: { label: 'Standard', cls: 'bg-amber-50 text-amber-700 border-amber-100' },
+    PREMIUM:  { label: 'Premium',  cls: 'bg-purple-50 text-purple-700 border-purple-100' },
+    ELITE:    { label: 'Elite',    cls: 'bg-emerald-50 text-emerald-700 border-emerald-100' },
+};
+const getPlanBadge = (planType: string) => {
+    const key = (planType || '').toUpperCase();
+    if (key.includes('ELITE'))    return PLAN_BADGE.ELITE;
+    if (key.includes('PREMIUM'))  return PLAN_BADGE.PREMIUM;
+    if (key.includes('STANDARD')) return PLAN_BADGE.STANDARD;
+    return PLAN_BADGE.BASIC;
+};
+const isItrService = (name: string) =>
+    (name || '').toLowerCase().includes('itr') || (name || '').toLowerCase().includes('income tax');
+
+const DOC_TYPE_ICON: Record<string, string> = {
+    'Aadhaar Card — Front': '🪪',
+    'Aadhaar Card — Back':  '🪪',
+    'PAN Card — Front':     '💳',
+    'PAN Card — Back':      '💳',
+};
+
 export const AdminPayments: React.FC = () => {
+    const navigate = useNavigate();
     const [orders, setOrders] = useState<Order[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -96,10 +120,10 @@ export const AdminPayments: React.FC = () => {
 
     const getStatusStyles = (status: string) => {
         switch (status) {
-            case 'COMPLETED': return "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20";
-            case 'PROCESSING': return "bg-blue-500 text-white shadow-lg shadow-blue-500/20";
-            case 'CANCELLED': return "bg-red-500 text-white shadow-lg shadow-red-500/20";
-            default: return "bg-slate-400 text-white shadow-lg shadow-slate-400/20";
+            case 'COMPLETED': return "bg-emerald-500 text-black shadow-lg shadow-emerald-500/20";
+            case 'PROCESSING': return "bg-blue-500 text-black shadow-lg shadow-blue-500/20";
+            case 'CANCELLED': return "bg-red-500 text-black shadow-lg shadow-red-500/20";
+            default: return "bg-slate-400 text-black shadow-lg shadow-slate-400/20";
         }
     };
 
@@ -127,7 +151,7 @@ export const AdminPayments: React.FC = () => {
                         <h1 className="text-3xl font-bold tracking-tight text-slate-900">Payments & Orders</h1>
                         <p className="text-slate-500 font-medium">Track and manage platform transactions and service fulfillment.</p>
                     </div>
-                    <Button className="h-10 px-4 rounded-lg font-semibold text-xs bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-200 transition-all uppercase tracking-wider">
+                    <Button className="h-10 px-4 rounded-lg font-semibold text-xs bg-slate-900 text-black hover:bg-slate-800 shadow-lg shadow-slate-200 transition-all uppercase tracking-wider">
                         <Download className="h-3.5 w-3.5 mr-2" /> Export Data
                     </Button>
                 </div>
@@ -136,7 +160,7 @@ export const AdminPayments: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <Card className="rounded-xl border border-slate-200 bg-white shadow-sm p-6 group">
                         <div className="space-y-4">
-                            <div className="h-10 w-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 transition-colors group-hover:bg-indigo-600 group-hover:text-white">
+                            <div className="h-10 w-10 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 transition-colors group-hover:bg-indigo-600 group-hover:text-black">
                                 <DollarSign className="h-5 w-5" />
                             </div>
                             <div>
@@ -263,7 +287,7 @@ export const AdminPayments: React.FC = () => {
                                                         </td>
                                                         <td className="px-6 py-5">
                                                             <div className="flex items-center gap-3">
-                                                                <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 font-bold group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                                                <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 font-bold group-hover:bg-indigo-600 group-hover:text-black transition-all">
                                                                     {displayName.charAt(0).toUpperCase()}
                                                                 </div>
                                                                 <div>
@@ -273,14 +297,28 @@ export const AdminPayments: React.FC = () => {
                                                             </div>
                                                         </td>
                                                         <td className="px-6 py-5">
-                                                            <div className="flex items-center gap-2">
-                                                                <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600">
-                                                                    <Package className="h-3.5 w-3.5" />
-                                                                </div>
-                                                                <p className="text-sm font-semibold text-slate-700">
-                                                                    {order.items.length > 0 ? order.items[0].serviceName || 'Service Order' : 'Order Item'}
-                                                                </p>
-                                                            </div>
+                                                            {(() => {
+                                                                const item = order.items[0];
+                                                                const badge = getPlanBadge(item?.planType || '');
+                                                                return (
+                                                                    <div className="space-y-1.5">
+                                                                        <div className="flex items-center gap-2">
+                                                                            <div className="p-1.5 rounded-lg bg-indigo-50 text-indigo-600">
+                                                                                <Package className="h-3.5 w-3.5" />
+                                                                            </div>
+                                                                            <p className="text-sm font-semibold text-slate-700 truncate max-w-[140px]">
+                                                                                {item?.serviceName || 'Service Order'}
+                                                                            </p>
+                                                                        </div>
+                                                                        {item?.planType && (
+                                                                            <span className={cn('inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider border', badge.cls)}>
+                                                                                <Layers className="h-2.5 w-2.5" />
+                                                                                {badge.label}
+                                                                            </span>
+                                                                        )}
+                                                                    </div>
+                                                                );
+                                                            })()}
                                                         </td>
                                                         <td className="px-6 py-5">
                                                             <p className="text-base font-bold text-slate-900 tracking-tight">₹{order.totalAmount.toLocaleString()}</p>
@@ -349,7 +387,7 @@ export const AdminPayments: React.FC = () => {
                                                                                 />
                                                                             </div>
                                                                             <Button 
-                                                                                className="w-full h-11 rounded-lg font-bold text-xs bg-slate-900 text-white hover:bg-slate-800 transition-all shadow-lg shadow-slate-200 uppercase tracking-widest"
+                                                                                className="w-full h-11 rounded-lg font-bold text-xs bg-slate-900 text-black hover:bg-slate-800 transition-all shadow-lg shadow-slate-200 uppercase tracking-widest"
                                                                                 onClick={() => handleUpdateStatus(order.id)}
                                                                             >
                                                                                 Update Transaction
@@ -357,32 +395,67 @@ export const AdminPayments: React.FC = () => {
                                                                         </div>
                                                                     </div>
 
-                                                                    {/* Details Column */}
+                                                                    {/* Service Details Column */}
                                                                     <div className="space-y-4">
                                                                         <div className="flex items-center gap-2.5">
                                                                             <div className="h-7 w-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
                                                                                 <FileText className="h-3.5 w-3.5" />
                                                                             </div>
-                                                                            <h4 className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Client Payload</h4>
+                                                                            <h4 className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Service Details</h4>
                                                                         </div>
-                                                                        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-[300px] overflow-y-auto custom-scrollbar">
-                                                                            {parsedNotes ? (
-                                                                                <div className="space-y-4">
-                                                                                    <div className="grid grid-cols-1 gap-4">
-                                                                                        {Object.entries(parsedNotes).map(([key, val]: [string, any]) => (
-                                                                                            <div key={key} className="flex flex-col border-b border-slate-50 pb-3 last:border-0 last:pb-0">
-                                                                                                <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">{key.replace(/([A-Z])/g, ' $1')}</span>
-                                                                                                <span className="text-[13px] font-bold text-slate-700 truncate">{val?.toString() || 'N/A'}</span>
+                                                                        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm h-[300px] overflow-y-auto custom-scrollbar flex flex-col">
+                                                                            {(() => {
+                                                                                const item = order.items[0];
+                                                                                const badge = getPlanBadge(item?.planType || '');
+                                                                                const isItr = isItrService(item?.serviceName || '');
+                                                                                const formSubmitted = ['UNDER_REVIEW', 'PROCESSING', 'COMPLETED'].includes(order.status);
+                                                                                return (
+                                                                                    <div className="p-5 flex flex-col gap-5 flex-1">
+                                                                                        {/* Service + Plan */}
+                                                                                        <div className="space-y-3">
+                                                                                            <div className="flex flex-col gap-1.5">
+                                                                                                <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400">Service</span>
+                                                                                                <p className="text-sm font-bold text-slate-800">{item?.serviceName || 'N/A'}</p>
                                                                                             </div>
-                                                                                        ))}
+                                                                                            <div className="flex items-center gap-2">
+                                                                                                <span className={cn('inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider border', badge.cls)}>
+                                                                                                    <Layers className="h-2.5 w-2.5" /> {badge.label} Plan
+                                                                                                </span>
+                                                                                                {formSubmitted && isItr && (
+                                                                                                    <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100 text-[10px] font-bold uppercase tracking-wider">
+                                                                                                        <BadgeCheck className="h-3 w-3" /> Form Submitted
+                                                                                                    </span>
+                                                                                                )}
+                                                                                            </div>
+                                                                                        </div>
+                                                                                        {/* Client contact */}
+                                                                                        <div className="grid grid-cols-1 gap-3 border-t border-slate-50 pt-4">
+                                                                                            {[
+                                                                                                { label: 'Client Name',   val: displayName },
+                                                                                                { label: 'Email',         val: displayEmail },
+                                                                                                { label: 'Phone',         val: order.user?.phone || parsedNotes?.mobileNo || '—' },
+                                                                                                { label: 'Order Amount',  val: `₹${order.totalAmount.toLocaleString('en-IN')}` },
+                                                                                            ].map(({ label, val }) => (
+                                                                                                <div key={label} className="flex flex-col border-b border-slate-50 pb-2.5 last:border-0">
+                                                                                                    <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">{label}</span>
+                                                                                                    <span className="text-[12px] font-semibold text-slate-700">{val || '—'}</span>
+                                                                                                </div>
+                                                                                            ))}
+                                                                                        </div>
+                                                                                        {/* ITR form link */}
+                                                                                        {isItr && (
+                                                                                            <button
+                                                                                                onClick={() => navigate('/admin/itr')}
+                                                                                                className="mt-auto flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold uppercase tracking-wider hover:bg-indigo-700 transition-colors"
+                                                                                            >
+                                                                                                <FileText className="h-3.5 w-3.5" />
+                                                                                                View ITR Form Details
+                                                                                                <ArrowUpRight className="h-3.5 w-3.5" />
+                                                                                            </button>
+                                                                                        )}
                                                                                     </div>
-                                                                                </div>
-                                                                            ) : (
-                                                                                <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
-                                                                                    <Clock className="h-8 w-8 mb-3 text-slate-300" />
-                                                                                    <p className="text-[10px] font-bold uppercase tracking-widest">No metadata provided</p>
-                                                                                </div>
-                                                                            )}
+                                                                                );
+                                                                            })()}
                                                                         </div>
                                                                     </div>
 
@@ -394,32 +467,47 @@ export const AdminPayments: React.FC = () => {
                                                                             </div>
                                                                             <h4 className="text-[11px] font-bold uppercase tracking-widest text-slate-500">Asset Repository</h4>
                                                                         </div>
-                                                                        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm h-[300px] overflow-y-auto custom-scrollbar">
+                                                                        <div className="bg-white rounded-2xl border border-slate-200 shadow-sm h-[300px] overflow-y-auto custom-scrollbar">
                                                                             {order.documents && order.documents.length > 0 ? (
-                                                                                <div className="grid grid-cols-1 gap-3">
-                                                                                    {order.documents.map((doc: any) => (
-                                                                                        <div key={doc.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl group/doc hover:bg-white hover:shadow-md transition-all border border-slate-100 hover:border-indigo-100">
-                                                                                            <div className="flex items-center gap-3">
-                                                                                                <div className="h-8 w-8 rounded-lg bg-white flex items-center justify-center text-slate-400 shadow-sm border border-slate-100 group-hover/doc:text-indigo-600 transition-colors">
-                                                                                                    <FileText className="h-4 w-4" />
+                                                                                <div className="p-4 space-y-2">
+                                                                                    {order.documents.map((doc: any) => {
+                                                                                        const typeLabel = doc.documentType || doc.fileName || 'Document';
+                                                                                        const emoji = DOC_TYPE_ICON[typeLabel] || '';
+                                                                                        const isKyc = doc.fileType === 'KYC';
+                                                                                        const isAtt = doc.fileType === 'ATTACHMENT';
+                                                                                        return (
+                                                                                            <div key={doc.id} className="flex items-center justify-between p-3 bg-slate-50 rounded-xl group/doc hover:bg-white hover:shadow-md transition-all border border-slate-100 hover:border-indigo-100">
+                                                                                                <div className="flex items-center gap-3 min-w-0">
+                                                                                                    <div className={cn('h-9 w-9 rounded-xl flex items-center justify-center text-sm shadow-sm border shrink-0',
+                                                                                                        isKyc ? 'bg-orange-50 border-orange-100 text-orange-600' :
+                                                                                                        isAtt ? 'bg-teal-50 border-teal-100 text-teal-600' :
+                                                                                                        'bg-white border-slate-100 text-slate-400'
+                                                                                                    )}>
+                                                                                                        {emoji || <FileText className="h-4 w-4" />}
+                                                                                                    </div>
+                                                                                                    <div className="min-w-0">
+                                                                                                        <p className="text-[11px] font-bold text-slate-700 truncate">{typeLabel}</p>
+                                                                                                        <p className="text-[10px] text-slate-400 uppercase tracking-wider">
+                                                                                                            {isKyc ? 'KYC Document' : isAtt ? 'Attachment' : 'File'}
+                                                                                                        </p>
+                                                                                                    </div>
                                                                                                 </div>
-                                                                                                <span className="text-[11px] font-bold text-slate-700 truncate max-w-[120px] uppercase tracking-wider">{doc.documentType || doc.fileName}</span>
+                                                                                                <a
+                                                                                                    href={`${API_BASE_URL}/files/${(doc.filePath || '').replace(/^\//, '')}`}
+                                                                                                    target="_blank"
+                                                                                                    rel="noreferrer"
+                                                                                                    className="h-8 w-8 rounded-lg bg-white flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:shadow-md border border-slate-100 transition-all shrink-0"
+                                                                                                >
+                                                                                                    <ExternalLink className="h-3.5 w-3.5" />
+                                                                                                </a>
                                                                                             </div>
-                                                                                            <a 
-                                                                                                href={`${API_BASE_URL}/files/${doc.filePath.replace(/^\//, '')}`} 
-                                                                                                target="_blank" 
-                                                                                                rel="noreferrer" 
-                                                                                                className="h-8 w-8 rounded-lg bg-white flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:shadow-md border border-slate-100 transition-all"
-                                                                                            >
-                                                                                                <ExternalLink className="h-3.5 w-3.5" />
-                                                                                            </a>
-                                                                                        </div>
-                                                                                    ))}
+                                                                                        );
+                                                                                    })}
                                                                                 </div>
                                                                             ) : (
                                                                                 <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
                                                                                     <XCircle className="h-8 w-8 mb-3 text-slate-300" />
-                                                                                    <p className="text-[10px] font-bold uppercase tracking-widest">No assets uploaded</p>
+                                                                                    <p className="text-[10px] font-bold uppercase tracking-widest">No documents uploaded</p>
                                                                                 </div>
                                                                             )}
                                                                         </div>

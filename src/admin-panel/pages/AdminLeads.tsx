@@ -151,7 +151,7 @@ export function AdminLeads() {
                 </div>
                 <button
                     onClick={() => setShowModal(true)}
-                    className="bg-[#1e40af] text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-800 transition-colors flex items-center gap-2 text-sm"
+                    className="bg-[#1e40af] text-black px-4 py-2 rounded-lg font-medium hover:bg-blue-800 transition-colors flex items-center gap-2 text-sm"
                 >
                     <Plus className="w-4 h-4" />
                     Add Lead
@@ -228,7 +228,7 @@ export function AdminLeads() {
                             </div>
                             <div className="pt-2 flex justify-end gap-2">
                                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 text-sm font-medium text-neutral-600 hover:bg-neutral-100 rounded-lg transition-colors">Cancel</button>
-                                <button type="submit" className="px-4 py-2 text-sm font-medium text-white bg-[#1e40af] hover:bg-blue-800 rounded-lg transition-colors">Add Lead</button>
+                                <button type="submit" className="px-4 py-2 text-sm font-medium text-black bg-[#1e40af] hover:bg-blue-800 rounded-lg transition-colors">Add Lead</button>
                             </div>
                         </form>
                     </div>

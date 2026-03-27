@@ -1,6 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useMemo } from 'react';
 import api from '../../utils/api';
-import { API_BASE_URL } from '../../utils/constants';
 
 interface AdminUser {
   id: number;
@@ -117,25 +116,8 @@ export const AdminProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const verifyAdminAccess = useCallback(async (): Promise<boolean> => {
     try {
       setLoading(true);
-      const token = localStorage.getItem('adminToken');
-      const headers: HeadersInit = {};
-      if (token) headers['Authorization'] = `Bearer ${token}`;
-
-      const response = await fetch(
-        `${API_BASE_URL}/admin/profile`, // Updated verify endpoint to use consistent base URL
-        {
-          method: 'GET',
-          headers,
-          credentials: 'include'
-        }
-      );
-
-      if (!response.ok) {
-        adminLogout();
-        return false;
-      }
-
-      const data = await response.json();
+      const response = await api.get('/admin/profile');
+      const data = response.data;
       const admin = data.admin || data;
 
       if (admin) {

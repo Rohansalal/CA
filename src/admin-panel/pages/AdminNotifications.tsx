@@ -177,7 +177,7 @@ export function AdminNotifications() {
                                 <button
                                     type="submit"
                                     disabled={loading || !formData.message}
-                                    className="w-full h-12 bg-[#0F172A] text-white rounded-xl font-bold text-sm shadow-lg shadow-slate-200 hover:bg-slate-800 hover:translate-y-[-1px] active:translate-y-[0px] transition-all disabled:opacity-50 disabled:hover:translate-y-0 flex justify-center items-center gap-2"
+                                    className="w-full h-12 bg-[#0F172A] text-black rounded-xl font-bold text-sm shadow-lg shadow-slate-200 hover:bg-slate-800 hover:translate-y-[-1px] active:translate-y-[0px] transition-all disabled:opacity-50 disabled:hover:translate-y-0 flex justify-center items-center gap-2"
                                 >
                                     {loading ? (
                                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -237,7 +237,7 @@ export function AdminNotifications() {
                     </div>
 
                     {/* Quick Stats/Info */}
-                    <div className="bg-[#0F172A] rounded-2xl p-6 text-white shadow-xl shadow-slate-200 relative overflow-hidden">
+                    <div className="bg-[#0F172A] rounded-2xl p-6 text-black shadow-xl shadow-slate-200 relative overflow-hidden">
                         <div className="relative z-10">
                             <h4 className="text-indigo-400 text-[10px] font-bold uppercase tracking-[0.2em] mb-2">Automated Engine</h4>
                             <h3 className="text-lg font-bold mb-4">Smart Task Monitoring</h3>

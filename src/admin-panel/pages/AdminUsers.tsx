@@ -76,7 +76,7 @@ export const AdminUsers: React.FC = () => {
       });
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_BASE_URL}/admin/users?${params}`,
+        `${import.meta.env.VITE_API_BASE_URL || '/api'}/admin/users?${params}`,
         { headers: { "Authorization": `Bearer ${token}` } }
       );
 
@@ -110,7 +110,7 @@ export const AdminUsers: React.FC = () => {
             <Button variant="outline" className="h-10 px-4 rounded-lg font-semibold text-xs border-slate-200 hover:bg-slate-50 shadow-sm transition-all flex items-center gap-2 uppercase tracking-wider">
               <Download className="h-3.5 w-3.5" /> Export CSV
             </Button>
-            <Button className="h-10 px-4 rounded-lg font-semibold text-xs bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2 uppercase tracking-wider">
+            <Button className="h-10 px-4 rounded-lg font-semibold text-xs bg-indigo-600 text-black hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2 uppercase tracking-wider">
               <UserPlus className="h-3.5 w-3.5" /> Add New User
             </Button>
           </div>
@@ -141,7 +141,7 @@ export const AdminUsers: React.FC = () => {
                   <option value="ADMIN">Admin</option>
                   <option value="SUPER_ADMIN">Super Admin</option>
                 </select>
-                <Button className="h-11 px-6 rounded-lg font-semibold bg-slate-900 text-white hover:bg-slate-800 transition-all flex items-center gap-2" onClick={fetchUsers}>
+                <Button className="h-11 px-6 rounded-lg font-semibold bg-slate-900 text-black hover:bg-slate-800 transition-all flex items-center gap-2" onClick={fetchUsers}>
                   <Filter className="h-4 w-4" /> Apply
                 </Button>
               </div>
@@ -198,7 +198,7 @@ export const AdminUsers: React.FC = () => {
                       <tr key={user.id} className="hover:bg-slate-50/50 transition-colors group">
                         <td className="px-6 py-5">
                           <div className="flex items-center gap-3">
-                            <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 font-bold group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                            <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 font-bold group-hover:bg-indigo-600 group-hover:text-black transition-all">
                               {user.name.charAt(0).toUpperCase()}
                             </div>
                             <div>
@@ -239,8 +239,8 @@ export const AdminUsers: React.FC = () => {
                           <Badge 
                             className={cn(
                               "font-bold uppercase tracking-widest text-[10px] border-none shadow-none px-3 py-1",
-                              user.role === "SUPER_ADMIN" ? "bg-slate-900 text-white" :
-                              user.role === "ADMIN" ? "bg-indigo-600 text-white" :
+                              user.role === "SUPER_ADMIN" ? "bg-slate-900 text-black" :
+                              user.role === "ADMIN" ? "bg-indigo-600 text-black" :
                               "bg-slate-100 text-slate-600"
                             )}
                           >
@@ -306,7 +306,7 @@ export const AdminUsers: React.FC = () => {
                       size="sm"
                       className={cn(
                         "h-10 w-10 p-0 rounded-lg font-bold text-xs transition-all",
-                        pagination.page === i + 1 ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20" : "text-slate-600 hover:bg-white hover:shadow-sm"
+                        pagination.page === i + 1 ? "bg-indigo-600 text-black shadow-md shadow-indigo-500/20" : "text-slate-600 hover:bg-white hover:shadow-sm"
                       )}
                       onClick={() => setPagination(prev => ({ ...prev, page: i + 1 }))}
                     >

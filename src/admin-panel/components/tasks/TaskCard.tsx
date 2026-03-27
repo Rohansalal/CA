@@ -123,7 +123,7 @@ export const TaskCard: React.FC<TaskCardProps> = ({ task, onQuickEdit, onOpenDet
                   </AvatarFallback>
                 </Avatar>
                 <div className="absolute bottom-full right-0 mb-2 hidden group-hover/avatar:block animate-in fade-in zoom-in-95">
-                  <div className="bg-[#0F172A] text-white text-[10px] font-bold px-2 py-1 rounded shadow-lg whitespace-nowrap">
+                  <div className="bg-[#0F172A] text-black text-[10px] font-bold px-2 py-1 rounded shadow-lg whitespace-nowrap">
                     {task.assignedTo.name}
                   </div>
                 </div>

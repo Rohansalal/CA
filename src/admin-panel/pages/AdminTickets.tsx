@@ -109,10 +109,10 @@ export const AdminTickets: React.FC = () => {
 
     const getStatusStyles = (status: string) => {
         switch (status) {
-            case 'OPEN': return "bg-blue-500 text-white shadow-lg shadow-blue-500/20";
-            case 'RESOLVED': return "bg-emerald-500 text-white shadow-lg shadow-emerald-500/20";
-            case 'CLOSED': return "bg-slate-400 text-white shadow-lg shadow-slate-400/20";
-            default: return "bg-slate-400 text-white shadow-lg shadow-slate-400/20";
+            case 'OPEN': return "bg-blue-500 text-black shadow-lg shadow-blue-500/20";
+            case 'RESOLVED': return "bg-emerald-500 text-black shadow-lg shadow-emerald-500/20";
+            case 'CLOSED': return "bg-slate-400 text-black shadow-lg shadow-slate-400/20";
+            default: return "bg-slate-400 text-black shadow-lg shadow-slate-400/20";
         }
     };
 
@@ -221,7 +221,7 @@ export const AdminTickets: React.FC = () => {
                                                 </td>
                                                 <td className="px-6 py-5">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 font-bold group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                                        <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 font-bold group-hover:bg-indigo-600 group-hover:text-black transition-all">
                                                             {ticket.user.name.charAt(0).toUpperCase()}
                                                         </div>
                                                         <div>
@@ -319,7 +319,7 @@ export const AdminTickets: React.FC = () => {
                                     {/* Previous Reply */}
                                     {selectedTicket.adminReply && (
                                         <div className="space-y-3">
-                                            <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-slate-900 text-white rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-lg">
+                                            <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-slate-900 text-black rounded-lg text-[10px] font-bold uppercase tracking-widest shadow-lg">
                                                 Our Response
                                             </div>
                                             <div className="bg-slate-900 p-6 rounded-2xl border border-slate-800 shadow-xl">
@@ -356,7 +356,7 @@ export const AdminTickets: React.FC = () => {
                                         <div className="flex gap-4">
                                             <Button variant="ghost" className="flex-1 h-11 rounded-lg font-bold text-xs uppercase tracking-widest text-slate-500" onClick={() => setSelectedTicket(null)}>Cancel</Button>
                                             <Button 
-                                                className="flex-[2] h-11 rounded-lg font-bold text-xs bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 transition-all uppercase tracking-widest"
+                                                className="flex-[2] h-11 rounded-lg font-bold text-xs bg-indigo-600 text-black hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 transition-all uppercase tracking-widest"
                                                 onClick={handleReplySubmit}
                                                 disabled={submittingReply || !replyText.trim()}
                                             >

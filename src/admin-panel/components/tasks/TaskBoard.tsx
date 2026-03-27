@@ -159,7 +159,7 @@ export const TaskBoard: React.FC<TaskBoardProps> = ({ initialTasks, onTaskUpdate
             <Filter className="w-4 h-4 mr-2" />
             Filters
           </Button>
-          <Button className="h-11 px-6 bg-[#0F172A] hover:bg-slate-800 text-white rounded-xl font-bold text-xs shadow-lg shadow-slate-200 transition-all active:scale-95">
+          <Button className="h-11 px-6 bg-[#0F172A] hover:bg-slate-800 text-black rounded-xl font-bold text-xs shadow-lg shadow-slate-200 transition-all active:scale-95">
             <Plus className="w-4 h-4 mr-2" />
             New Assignment
           </Button>

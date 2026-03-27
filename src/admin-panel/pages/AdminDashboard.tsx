@@ -119,7 +119,7 @@ export const AdminDashboard: React.FC = () => {
             <Button variant="outline" className="h-10 px-4 rounded-lg font-semibold text-xs border-slate-200 hover:bg-slate-50 shadow-sm transition-all flex items-center gap-2 uppercase tracking-wider">
               <ExternalLink className="h-3.5 w-3.5" /> View Portal
             </Button>
-            <Button className="h-10 px-4 rounded-lg font-semibold text-xs bg-indigo-600 text-white hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2 uppercase tracking-wider">
+            <Button className="h-10 px-4 rounded-lg font-semibold text-xs bg-indigo-600 text-black hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2 uppercase tracking-wider">
               <TrendingUp className="h-3.5 w-3.5" /> Export Report
             </Button>
           </div>

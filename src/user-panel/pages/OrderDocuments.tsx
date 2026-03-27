@@ -42,7 +42,7 @@ export const OrderDocuments = () => {
     const fetchOrder = async () => {
         try {
             setLoading(true);
-            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user/orders/${id}`, {
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || '/api'}/orders/${id}`, {
                 credentials: 'include'
             });
             if (!res.ok) throw new Error('Failed to load order');
@@ -66,7 +66,7 @@ export const OrderDocuments = () => {
 
         try {
             setUploading(true);
-            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/user/orders/${id}/documents`, {
+            const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || '/api'}/orders/${id}/documents`, {
                 method: 'POST',
                 body: formData,
                 credentials: 'include'
@@ -99,7 +99,7 @@ export const OrderDocuments = () => {
                 <div className="mb-8 flex justify-center items-center space-x-4 text-sm font-medium text-gray-500">
                     <span className="text-primary flex items-center gap-1"><CheckCircle className="w-4 h-4" /> Service Selection</span>
                     <div className="h-px w-8 bg-gray-300"></div>
-                    <span className="text-primary font-bold flex items-center gap-1"><div className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-xs">2</div> Document Upload</span>
+                    <span className="text-primary font-bold flex items-center gap-1"><div className="w-6 h-6 bg-primary text-black rounded-full flex items-center justify-center text-xs">2</div> Document Upload</span>
                     <div className="h-px w-8 bg-gray-300"></div>
                     <span>Requirements</span>
                 </div>
@@ -108,7 +108,7 @@ export const OrderDocuments = () => {
                     {/* Left Column: Plan Details */}
                     <div className="lg:col-span-1 space-y-6">
                         <div className="bg-white rounded-2xl shadow-xl overflow-hidden sticky top-8">
-                            <div className="bg-gray-900 text-white p-6">
+                            <div className="bg-gray-900 text-black p-6">
                                 <h2 className="text-xl font-bold">Plan Details</h2>
                                 <p className="text-gray-400 text-sm mt-1">Your selected package</p>
                             </div>
@@ -149,9 +149,9 @@ export const OrderDocuments = () => {
                     <div className="lg:col-span-2">
                         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
                             <div className="bg-primary px-8 py-6">
-                                <h1 className="text-2xl font-bold text-white">Upload Documents</h1>
+                                <h1 className="text-2xl font-bold text-black">Upload Documents</h1>
                                 <p className="text-primary-100 mt-2">Please upload the following documents for {order?.items?.[0]?.serviceName}.</p>
-                                <p className="text-xs text-white/70 mt-1">Order #{order?.orderNumber}</p>
+                                <p className="text-xs text-black/70 mt-1">Order #{order?.orderNumber}</p>
                             </div>
 
                             <div className="p-8 space-y-6">
@@ -220,7 +220,7 @@ export const OrderDocuments = () => {
                                     <button
                                         onClick={handleNext}
                                         disabled={!requiredDocs.every(doc => !doc.required || documents.some(d => d.documentType === doc.key || d.fileName.includes(doc.key)))}
-                                        className="px-6 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                                        className="px-6 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary-dark transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                                     >
                                         Continue to Requirements <ArrowRight className="w-5 h-5" />
                                     </button>

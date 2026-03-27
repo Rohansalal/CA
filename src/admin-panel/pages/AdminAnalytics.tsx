@@ -128,7 +128,7 @@ export const AdminAnalytics: React.FC = () => {
                         >
                             <RefreshCw className={cn("h-3.5 w-3.5 mr-2", loading && "animate-spin")} /> Refresh
                         </Button>
-                        <Button className="h-10 px-4 rounded-lg font-semibold text-xs bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-200 transition-all">
+                        <Button className="h-10 px-4 rounded-lg font-semibold text-xs bg-slate-900 text-black hover:bg-slate-800 shadow-lg shadow-slate-200 transition-all">
                             <BarChart2 className="h-3.5 w-3.5 mr-2" /> Export Report
                         </Button>
                     </div>
@@ -138,7 +138,7 @@ export const AdminAnalytics: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <AnalyticsCard 
                         title="Total Revenue" 
-                        value={`₹${revenueData?.totalRevenue.toLocaleString() || 0}`} 
+                        value={`₹${(revenueData?.totalRevenue ?? 0).toLocaleString()}`}
                         icon={DollarSign} 
                         trend="+12.5%" 
                         trendUp={true}
@@ -146,7 +146,7 @@ export const AdminAnalytics: React.FC = () => {
                     />
                     <AnalyticsCard 
                         title="Transactions" 
-                        value={revenueData?.totalTransactions.toString() || "0"} 
+                        value={(revenueData?.totalTransactions ?? 0).toString()}
                         icon={ShoppingBag} 
                         trend="+5.2%" 
                         trendUp={true}
@@ -318,7 +318,7 @@ export const AdminAnalytics: React.FC = () => {
                                         <tr key={service.id} className="group hover:bg-slate-50/50 transition-all duration-200">
                                             <td className="px-6 py-5">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 font-bold group-hover:bg-indigo-600 group-hover:text-white transition-all">
+                                                    <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 font-bold group-hover:bg-indigo-600 group-hover:text-black transition-all">
                                                         {service.name.charAt(0).toUpperCase()}
                                                     </div>
                                                     <div>

@@ -232,7 +232,7 @@ export const AdminTasks: React.FC = () => {
                                     </button>
                                     <button 
                                         type="submit" 
-                                        className="h-12 px-8 text-xs font-bold uppercase tracking-widest text-white bg-[#0F172A] hover:bg-slate-800 rounded-xl shadow-xl shadow-slate-200 transition-all active:scale-95"
+                                        className="h-12 px-8 text-xs font-bold uppercase tracking-widest text-black bg-[#0F172A] hover:bg-slate-800 rounded-xl shadow-xl shadow-slate-200 transition-all active:scale-95"
                                     >
                                         Initialize Task
                                     </button>

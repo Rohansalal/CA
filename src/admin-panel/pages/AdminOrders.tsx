@@ -213,7 +213,7 @@ export function AdminOrders() {
                                                             </div>
                                                             <button
                                                                 onClick={() => handleUpdateStatus(order.id)}
-                                                                className="w-full bg-[#1e40af] text-white py-2 rounded text-sm font-semibold hover:bg-blue-800 transition shadow-sm"
+                                                                className="w-full bg-[#1e40af] text-black py-2 rounded text-sm font-semibold hover:bg-blue-800 transition shadow-sm"
                                                             >
                                                                 Save Changes
                                                             </button>

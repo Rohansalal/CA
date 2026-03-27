@@ -37,7 +37,7 @@ export function Cart() {
 
         try {
             const token = localStorage.getItem('token');
-            const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+            const baseUrl = import.meta.env.VITE_API_BASE_URL || '/api';
             const res = await fetch(`${baseUrl}/services/checkout-cart`, {
                 method: 'POST',
                 headers: {
@@ -81,7 +81,7 @@ export function Cart() {
                         <p className="text-gray-500 mb-8 max-w-md mx-auto">Looks like you haven't added any services yet. Explore our professional services to get started.</p>
                         <button
                             onClick={() => navigate('/services')}
-                            className="px-8 py-3 bg-primary text-white font-semibold rounded-xl hover:bg-primary/90 transition-colors inline-flex items-center gap-2"
+                            className="px-8 py-3 bg-primary text-black font-semibold rounded-xl hover:bg-primary/90 transition-colors inline-flex items-center gap-2"
                         >
                             Explore Services <ArrowRight className="w-5 h-5" />
                         </button>
@@ -130,7 +130,7 @@ export function Cart() {
                                             <div className="flex flex-col gap-2">
                                                 <button
                                                     onClick={() => handleCheckout(item)}
-                                                    className="px-6 py-2 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-colors text-sm w-full sm:w-auto text-center"
+                                                    className="px-6 py-2 bg-accent text-black font-semibold rounded-lg hover:bg-accent/90 transition-colors text-sm w-full sm:w-auto text-center"
                                                 >
                                                     Proceed
                                                 </button>
@@ -154,7 +154,7 @@ export function Cart() {
                                 <p className="text-xs text-gray-400 mt-1">Inclusive of all taxes</p>
                             </div>
                             <button
-                                className="w-full sm:w-auto px-8 py-4 bg-primary text-white font-bold rounded-xl hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 text-lg shadow-lg shadow-primary/20"
+                                className="w-full sm:w-auto px-8 py-4 bg-primary text-black font-bold rounded-xl hover:bg-primary/90 transition-colors flex items-center justify-center gap-2 text-lg shadow-lg shadow-primary/20"
                                 onClick={handleCheckoutAll}
                             >
                                 Checkout All Services <ArrowRight className="w-5 h-5" />

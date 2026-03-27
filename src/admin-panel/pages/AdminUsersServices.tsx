@@ -268,7 +268,7 @@ export const AdminUsersServices: React.FC = () => {
               onClick={() => setActiveTab("users")}
               className={cn(
                 "flex items-center gap-2 px-6 py-2 rounded-lg text-xs font-bold transition-all",
-                activeTab === "users" ? "bg-slate-900 text-white shadow-sm border border-slate-900" : "text-slate-500 hover:text-slate-900"
+                activeTab === "users" ? "bg-slate-900 text-black shadow-sm border border-slate-900" : "text-slate-500 hover:text-slate-900"
               )}
             >
               <Users className="h-4 w-4" /> Users
@@ -277,7 +277,7 @@ export const AdminUsersServices: React.FC = () => {
               onClick={() => setActiveTab("services")}
               className={cn(
                 "flex items-center gap-2 px-6 py-2 rounded-lg text-xs font-bold transition-all",
-                activeTab === "services" ? "bg-slate-900 text-white shadow-sm border border-slate-900" : "text-slate-500 hover:text-slate-900"
+                activeTab === "services" ? "bg-slate-900 text-black shadow-sm border border-slate-900" : "text-slate-500 hover:text-slate-900"
               )}
             >
               <ShoppingBag className="h-4 w-4" /> Services
@@ -317,7 +317,7 @@ export const AdminUsersServices: React.FC = () => {
                       <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
                     </div>
                     <Button 
-                      className="h-11 px-6 rounded-xl font-bold text-xs bg-black text-white hover:bg-slate-800 shadow-sm transition-all"
+                      className="h-11 px-6 rounded-xl font-bold text-xs bg-black text-black hover:bg-slate-800 shadow-sm transition-all"
                       onClick={fetchUsers}
                     >
                       Search Users
@@ -405,8 +405,8 @@ export const AdminUsersServices: React.FC = () => {
                             <td className="px-8 py-5">
                               <Badge variant="outline" className={cn(
                                 "text-[10px] font-bold px-2.5 py-0.5 rounded-lg border-slate-200",
-                                user.role === "SUPER_ADMIN" ? "bg-black text-white border-black" :
-                                user.role === "ADMIN" ? "bg-slate-900 text-white border-slate-900" :
+                                user.role === "SUPER_ADMIN" ? "bg-black text-black border-black" :
+                                user.role === "ADMIN" ? "bg-slate-900 text-black border-slate-900" :
                                 "bg-slate-50 text-slate-600"
                               )}>
                                 {user.role?.replace('_', ' ') || 'USER'}
@@ -463,7 +463,7 @@ export const AdminUsersServices: React.FC = () => {
                           variant={usersPagination.page === i + 1 ? "default" : "ghost"} 
                           className={cn(
                             "h-9 w-9 rounded-lg text-[11px] font-bold",
-                            usersPagination.page === i + 1 ? "bg-black text-white shadow-sm" : "text-slate-500 hover:bg-white"
+                            usersPagination.page === i + 1 ? "bg-black text-black shadow-sm" : "text-slate-500 hover:bg-white"
                           )}
                           onClick={() => setUsersPagination(prev => ({ ...prev, page: i + 1 }))}
                         >
@@ -490,18 +490,18 @@ export const AdminUsersServices: React.FC = () => {
         {activeTab === "services" && (
           <div className="space-y-8 animate-in fade-in slide-in-from-left-4 duration-500">
             {/* Service Action Bar */}
-            <div className="flex items-center justify-between bg-white p-6 rounded-2xl border-2 border-slate-200 shadow-sm">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between bg-white p-4 sm:p-6 rounded-2xl border-2 border-slate-200 shadow-sm gap-3 sm:gap-4">
               <div className="space-y-1">
                 <p className="text-sm font-black text-slate-950">Service Directory</p>
                 <p className="text-xs font-bold text-slate-900">Manage and deploy professional service modules</p>
               </div>
-              <Button 
+              <Button
                 onClick={() => {
                   setEditingService(null);
                   setServiceFormData({ name: '', description: '', price: '', categoryId: categories[0]?.id.toString() || '' });
                   setIsServiceModalOpen(true);
                 }}
-                className="h-11 px-6 rounded-xl font-black text-xs bg-white text-slate-950 border-2 border-slate-950 hover:bg-slate-50 shadow-sm transition-all"
+                className="h-10 sm:h-11 px-4 sm:px-6 rounded-xl font-black text-xs bg-white text-slate-950 border-2 border-slate-950 hover:bg-slate-50 shadow-sm transition-all w-full sm:w-auto"
               >
                 <Plus className="h-4 w-4 mr-2" /> Add Service
               </Button>
@@ -621,67 +621,67 @@ export const AdminUsersServices: React.FC = () => {
         {/* --- MODALS --- */}
         {/* Service Edit Modal */}
         {isServiceModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/90 backdrop-blur-md p-6 animate-in fade-in duration-300">
-            <Card className="w-full max-w-2xl rounded-[3rem] border-2 border-slate-900 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-              <CardHeader className="p-10 pb-6 flex flex-row items-center justify-between bg-white">
-                <div>
-                  <CardTitle className="text-3xl font-black tracking-tight text-slate-950">{editingService ? 'Edit Module' : 'Deploy New Module'}</CardTitle>
-                  <CardDescription className="text-xs font-bold uppercase tracking-widest text-slate-900 mt-2">Configure service registry parameters</CardDescription>
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/90 backdrop-blur-md p-3 sm:p-6 animate-in fade-in duration-300">
+            <Card className="w-full max-w-2xl rounded-2xl sm:rounded-[2rem] md:rounded-[3rem] border-2 border-slate-900 shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300 max-h-[95vh] overflow-y-auto">
+              <CardHeader className="p-4 sm:p-6 md:p-10 pb-3 sm:pb-4 md:pb-6 flex flex-row items-center justify-between bg-white">
+                <div className="min-w-0">
+                  <CardTitle className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-slate-950">{editingService ? 'Edit Module' : 'Deploy New Module'}</CardTitle>
+                  <CardDescription className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-900 mt-1 sm:mt-2">Configure service registry parameters</CardDescription>
                 </div>
-                <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl text-slate-950 hover:bg-slate-100" onClick={() => setIsServiceModalOpen(false)}>
-                  <X className="h-6 w-6" />
+                <Button variant="ghost" size="icon" className="h-10 w-10 sm:h-12 sm:w-12 rounded-xl sm:rounded-2xl text-slate-950 hover:bg-slate-100 shrink-0" onClick={() => setIsServiceModalOpen(false)}>
+                  <X className="h-5 w-5 sm:h-6 sm:w-6" />
                 </Button>
               </CardHeader>
-              <CardContent className="p-10 pt-0">
-                <form onSubmit={handleServiceSubmit} className="space-y-8">
-                  <div className="space-y-6">
+              <CardContent className="p-4 sm:p-6 md:p-10 pt-0">
+                <form onSubmit={handleServiceSubmit} className="space-y-5 sm:space-y-6 md:space-y-8">
+                  <div className="space-y-4 sm:space-y-5 md:space-y-6">
                     <div className="space-y-2">
                       <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 ml-1">Module Identity</label>
-                      <Input 
-                        value={serviceFormData.name} 
-                        onChange={e => setServiceFormData({ ...serviceFormData, name: e.target.value })} 
-                        placeholder="e.g. GST Registration Node" 
-                        className="h-16 px-6 bg-white border-2 border-slate-200 rounded-2xl text-base font-bold outline-none focus:ring-2 focus:ring-slate-900/10 transition-all text-slate-950"
-                        required 
+                      <Input
+                        value={serviceFormData.name}
+                        onChange={e => setServiceFormData({ ...serviceFormData, name: e.target.value })}
+                        placeholder="e.g. GST Registration Node"
+                        className="h-12 sm:h-14 md:h-16 px-4 sm:px-6 bg-white border-2 border-slate-200 rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold outline-none focus:ring-2 focus:ring-slate-900/10 transition-all text-slate-950"
+                        required
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 ml-1">Description Telemetry</label>
-                      <textarea 
-                        value={serviceFormData.description} 
-                        onChange={e => setServiceFormData({ ...serviceFormData, description: e.target.value })} 
-                        placeholder="Describe the service scope and operational vectors..." 
-                        className="w-full min-h-[140px] p-6 bg-white border-2 border-slate-200 rounded-3xl text-base font-bold outline-none focus:ring-2 focus:ring-slate-900/10 transition-all resize-none text-slate-950"
+                      <textarea
+                        value={serviceFormData.description}
+                        onChange={e => setServiceFormData({ ...serviceFormData, description: e.target.value })}
+                        placeholder="Describe the service scope and operational vectors..."
+                        className="w-full min-h-[100px] sm:min-h-[120px] md:min-h-[140px] p-4 sm:p-6 bg-white border-2 border-slate-200 rounded-xl sm:rounded-2xl md:rounded-3xl text-sm sm:text-base font-bold outline-none focus:ring-2 focus:ring-slate-900/10 transition-all resize-none text-slate-950"
                         required
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                       <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 ml-1">Category Vector</label>
                         <div className="relative">
-                          <select 
-                            value={serviceFormData.categoryId} 
-                            onChange={e => setServiceFormData({ ...serviceFormData, categoryId: e.target.value })} 
-                            className="w-full h-16 px-6 rounded-2xl bg-white border-2 border-slate-200 text-sm font-black uppercase tracking-widest focus:ring-2 focus:ring-slate-900/10 outline-none appearance-none cursor-pointer text-slate-950"
+                          <select
+                            value={serviceFormData.categoryId}
+                            onChange={e => setServiceFormData({ ...serviceFormData, categoryId: e.target.value })}
+                            className="w-full h-12 sm:h-14 md:h-16 px-4 sm:px-6 rounded-xl sm:rounded-2xl bg-white border-2 border-slate-200 text-xs sm:text-sm font-black uppercase tracking-widest focus:ring-2 focus:ring-slate-900/10 outline-none appearance-none cursor-pointer text-slate-950"
                             required
                           >
                             <option value="">Select Domain</option>
                             {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
                           </select>
-                          <ChevronDown className="absolute right-6 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+                          <ChevronDown className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
                         </div>
                       </div>
                       <div className="space-y-2">
                         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-900 ml-1">Base Valuation (₹)</label>
                         <div className="relative">
-                          <DollarSign className="absolute left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-900" />
-                          <Input 
-                            type="number" 
-                            value={serviceFormData.price} 
-                            onChange={e => setServiceFormData({ ...serviceFormData, price: e.target.value })} 
-                            placeholder="0.00" 
-                            className="h-16 pl-14 pr-6 bg-white border-2 border-slate-200 rounded-2xl text-base font-bold outline-none focus:ring-2 focus:ring-slate-900/10 transition-all text-slate-950"
-                            required 
+                          <DollarSign className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-900" />
+                          <Input
+                            type="number"
+                            value={serviceFormData.price}
+                            onChange={e => setServiceFormData({ ...serviceFormData, price: e.target.value })}
+                            placeholder="0.00"
+                            className="h-12 sm:h-14 md:h-16 pl-12 sm:pl-14 pr-4 sm:pr-6 bg-white border-2 border-slate-200 rounded-xl sm:rounded-2xl text-sm sm:text-base font-bold outline-none focus:ring-2 focus:ring-slate-900/10 transition-all text-slate-950"
+                            required
                             disabled={!!editingService}
                           />
                         </div>
@@ -689,9 +689,9 @@ export const AdminUsersServices: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="flex gap-4 pt-6">
-                    <Button type="button" variant="ghost" onClick={() => setIsServiceModalOpen(false)} className="flex-1 h-16 rounded-2xl font-black text-[11px] uppercase tracking-widest text-slate-900 hover:bg-slate-100">Abort</Button>
-                    <Button type="submit" className="flex-[2] h-16 rounded-2xl font-black text-[11px] uppercase tracking-widest bg-white text-slate-950 border-2 border-slate-950 hover:bg-slate-50 shadow-sm">Commit Changes</Button>
+                  <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4 sm:pt-6">
+                    <Button type="button" variant="ghost" onClick={() => setIsServiceModalOpen(false)} className="flex-1 h-12 sm:h-14 md:h-16 rounded-xl sm:rounded-2xl font-black text-[11px] uppercase tracking-widest text-slate-900 hover:bg-slate-100 order-2 sm:order-1">Abort</Button>
+                    <Button type="submit" className="flex-1 sm:flex-[2] h-12 sm:h-14 md:h-16 rounded-xl sm:rounded-2xl font-black text-[11px] uppercase tracking-widest bg-white text-slate-950 border-2 border-slate-950 hover:bg-slate-50 shadow-sm order-1 sm:order-2">Commit Changes</Button>
                   </div>
                 </form>
               </CardContent>
@@ -701,46 +701,40 @@ export const AdminUsersServices: React.FC = () => {
 
         {/* Plans Management Modal */}
         {isPlansModalOpen && selectedServiceForPlans && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-white/90 backdrop-blur-md p-6 animate-in fade-in duration-300">
-            <Card className="w-full max-w-[90vw] h-[90vh] rounded-[3rem] border-2 border-slate-200 shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
-              <CardHeader className="p-10 pb-6 flex flex-row items-center justify-between shrink-0 bg-white">
-                <div className="flex items-center gap-6">
-                  <div className="h-14 w-14 rounded-2xl bg-slate-100 text-slate-900 flex items-center justify-center border border-slate-200">
-                    <ListChecks className="h-7 w-7" />
+          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-white/90 backdrop-blur-md p-2 sm:p-4 md:p-6 animate-in fade-in duration-300">
+            <Card className="w-full max-w-[98vw] md:max-w-[90vw] h-[95vh] sm:h-[90vh] rounded-2xl sm:rounded-[2rem] md:rounded-[3rem] border-2 border-slate-200 shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-300">
+              <CardHeader className="p-4 sm:p-6 md:p-10 pb-3 sm:pb-4 md:pb-6 flex flex-col sm:flex-row sm:items-center justify-between shrink-0 bg-white gap-3 sm:gap-4">
+                <div className="flex items-center gap-3 sm:gap-4 md:gap-6 min-w-0">
+                  <div className="h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-xl sm:rounded-2xl bg-slate-100 text-slate-900 flex items-center justify-center border border-slate-200 shrink-0">
+                    <ListChecks className="h-5 w-5 sm:h-6 sm:w-6 md:h-7 md:w-7" />
                   </div>
-                  <div>
-                    <CardTitle className="text-3xl font-black tracking-tight text-slate-900">Tier Architecture: {selectedServiceForPlans.name}</CardTitle>
-                    <CardDescription className="text-xs font-bold uppercase tracking-widest text-slate-900 mt-2">Define pricing vectors and feature scope matrices</CardDescription>
+                  <div className="min-w-0">
+                    <CardTitle className="text-lg sm:text-xl md:text-3xl font-black tracking-tight text-slate-900 truncate">Tier Architecture: {selectedServiceForPlans.name}</CardTitle>
+                    <CardDescription className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-900 mt-1 sm:mt-2">Define pricing vectors and feature scope matrices</CardDescription>
                   </div>
                 </div>
-                <div className="flex gap-3">
-                  <div className="hidden sm:flex items-center px-4 py-2 bg-slate-50 rounded-xl border border-slate-200 text-[9px] font-black uppercase tracking-widest text-slate-400">
-                    <div className="flex items-center gap-2">
-                      <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
-                      Scroll to explore tiers
-                    </div>
-                  </div>
-                  <Button 
+                <div className="flex gap-2 sm:gap-3 shrink-0">
+                  <Button
                     onClick={() => setPlans([...plans, { planType: 'CUSTOM', price: 0, isActive: true, scopes: [], displayOrder: plans.length }])}
                     variant="outline"
-                    className="h-14 px-8 rounded-2xl font-black text-[10px] uppercase tracking-widest border-2 border-slate-200 bg-white text-slate-900 hover:bg-slate-50"
+                    className="h-10 sm:h-12 md:h-14 px-3 sm:px-5 md:px-8 rounded-xl sm:rounded-2xl font-black text-[9px] sm:text-[10px] uppercase tracking-widest border-2 border-slate-200 bg-white text-slate-900 hover:bg-slate-50"
                   >
-                    <Plus className="h-4 w-4 mr-2" /> Add Tier
+                    <Plus className="h-4 w-4 mr-1 sm:mr-2" /> <span className="hidden xs:inline">Add</span> Tier
                   </Button>
-                  <Button 
+                  <Button
                     onClick={handleSaveAllPlans}
-                    className="h-14 px-10 rounded-2xl font-black text-[10px] uppercase tracking-widest bg-white text-slate-900 border-2 border-slate-900 hover:bg-slate-50 shadow-sm"
+                    className="h-10 sm:h-12 md:h-14 px-4 sm:px-6 md:px-10 rounded-xl sm:rounded-2xl font-black text-[9px] sm:text-[10px] uppercase tracking-widest bg-white text-slate-900 border-2 border-slate-900 hover:bg-slate-50 shadow-sm"
                   >
-                    <Save className="h-4 w-4 mr-2" /> Commit Tiers
+                    <Save className="h-4 w-4 mr-1 sm:mr-2" /> <span className="hidden sm:inline">Commit</span> Save
                   </Button>
-                  <Button variant="ghost" size="icon" className="h-14 w-14 rounded-2xl text-slate-900 hover:bg-slate-100" onClick={() => setIsPlansModalOpen(false)}>
-                    <X className="h-6 w-6" />
+                  <Button variant="ghost" size="icon" className="h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 rounded-xl sm:rounded-2xl text-slate-900 hover:bg-slate-100 shrink-0" onClick={() => setIsPlansModalOpen(false)}>
+                    <X className="h-5 w-5 sm:h-6 sm:w-6" />
                   </Button>
                 </div>
-            </CardHeader>
+              </CardHeader>
 
               <CardContent
-                className="flex-1 overflow-hidden p-0 bg-white relative"
+                className="flex-1 overflow-hidden p-0 bg-white relative min-h-0"
                 role="region"
                 aria-label="Service plans grid"
               >
@@ -750,42 +744,42 @@ export const AdminUsersServices: React.FC = () => {
                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-900">Syncing Tier Data...</p>
                   </div>
                 ) : (
-                  <div 
-                    className="h-full w-full overflow-auto custom-scrollbar p-10 scroll-smooth"
-                    style={{ 
+                  <div
+                    className="h-full w-full overflow-auto custom-scrollbar p-3 sm:p-6 md:p-10 scroll-smooth"
+                    style={{
                       WebkitOverflowScrolling: 'touch'
                     }}
                   >
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 pb-10 min-w-fit md:min-w-0">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 md:gap-8 pb-10 auto-rows-fr">
                       {plans.map((plan, index) => (
                         <Card key={plan.id || `plan-${index}`} className={cn(
-                          "rounded-[2.5rem] border-2 shadow-sm overflow-hidden flex flex-col h-[640px] w-full md:w-auto min-w-[280px] group transition-all duration-500 shrink-0",
+                          "rounded-2xl sm:rounded-[2rem] md:rounded-[2.5rem] border-2 shadow-sm overflow-hidden flex flex-col h-[420px] sm:h-[480px] md:h-[560px] lg:h-[600px] w-full group transition-all duration-500",
                           plan.isActive ? "bg-white border-slate-200" : "bg-slate-50 grayscale opacity-60 border-transparent"
                         )}>
                         {/* Plan Header */}
-                        <div className="p-6 pb-3 flex items-center gap-3 bg-slate-50 border-b border-slate-100 shrink-0">
-                          <div className="h-8 w-8 rounded-lg bg-white border border-slate-200 text-slate-900 flex items-center justify-center shrink-0">
-                            <Tag className="h-4 w-4" />
+                        <div className="p-3 sm:p-4 md:p-6 pb-2 sm:pb-3 flex items-center gap-2 sm:gap-3 bg-slate-50 border-b border-slate-100 shrink-0">
+                          <div className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg bg-white border border-slate-200 text-slate-900 flex items-center justify-center shrink-0">
+                            <Tag className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                           </div>
-                          <Input 
+                          <Input
                             value={plan.planType}
                             onChange={e => {
                               const newPlans = [...plans];
                               newPlans[index] = { ...newPlans[index], planType: e.target.value.toUpperCase() };
                               setPlans(newPlans);
                             }}
-                            className="h-8 bg-transparent border-none text-[11px] font-black uppercase tracking-widest focus:ring-0 p-0 text-slate-900"
+                            className="h-8 bg-transparent border-none text-[10px] sm:text-[11px] font-black uppercase tracking-widest focus:ring-0 p-0 text-slate-900"
                             placeholder="TIER NAME"
                           />
                         </div>
 
-                        {/* Plan Body - Fixed height with internal scroll */}
-                        <div className="flex-1 flex flex-col overflow-hidden bg-white">
-                          <div className="p-6 pb-2 space-y-5 shrink-0">
-                            <div className="grid grid-cols-2 gap-4">
+                        {/* Plan Body - Constrained height with internal scroll */}
+                        <div className="flex-1 flex flex-col overflow-hidden bg-white min-h-0">
+                          <div className="p-3 sm:p-4 md:p-6 pb-2 space-y-3 sm:space-y-4 md:space-y-5 shrink-0">
+                            <div className="grid grid-cols-2 gap-2 sm:gap-3 md:gap-4">
                               <div className="space-y-1">
                                 <label className="text-[8px] font-black uppercase tracking-widest text-slate-500 ml-1">Base (₹)</label>
-                                <Input 
+                                <Input
                                   type="number"
                                   value={plan.price}
                                   onChange={e => {
@@ -793,12 +787,12 @@ export const AdminUsersServices: React.FC = () => {
                                     newPlans[index] = { ...newPlans[index], price: parseFloat(e.target.value) || 0 };
                                     setPlans(newPlans);
                                   }}
-                                  className="h-10 px-3 bg-white border border-slate-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-slate-900/5 text-slate-900"
+                                  className="h-8 sm:h-10 px-2 sm:px-3 bg-white border border-slate-200 rounded-lg text-[11px] sm:text-xs font-bold focus:ring-2 focus:ring-slate-900/5 text-slate-900"
                                 />
                               </div>
                               <div className="space-y-1">
                                 <label className="text-[8px] font-black uppercase tracking-widest text-slate-500 ml-1">Offer (₹)</label>
-                                <Input 
+                                <Input
                                   type="number"
                                   value={plan.discountedPrice || ''}
                                   onChange={e => {
@@ -806,33 +800,33 @@ export const AdminUsersServices: React.FC = () => {
                                     newPlans[index] = { ...newPlans[index], discountedPrice: e.target.value ? parseFloat(e.target.value) : undefined };
                                     setPlans(newPlans);
                                   }}
-                                  className="h-10 px-3 bg-white border border-slate-200 rounded-lg text-xs font-bold focus:ring-2 focus:ring-slate-900/5 text-slate-900"
+                                  className="h-8 sm:h-10 px-2 sm:px-3 bg-white border border-slate-200 rounded-lg text-[11px] sm:text-xs font-bold focus:ring-2 focus:ring-slate-900/5 text-slate-900"
                                 />
                               </div>
                             </div>
 
                             <div className="space-y-1">
                               <label className="text-[8px] font-black uppercase tracking-widest text-slate-500 ml-1">Telemetry Summary</label>
-                              <textarea 
+                              <textarea
                                 value={plan.scopeSummary || ''}
                                 onChange={e => {
                                   const newPlans = [...plans];
                                   newPlans[index] = { ...newPlans[index], scopeSummary: e.target.value };
                                   setPlans(newPlans);
                                 }}
-                                className="w-full min-h-[60px] p-3 bg-slate-50 border border-slate-100 rounded-xl text-[11px] font-medium outline-none focus:ring-2 focus:ring-slate-900/5 resize-none text-slate-900"
+                                className="w-full min-h-[48px] sm:min-h-[60px] p-2 sm:p-3 bg-slate-50 border border-slate-100 rounded-lg sm:rounded-xl text-[10px] sm:text-[11px] font-medium outline-none focus:ring-2 focus:ring-slate-900/5 resize-none text-slate-900"
                                 placeholder="Describe this tier's positioning..."
                               />
                             </div>
                           </div>
 
                           {/* Features Matrix - This part scrolls */}
-                          <div className="flex-1 flex flex-col min-h-0 px-6 pb-6">
-                            <div className="flex items-center justify-between mb-3 shrink-0">
+                          <div className="flex-1 flex flex-col min-h-0 px-3 sm:px-4 md:px-6 pb-3 sm:pb-4 md:pb-6">
+                            <div className="flex items-center justify-between mb-2 sm:mb-3 shrink-0">
                               <label className="text-[8px] font-black uppercase tracking-widest text-slate-500 ml-1">Feature Scope Matrix</label>
-                              <Button 
-                                variant="outline" 
-                                size="sm" 
+                              <Button
+                                variant="outline"
+                                size="sm"
                                 className="h-6 px-2 text-[7px] font-black uppercase tracking-widest text-slate-900 bg-white border border-slate-200 hover:bg-slate-50 rounded-md"
                                 onClick={() => {
                                   const newPlans = [...plans];
@@ -841,15 +835,15 @@ export const AdminUsersServices: React.FC = () => {
                                   setPlans(newPlans);
                                 }}
                               >
-                                + ADD VECTOR
+                                + ADD
                               </Button>
                             </div>
-                            
-                            <div className="flex-1 overflow-y-auto custom-scrollbar space-y-2 pr-1 border-t border-slate-50 pt-3">
+
+                            <div className="flex-1 overflow-y-auto custom-scrollbar space-y-1.5 sm:space-y-2 pr-1 border-t border-slate-50 pt-2 sm:pt-3">
                               {plan.scopes?.map((scope, sIdx) => (
-                                <div key={scope.id || `scope-${sIdx}`} className="flex items-center gap-2.5 p-2 bg-slate-50/50 border border-slate-100 rounded-lg group/item hover:bg-white hover:border-slate-200 transition-all">
-                                  <input 
-                                    type="checkbox" 
+                                <div key={scope.id || `scope-${sIdx}`} className="flex items-center gap-1.5 sm:gap-2.5 p-1.5 sm:p-2 bg-slate-50/50 border border-slate-100 rounded-lg group/item hover:bg-white hover:border-slate-200 transition-all">
+                                  <input
+                                    type="checkbox"
                                     checked={scope.isIncluded}
                                     onChange={e => {
                                       const newPlans = [...plans];
@@ -858,9 +852,9 @@ export const AdminUsersServices: React.FC = () => {
                                       newPlans[index] = { ...newPlans[index], scopes: newScopes };
                                       setPlans(newPlans);
                                     }}
-                                    className="h-3.5 w-3.5 rounded border-slate-300 text-slate-900 focus:ring-0 cursor-pointer"
+                                    className="h-3.5 w-3.5 rounded border-slate-300 text-slate-900 focus:ring-0 cursor-pointer shrink-0"
                                   />
-                                  <input 
+                                  <input
                                     value={scope.title}
                                     onChange={e => {
                                       const newPlans = [...plans];
@@ -869,13 +863,13 @@ export const AdminUsersServices: React.FC = () => {
                                       newPlans[index] = { ...newPlans[index], scopes: newScopes };
                                       setPlans(newPlans);
                                     }}
-                                    className="flex-1 bg-transparent border-none text-[10px] font-bold focus:ring-0 p-0 text-slate-900"
+                                    className="flex-1 min-w-0 bg-transparent border-none text-[10px] font-bold focus:ring-0 p-0 text-slate-900"
                                     placeholder="Feature title..."
                                   />
-                                  <Button 
-                                    variant="ghost" 
-                                    size="icon" 
-                                    className="h-5 w-5 rounded-md opacity-0 group-hover/item:opacity-100 text-destructive hover:bg-destructive/5 transition-opacity"
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-5 w-5 rounded-md opacity-100 sm:opacity-0 group-hover/item:opacity-100 text-destructive hover:bg-destructive/5 transition-opacity shrink-0"
                                     onClick={() => {
                                       const newPlans = [...plans];
                                       const newScopes = (newPlans[index].scopes || []).filter((_, i) => i !== sIdx);
@@ -888,39 +882,39 @@ export const AdminUsersServices: React.FC = () => {
                                 </div>
                               ))}
                               {(!plan.scopes || plan.scopes.length === 0) && (
-                                <p className="text-[8px] text-center py-8 text-slate-400 font-black uppercase tracking-widest opacity-50 border-2 border-dashed border-slate-50 rounded-xl">Empty Scope Matrix</p>
+                                <p className="text-[8px] text-center py-6 sm:py-8 text-slate-400 font-black uppercase tracking-widest opacity-50 border-2 border-dashed border-slate-50 rounded-xl">Empty Scope Matrix</p>
                               )}
                             </div>
                           </div>
                         </div>
 
                         {/* Plan Footer */}
-                        <div className="p-5 bg-slate-50 border-t border-slate-100 flex items-center justify-between shrink-0">
-                          <div className="flex items-center gap-3">
-                            <div 
-                              className={cn(
-                                "h-5 w-10 rounded-full relative cursor-pointer transition-all duration-500",
-                                plan.isActive ? "bg-emerald-500" : "bg-slate-300"
-                              )}
-                              onClick={() => {
-                                const newPlans = [...plans];
-                                newPlans[index] = { ...newPlans[index], isActive: !newPlans[index].isActive };
-                                setPlans(newPlans);
-                              }}
-                            >
+                        <div className="p-3 sm:p-4 md:p-5 bg-slate-50 border-t border-slate-100 flex items-center justify-between shrink-0">
+                          <div className="flex items-center gap-2 sm:gap-3">
+                            <label className="relative inline-flex items-center cursor-pointer">
+                              <input
+                                type="checkbox"
+                                checked={plan.isActive}
+                                onChange={() => {
+                                  const newPlans = [...plans];
+                                  newPlans[index] = { ...newPlans[index], isActive: !newPlans[index].isActive };
+                                  setPlans(newPlans);
+                                }}
+                                className="sr-only peer"
+                              />
                               <div className={cn(
-                                "h-3.5 w-3.5 rounded-full bg-white absolute top-0.75 transition-all duration-500 shadow-sm",
-                                plan.isActive ? "left-5.5" : "left-0.75"
+                                "h-5 w-10 rounded-full transition-all duration-500 after:content-[''] after:absolute after:top-[3px] after:h-3.5 after:w-3.5 after:rounded-full after:bg-white after:shadow-sm after:transition-all after:duration-500",
+                                plan.isActive ? "bg-emerald-500 after:left-[22px]" : "bg-slate-300 after:left-[3px]"
                               )} />
-                            </div>
-                             <span className="text-[9px] font-black uppercase tracking-widest text-slate-900">
+                            </label>
+                            <span className="text-[9px] font-black uppercase tracking-widest text-slate-900">
                               {plan.isActive ? "Operational" : "Offline"}
                             </span>
                           </div>
-                          <Button 
-                            variant="ghost" 
-                            size="sm" 
-                            className="h-8 px-3 rounded-xl text-destructive hover:bg-destructive/10 font-black text-[9px] uppercase tracking-widest"
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-7 sm:h-8 px-2 sm:px-3 rounded-lg sm:rounded-xl text-destructive hover:bg-destructive/10 font-black text-[8px] sm:text-[9px] uppercase tracking-widest"
                             onClick={() => {
                               if (window.confirm('Terminate this tier module?')) {
                                 setPlans(plans.filter((_, i) => i !== index));

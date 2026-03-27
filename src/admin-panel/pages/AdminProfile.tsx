@@ -234,7 +234,7 @@ export const AdminProfile: React.FC = () => {
                         {!isEditing ? (
                             <Button
                                 onClick={() => setIsEditing(true)}
-                                className="rounded-xl bg-[#0F172A] hover:bg-slate-800 text-white font-bold text-xs h-11 px-6 shadow-lg shadow-slate-200 transition-all active:scale-95"
+                                className="rounded-xl bg-[#0F172A] hover:bg-slate-800 text-black font-bold text-xs h-11 px-6 shadow-lg shadow-slate-200 transition-all active:scale-95"
                             >
                                 <Edit2 className="w-4 h-4 mr-2" />
                                 Edit Credentials
@@ -275,14 +275,14 @@ export const AdminProfile: React.FC = () => {
                                         </div>
                                         <button 
                                             onClick={() => setShowAvatarModal(true)}
-                                            className="absolute bottom-1 right-1 p-2.5 bg-indigo-600 text-white rounded-2xl shadow-lg border-4 border-white hover:bg-indigo-700 transition-all transform hover:scale-110 active:scale-95 group-hover:rotate-12"
+                                            className="absolute bottom-1 right-1 p-2.5 bg-indigo-600 text-black rounded-2xl shadow-lg border-4 border-white hover:bg-indigo-700 transition-all transform hover:scale-110 active:scale-95 group-hover:rotate-12"
                                         >
                                             <Camera className="w-4 h-4" />
                                         </button>
                                     </div>
                                     <div className="pb-20 hidden md:block">
                                         <div className="flex items-center gap-3 mb-1">
-                                            <h2 className="text-3xl font-bold text-white tracking-tight">{profile?.name}</h2>
+                                            <h2 className="text-3xl font-bold text-black tracking-tight">{profile?.name}</h2>
                                             <Badge className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30 font-bold text-[10px] uppercase tracking-widest px-2.5 py-0.5">Verified</Badge>
                                         </div>
                                         <p className="text-slate-300 text-sm font-medium flex items-center gap-2">
@@ -449,7 +449,7 @@ export const AdminProfile: React.FC = () => {
                                             <Button
                                                 type="submit"
                                                 disabled={isUpdating}
-                                                className="min-w-[200px] h-14 bg-[#0F172A] hover:bg-slate-800 text-white rounded-[20px] font-bold text-sm shadow-xl shadow-slate-200 transition-all active:scale-95 disabled:opacity-50"
+                                                className="min-w-[200px] h-14 bg-[#0F172A] hover:bg-slate-800 text-black rounded-[20px] font-bold text-sm shadow-xl shadow-slate-200 transition-all active:scale-95 disabled:opacity-50"
                                             >
                                                 {isUpdating ? (
                                                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -522,7 +522,7 @@ export const AdminProfile: React.FC = () => {
                     <div className="lg:col-span-4 space-y-8">
                         
                         {/* Session Vitals */}
-                        <Card className="bg-[#0F172A] border-none rounded-[32px] p-8 text-white shadow-2xl shadow-slate-300 relative overflow-hidden group">
+                        <Card className="bg-[#0F172A] border-none rounded-[32px] p-8 text-black shadow-2xl shadow-slate-300 relative overflow-hidden group">
                             <div className="relative z-10 space-y-8">
                                 <div className="flex items-center gap-4">
                                     <div className="p-3 bg-indigo-500/10 rounded-2xl border border-indigo-500/20">
@@ -542,7 +542,7 @@ export const AdminProfile: React.FC = () => {
                                     ].map((vital, idx) => (
                                         <div key={idx} className="flex items-center justify-between p-4 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all cursor-default group/vital">
                                             <div className="flex items-center gap-3">
-                                                <vital.icon className="w-4 h-4 text-slate-400 group-hover/vital:text-white transition-colors" />
+                                                <vital.icon className="w-4 h-4 text-slate-400 group-hover/vital:text-black transition-colors" />
                                                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{vital.label}</span>
                                             </div>
                                             <span className={cn(
@@ -652,7 +652,7 @@ export const AdminProfile: React.FC = () => {
                             <Button
                                 onClick={() => fileInputRef.current?.click()}
                                 disabled={uploadingAvatar}
-                                className="h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-[20px] font-bold text-sm shadow-xl shadow-indigo-100 transition-all active:scale-95"
+                                className="h-14 bg-indigo-600 hover:bg-indigo-700 text-black rounded-[20px] font-bold text-sm shadow-xl shadow-indigo-100 transition-all active:scale-95"
                             >
                                 <Upload className="w-4 h-4 mr-2" />
                                 Upload New Image

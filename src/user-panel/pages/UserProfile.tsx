@@ -60,7 +60,7 @@ export const UserProfile: React.FC = () => {
     const handleSave = async () => {
         setLoading(true);
         try {
-            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/profile`, {
+            const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || '/api'}/auth/profile`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -141,13 +141,13 @@ export const UserProfile: React.FC = () => {
 
             <main className="max-w-7xl mx-auto p-6 md:p-10 lg:p-12">
                 {/* Hero Profile Section */}
-                <div className="relative overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#0b1f3a] p-6 md:p-14 text-white shadow-2xl mb-8 md:mb-12 border border-blue-900/50">
+                <div className="relative overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#0b1f3a] p-6 md:p-14 text-black shadow-2xl mb-8 md:mb-12 border border-blue-900/50">
                     <div className="absolute top-0 right-0 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-primary/20 rounded-full -mr-20 md:-mr-40 -mt-20 md:-mt-40 blur-[50px] md:blur-[100px]"></div>
                     <div className="absolute bottom-0 left-0 w-32 md:w-64 h-32 md:h-64 bg-emerald-500/10 rounded-full -ml-16 md:-ml-32 -mb-16 md:-mb-32 blur-[40px] md:blur-[80px]"></div>
 
                     <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
                         <div className="relative">
-                            <div className="w-24 h-24 md:w-40 md:h-40 bg-white/10 backdrop-blur-md rounded-[1.5rem] md:rounded-[2.5rem] p-4 border border-white/20 shadow-2xl flex items-center justify-center text-4xl md:text-6xl font-black text-white group cursor-pointer overflow-hidden">
+                            <div className="w-24 h-24 md:w-40 md:h-40 bg-white/10 backdrop-blur-md rounded-[1.5rem] md:rounded-[2.5rem] p-4 border border-white/20 shadow-2xl flex items-center justify-center text-4xl md:text-6xl font-black text-black group cursor-pointer overflow-hidden">
                                 <div className="absolute inset-0 bg-gradient-to-tr from-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 <span className="relative z-10">{formData.name.charAt(0).toUpperCase()}</span>
                             </div>
@@ -164,7 +164,7 @@ export const UserProfile: React.FC = () => {
                                 </span>
                                 Verified Identity
                             </div>
-                            <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-2 text-white">{user?.name}</h1>
+                            <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-2 text-black">{user?.name}</h1>
                             <div className="flex flex-wrap justify-center md:justify-start gap-2 md:gap-4 text-xs md:text-sm text-gray-200 font-medium">
                                 <span className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 md:w-4 md:h-4" /> {user?.email}</span>
                                 <span className="hidden md:block w-1 h-1 bg-gray-500 rounded-full my-auto"></span>
@@ -399,7 +399,7 @@ const PaymentHistoryList = () => {
     useEffect(() => {
         const fetchPayments = async () => {
             try {
-                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL}/payments/my-payments`, {
+                const res = await fetch(`${import.meta.env.VITE_API_BASE_URL || '/api'}/payments/my-payments`, {
                     credentials: 'include'
                 });
                 if (res.ok) {
@@ -514,7 +514,7 @@ const PaymentHistoryList = () => {
                                 <td className="px-10 py-6 text-right">
                                     {payment.paymentProof ? (
                                         <a
-                                            href={`${import.meta.env.VITE_API_BASE_URL}/files/${payment.paymentProof.replace(/^\//, '')}`}
+                                            href={`${import.meta.env.VITE_API_BASE_URL || '/api'}/files/${payment.paymentProof.replace(/^\//, '')}`}
                                             target="_blank"
                                             rel="noreferrer"
                                             className="inline-flex items-center gap-2 text-xs font-black text-primary hover:text-[#0b1f3a] uppercase tracking-widest transition-all hover:translate-x-1"

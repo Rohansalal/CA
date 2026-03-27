@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Check, X, CheckCircle, ArrowRight, Save, ClipboardList } from 'lucide-react';
@@ -98,14 +99,14 @@ export const OrderRequirements = () => {
                     <div className="h-px w-8 bg-green-200"></div>
                     <span className="flex items-center gap-1 text-green-600"><CheckCircle className="w-5 h-5" /> Documents</span>
                     <div className="h-px w-8 bg-green-200"></div>
-                    <span className="text-primary font-bold flex items-center gap-1"><div className="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-xs">3</div> Requirements</span>
+                    <span className="text-primary font-bold flex items-center gap-1"><div className="w-6 h-6 bg-primary text-black rounded-full flex items-center justify-center text-xs">3</div> Requirements</span>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Left Column: Plan Details */}
                     <div className="lg:col-span-1 space-y-6">
                         <div className="bg-white rounded-2xl shadow-xl overflow-hidden sticky top-8">
-                            <div className="bg-gray-900 text-white p-6">
+                            <div className="bg-gray-900 text-black p-6">
                                 <h2 className="text-xl font-bold">Plan Details</h2>
                                 <p className="text-gray-400 text-sm mt-1">Your selected package</p>
                             </div>
@@ -146,7 +147,7 @@ export const OrderRequirements = () => {
                     <div className="lg:col-span-2">
                         <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
                             <div className="bg-primary px-8 py-6">
-                                <h1 className="text-2xl font-bold text-white flex items-center gap-2">
+                                <h1 className="text-2xl font-bold text-black flex items-center gap-2">
                                     <ClipboardList className="w-6 h-6" /> Additional Details
                                 </h1>
                                 <p className="text-primary-100 mt-2">Please provide the following details to proceed with your application.</p>
@@ -191,7 +192,7 @@ export const OrderRequirements = () => {
                                     <button
                                         type="submit"
                                         disabled={loading}
-                                        className="px-8 py-3 bg-primary text-white font-bold rounded-lg hover:bg-primary-dark transition-all disabled:opacity-70 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                                        className="px-8 py-3 bg-primary text-black font-bold rounded-lg hover:bg-primary-dark transition-all disabled:opacity-70 flex items-center gap-2 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                                     >
                                         {loading ? 'Submitting...' : 'Submit & Finish'} <Save className="w-4 h-4" />
                                     </button>
