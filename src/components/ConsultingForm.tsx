@@ -8,17 +8,17 @@
 //   mobile: string;
 //   city: string;
 //   preferredContact: 'phone' | 'email' | 'whatsapp';
-  
+
 //   // Step 2
 //   clientType: string;
 //   businessName: string;
 //   industry: string;
 //   annualTurnover: string;
-  
+
 //   // Step 3
 //   services: string[];
 //   description: string;
-  
+
 //   // Step 4 (implicit review)
 // }
 
@@ -188,7 +188,7 @@
 //             <div className="w-20 h-1 bg-gradient-to-r from-accent to-secondary mx-auto mb-8"></div>
 //             <p className="text-xl text-neutral-700 mb-2 font-semibold">Your consulting request has been submitted successfully.</p>
 //             <p className="text-lg text-neutral-600 mb-10">Our CA expert will contact you shortly to discuss your financial needs and provide customized solutions.</p>
-            
+
 //             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 mb-10 border border-blue-100">
 //               <div className="space-y-4">
 //                 <div className="flex items-center justify-center gap-3 text-blue-900">
@@ -257,7 +257,7 @@
 //             </div>
 //             <div className="hidden sm:block h-1 w-12 bg-gradient-to-l from-accent to-transparent"></div>
 //           </div>
-          
+
 //           <h2 className="text-4xl lg:text-5xl font-bold bg-gradient-to-r from-primary via-primary to-secondary bg-clip-text text-transparent mb-4">
 //             Get Expert CA Guidance
 //           </h2>
@@ -331,7 +331,7 @@
 //                   </h3>
 //                   <p className="text-sm text-neutral-600">Help us know who we're working with</p>
 //                 </div>
-                
+
 //                 {/* Full Name */}
 //                 <div className="group">
 //                   <label className="block text-sm font-semibold text-neutral-800 mb-2 flex items-center gap-2">
@@ -695,7 +695,7 @@
 //                 </h3>
 //                 <p className="text-neutral-600">Choose all services relevant to your business needs</p>
 //               </div>
-              
+
 //               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 //                 {caServices.map((service) => (
 //                   <button
@@ -1078,7 +1078,7 @@ export function ConsultingForm() {
               animation: bounce-gentle 2s infinite;
             }
           `}</style>
-          
+
           <div className="bg-white rounded-3xl shadow-2xl p-8 lg:p-16 text-center animate-scale-in">
             <div className="w-24 h-24 bg-gradient-to-br from-green-100 to-green-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg animate-bounce-gentle">
               <CheckCircle2 className="w-12 h-12 text-green-600" />
@@ -1087,7 +1087,7 @@ export function ConsultingForm() {
             <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-indigo-600 mx-auto mb-8"></div>
             <p className="text-xl text-gray-700 mb-2 font-semibold">Your consulting request has been submitted successfully.</p>
             <p className="text-lg text-gray-600 mb-10">Our CA expert will contact you shortly to discuss your financial needs and provide customized solutions.</p>
-            
+
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-8 mb-10 border border-blue-100">
               <div className="space-y-4">
                 <div className="flex items-center justify-center gap-3 text-blue-900">
@@ -1124,7 +1124,7 @@ export function ConsultingForm() {
               <strong>Reference ID:</strong> <span className="font-mono text-blue-600">{Math.random().toString(36).substring(2, 15).toUpperCase()}</span>
             </p>
 
-            <button 
+            <button
               onClick={() => window.location.reload()}
               className="px-8 py-4 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold rounded-lg hover:shadow-lg transition-all transform hover:-translate-y-1 flex items-center justify-center gap-2 mx-auto group"
             >
@@ -1168,21 +1168,19 @@ export function ConsultingForm() {
               <React.Fragment key={step}>
                 <button
                   onClick={() => step < currentStep && setCurrentStep(step)}
-                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${
-                    step === currentStep
+                  className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-all ${step === currentStep
                       ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg scale-125'
                       : step < currentStep
-                      ? 'bg-green-500 text-white cursor-pointer hover:bg-green-600'
-                      : 'bg-gray-200 text-gray-600'
-                  }`}
+                        ? 'bg-green-500 text-white cursor-pointer hover:bg-green-600'
+                        : 'bg-gray-200 text-gray-600'
+                    }`}
                 >
                   {step < currentStep ? <Check className="w-5 h-5" /> : step}
                 </button>
                 {step < 4 && (
                   <div
-                    className={`w-8 h-1 transition-all ${
-                      step < currentStep ? 'bg-green-500' : 'bg-gray-200'
-                    }`}
+                    className={`w-8 h-1 transition-all ${step < currentStep ? 'bg-green-500' : 'bg-gray-200'
+                      }`}
                   ></div>
                 )}
               </React.Fragment>
@@ -1208,7 +1206,7 @@ export function ConsultingForm() {
                     </h3>
                     <p className="text-sm text-gray-600">Help us know who we're working with</p>
                   </div>
-                  
+
                   <div>
                     <label className="block text-sm font-semibold text-gray-800 mb-2">Full Name <span className="text-red-500">*</span></label>
                     <input
@@ -1217,11 +1215,10 @@ export function ConsultingForm() {
                       value={formData.fullName}
                       onChange={handleInputChange}
                       placeholder="E.g., Rajesh Kumar Singh"
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all ${
-                        errors.fullName
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all ${errors.fullName
                           ? 'border-red-500 focus:ring-2 focus:ring-red-200'
                           : 'border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200'
-                      }`}
+                        }`}
                     />
                     {errors.fullName && <p className="text-red-500 text-sm mt-1">⚠ {errors.fullName}</p>}
                   </div>
@@ -1237,11 +1234,10 @@ export function ConsultingForm() {
                       value={formData.email}
                       onChange={handleInputChange}
                       placeholder="your.email@example.com"
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all ${
-                        errors.email
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all ${errors.email
                           ? 'border-red-500 focus:ring-2 focus:ring-red-200'
                           : 'border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200'
-                      }`}
+                        }`}
                     />
                     {errors.email && <p className="text-red-500 text-sm mt-1">⚠ {errors.email}</p>}
                   </div>
@@ -1257,11 +1253,10 @@ export function ConsultingForm() {
                       value={formData.mobile}
                       onChange={handleInputChange}
                       placeholder="+91 98765 43210"
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all ${
-                        errors.mobile
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all ${errors.mobile
                           ? 'border-red-500 focus:ring-2 focus:ring-red-200'
                           : 'border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200'
-                      }`}
+                        }`}
                     />
                     {errors.mobile && <p className="text-red-500 text-sm mt-1">⚠ {errors.mobile}</p>}
                   </div>
@@ -1277,11 +1272,10 @@ export function ConsultingForm() {
                       value={formData.city}
                       onChange={handleInputChange}
                       placeholder="E.g., Mumbai, Delhi, Bangalore"
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all ${
-                        errors.city
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all ${errors.city
                           ? 'border-red-500 focus:ring-2 focus:ring-red-200'
                           : 'border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200'
-                      }`}
+                        }`}
                     />
                     {errors.city && <p className="text-red-500 text-sm mt-1">⚠ {errors.city}</p>}
                   </div>
@@ -1297,11 +1291,10 @@ export function ConsultingForm() {
                         <button
                           key={method.value}
                           onClick={() => setFormData(prev => ({ ...prev, preferredContact: method.value as 'phone' | 'email' | 'whatsapp' }))}
-                          className={`p-4 rounded-lg border-2 font-semibold transition-all flex flex-col items-center gap-2 ${
-                            formData.preferredContact === method.value
+                          className={`p-4 rounded-lg border-2 font-semibold transition-all flex flex-col items-center gap-2 ${formData.preferredContact === method.value
                               ? 'border-blue-500 bg-blue-50 text-blue-600 shadow-lg'
                               : 'border-gray-300 text-gray-700 hover:border-blue-400'
-                          }`}
+                            }`}
                         >
                           <method.icon className="w-5 h-5" />
                           <span className="text-xs">{method.label}</span>
@@ -1328,11 +1321,10 @@ export function ConsultingForm() {
                       name="clientType"
                       value={formData.clientType}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all cursor-pointer ${
-                        errors.clientType
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all cursor-pointer ${errors.clientType
                           ? 'border-red-500 focus:ring-2 focus:ring-red-200'
                           : 'border-gray-300 focus:border-blue-500 focus:ring-2 focus:ring-blue-200'
-                      }`}
+                        }`}
                     >
                       <option value="">Select client type</option>
                       <option value="individual">Individual / Salaried</option>
@@ -1354,9 +1346,8 @@ export function ConsultingForm() {
                         value={formData.businessName}
                         onChange={handleInputChange}
                         placeholder="Business name"
-                        className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all ${
-                          errors.businessName ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
-                        }`}
+                        className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all ${errors.businessName ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
+                          }`}
                       />
                       {errors.businessName && <p className="text-red-500 text-sm mt-1">⚠ {errors.businessName}</p>}
                     </div>
@@ -1368,9 +1359,8 @@ export function ConsultingForm() {
                       name="industry"
                       value={formData.industry}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all cursor-pointer ${
-                        errors.industry ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
-                      }`}
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all cursor-pointer ${errors.industry ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
+                        }`}
                     >
                       <option value="">Select industry</option>
                       <option value="technology">Technology</option>
@@ -1391,9 +1381,8 @@ export function ConsultingForm() {
                       name="annualTurnover"
                       value={formData.annualTurnover}
                       onChange={handleInputChange}
-                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all cursor-pointer ${
-                        errors.annualTurnover ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
-                      }`}
+                      className={`w-full px-4 py-3 border-2 rounded-lg focus:outline-none transition-all cursor-pointer ${errors.annualTurnover ? 'border-red-500' : 'border-gray-300 focus:border-blue-500'
+                        }`}
                     >
                       <option value="">Select turnover</option>
                       <option value="0-5">₹0 - ₹5 Lakhs</option>
@@ -1416,24 +1405,22 @@ export function ConsultingForm() {
                     </h3>
                     <p className="text-sm text-gray-600">Choose all services you need</p>
                   </div>
-                  
+
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {caServices.map((service) => (
                       <button
                         key={service.id}
                         onClick={() => handleServiceToggle(service.id)}
-                        className={`p-4 rounded-lg border-2 text-left transition-all ${
-                          formData.services.includes(service.id)
+                        className={`p-4 rounded-lg border-2 text-left transition-all ${formData.services.includes(service.id)
                             ? 'border-blue-500 bg-blue-50 shadow-md'
                             : 'border-gray-300 hover:border-blue-400'
-                        }`}
+                          }`}
                       >
                         <div className="flex items-start gap-3">
-                          <div className={`w-5 h-5 rounded border-2 mt-0.5 flex items-center justify-center flex-shrink-0 ${
-                            formData.services.includes(service.id)
+                          <div className={`w-5 h-5 rounded border-2 mt-0.5 flex items-center justify-center flex-shrink-0 ${formData.services.includes(service.id)
                               ? 'bg-blue-500 border-blue-500'
                               : 'border-gray-400'
-                          }`}>
+                            }`}>
                             {formData.services.includes(service.id) && (
                               <Check className="w-3 h-3 text-white" />
                             )}
@@ -1552,7 +1539,7 @@ export function ConsultingForm() {
 
             <div className="mt-8 pt-8 border-t border-blue-200">
               <p className="text-xs text-gray-600 text-center">
-                <strong>Step {currentStep} of 4</strong><br/>
+                <strong>Step {currentStep} of 4</strong><br />
                 Est. time: {5 - (currentStep - 1)} min remaining
               </p>
             </div>
@@ -1563,11 +1550,10 @@ export function ConsultingForm() {
           <button
             onClick={handlePrevious}
             disabled={currentStep === 1}
-            className={`flex-1 px-6 py-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
-              currentStep === 1
+            className={`flex-1 px-6 py-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${currentStep === 1
                 ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                 : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-            }`}
+              }`}
           >
             <ChevronLeft className="w-5 h-5" />
             Previous

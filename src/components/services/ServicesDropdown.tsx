@@ -38,19 +38,19 @@ const ServiceCard: React.FC<{
         onClick={() => {
           if (!hasNested) onClick(service.route, service.id);
         }}
-        className="flex items-center gap-2.5 w-full px-4 py-3 rounded-xl border border-slate-100 text-left transition-all duration-150 hover:border-primary/30 hover:bg-primary/5 group"
+        className="flex items-center gap-2.5 w-full px-4 py-3 rounded-xl border border-primary/10 text-left transition-all duration-150 bg-primary text-white hover:bg-primary/90 shadow-md group"
       >
-        <span className="w-1.5 h-1.5 rounded-full bg-slate-300 group-hover:bg-primary flex-shrink-0 transition-colors" />
-        <span className="text-[13px] text-slate-700 group-hover:text-primary font-medium line-clamp-1 transition-colors flex-1">
+        <span className="w-1.5 h-1.5 rounded-full bg-white/40 group-hover:bg-white flex-shrink-0 transition-colors" />
+        <span className="text-[13px] text-white font-semibold line-clamp-1 transition-colors flex-1">
           {service.name}
         </span>
         {service.popular && (
-          <span className="flex-shrink-0 text-[9px] font-bold text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-full">
+          <span className="flex-shrink-0 text-[9px] font-bold text-white bg-white/20 px-1.5 py-0.5 rounded-full border border-white/10">
             Popular
           </span>
         )}
         {hasNested && (
-          <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 text-slate-300 group-hover:text-primary transition-colors" />
+          <ChevronRight className="w-3.5 h-3.5 flex-shrink-0 text-white/60 group-hover:text-white transition-colors" />
         )}
       </button>
 
@@ -61,9 +61,9 @@ const ServiceCard: React.FC<{
           onMouseEnter={() => setShowNested(true)}
           onMouseLeave={() => setShowNested(false)}
         >
-          <div className="bg-white rounded-xl shadow-2xl border border-slate-100 overflow-hidden py-2 ring-1 ring-black/5">
-            <div className="px-4 py-2 border-b border-slate-50 mb-1">
-              <span className="text-[10px] font-black uppercase tracking-widest text-primary">
+          <div className="bg-primary rounded-xl shadow-2xl border border-white/10 overflow-hidden py-2 ring-1 ring-black/5">
+            <div className="px-4 py-2 border-b border-white/10 mb-1">
+              <span className="text-[10px] font-black uppercase tracking-widest text-white/80">
                 {service.name}
               </span>
             </div>
@@ -71,9 +71,9 @@ const ServiceCard: React.FC<{
               <button
                 key={nested.id}
                 onClick={() => onClick(nested.route, nested.id)}
-                className="w-full text-left px-4 py-2.5 hover:bg-primary/5 text-sm font-medium text-slate-700 hover:text-primary transition-colors flex items-center gap-3 border-l-2 border-transparent hover:border-primary"
+                className="w-full text-left px-4 py-2.5 hover:bg-white/10 text-sm font-medium text-white transition-colors flex items-center gap-3 border-l-2 border-transparent hover:border-white"
               >
-                <span className="w-1 h-1 rounded-full bg-slate-300 flex-shrink-0" />
+                <span className="w-1 h-1 rounded-full bg-white/40 flex-shrink-0" />
                 {nested.name}
               </button>
             ))}
@@ -94,12 +94,12 @@ const SearchResultCard: React.FC<{
 }> = ({ service, onClick }) => (
   <button
     onClick={onClick}
-    className="flex flex-col items-start p-3 rounded-xl border border-slate-100 hover:border-primary/30 hover:bg-primary/5 transition-all text-left group"
+    className="flex flex-col items-start p-3 rounded-xl border border-primary/10 bg-primary text-white hover:bg-primary/90 transition-all text-left group shadow-sm"
   >
-    <span className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-1">
+    <span className="text-[9px] font-bold uppercase tracking-widest text-white/60 mb-1">
       {service.categoryTitle}
     </span>
-    <span className="text-[13px] font-semibold text-slate-800 group-hover:text-primary leading-snug transition-colors">
+    <span className="text-[13px] font-semibold text-white leading-snug transition-colors">
       {service.name}
     </span>
   </button>
@@ -192,10 +192,10 @@ export const ServicesDropdown: React.FC<ServicesDropdownProps> = ({
           <div className="bg-white shadow-2xl shadow-blue-900/10 border border-slate-100 rounded-b-2xl w-[95vw] max-w-[1400px] flex max-h-[82vh] overflow-hidden">
 
             {/* ── LEFT SIDEBAR ────────────────────────────── */}
-            <aside className="w-[260px] min-w-[260px] bg-slate-50 border-r border-slate-100 flex flex-col">
+            <aside className="w-[280px] min-w-[280px] bg-slate-50 border-r border-slate-100 flex flex-col p-4">
 
               {/* Search */}
-              <div className="flex items-center gap-3 px-4 py-3.5 border-b border-slate-100 bg-white">
+              <div className="flex items-center gap-3 px-4 py-3 rounded-xl border border-slate-200 bg-white mb-6 shadow-sm focus-within:ring-2 focus-within:ring-primary/20 transition-all">
                 <Search className="w-4 h-4 text-slate-400 flex-shrink-0" />
                 <input
                   ref={searchRef}
@@ -215,59 +215,78 @@ export const ServicesDropdown: React.FC<ServicesDropdownProps> = ({
                 )}
               </div>
 
-              {/* Category list */}
-              <nav className="flex-1 py-3 overflow-y-auto">
-                <p className="px-4 pb-2.5 text-[9px] font-black uppercase tracking-[0.25em] text-slate-400">
+              {/* Category list — Redesigned as Compact Boxes */}
+              <nav className="flex-1 overflow-y-auto pr-1 custom-scrollbar">
+                <p className="px-2 pb-3.5 text-[10px] font-black uppercase tracking-[0.25em] text-slate-400">
                   Service Categories
                 </p>
-                {SERVICE_CATEGORIES.map((category) => {
-                  const Icon = category.icon;
-                  const isActive = activeCategory === category.id;
-                  return (
-                    <button
-                      key={category.id}
-                      onMouseEnter={() => !searchQuery && setActiveCategory(category.id)}
-                      onClick={() => handleServiceClick(category.route, category.id)}
-                      className={cn(
-                        'w-full flex items-center gap-3 px-4 py-2.5 text-left transition-all duration-150 group relative',
-                        isActive
-                          ? 'bg-primary text-white'
-                          : 'text-slate-600 hover:bg-white hover:text-slate-900'
-                      )}
-                    >
-                      {isActive && (
-                        <span className="absolute left-0 inset-y-0 w-0.5 bg-white/40 rounded-r-full" />
-                      )}
-                      <Icon
+                <div className="grid grid-cols-1 gap-2.5">
+                  {SERVICE_CATEGORIES.map((category) => {
+                    const Icon = category.icon;
+                    const isActive = activeCategory === category.id;
+                    return (
+                      <button
+                        key={category.id}
+                        onMouseEnter={() => !searchQuery && setActiveCategory(category.id)}
+                        onClick={() => handleServiceClick(category.route, category.id)}
                         className={cn(
-                          'w-4 h-4 flex-shrink-0 transition-colors',
-                          isActive ? 'text-white' : 'text-slate-400 group-hover:text-primary'
+                          'group flex flex-col items-start p-3.5 rounded-2xl border transition-all duration-300 text-left relative overflow-hidden',
+                          isActive
+                            ? 'bg-primary text-white border-primary shadow-[0_10px_25px_-5px_rgba(37,99,235,0.3)] scale-[1.03] z-10'
+                            : 'bg-white text-slate-600 border-slate-100 hover:border-primary/20 hover:bg-slate-50/50 hover:shadow-sm'
                         )}
-                        strokeWidth={1.75}
-                      />
-                      <span className="text-[13px] font-semibold flex-1 truncate">
-                        {category.title}
-                      </span>
-                      <ChevronRight
-                        className={cn(
-                          'w-3.5 h-3.5 flex-shrink-0 transition-all duration-150',
-                          isActive ? 'opacity-60' : 'opacity-0 group-hover:opacity-40'
+                      >
+                        {/* Decorative background circle */}
+                        {isActive && (
+                          <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/10 rounded-full blur-2xl" />
                         )}
-                      />
-                    </button>
-                  );
-                })}
+
+                        <div className={cn(
+                          'w-9 h-9 rounded-xl flex items-center justify-center mb-2.5 transition-all duration-300',
+                          isActive 
+                            ? 'bg-white/20 shadow-inner' 
+                            : 'bg-slate-50 border border-slate-100 group-hover:bg-primary/5 group-hover:border-primary/10 group-hover:scale-110'
+                        )}>
+                          <Icon
+                            className={cn(
+                              'w-4.5 h-4.5 transition-colors',
+                              isActive ? 'text-white' : 'text-slate-400 group-hover:text-primary'
+                            )}
+                            strokeWidth={2.5}
+                          />
+                        </div>
+                        
+                        <div className="flex flex-col gap-1">
+                          <span className={cn(
+                            "text-[13.5px] font-black leading-tight tracking-tight uppercase",
+                            isActive ? "text-white" : "text-slate-800 group-hover:text-primary"
+                          )}>
+                            {category.title}
+                          </span>
+                        </div>
+
+                        {/* Arrow indicator */}
+                        <ChevronRight
+                          className={cn(
+                            'absolute top-4 right-3 w-3.5 h-3.5 transition-all duration-300',
+                            isActive ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-2'
+                          )}
+                        />
+                      </button>
+                    );
+                  })}
+                </div>
               </nav>
 
               {/* All services link */}
-              <div className="px-3 py-3 border-t border-slate-200">
+              <div className="mt-6 pt-4 border-t border-slate-200">
                 <Link
                   to="/all-services"
                   onClick={onClose}
-                  className="flex items-center gap-2 px-3 py-2 rounded-lg text-[11px] font-bold text-primary hover:bg-blue-50 transition-colors"
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-slate-900 text-black text-[11px] font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-md active:scale-95"
                 >
-                  <ArrowUpRight className="w-3.5 h-3.5" />
-                  Browse All Services
+                  <ArrowUpRight className="w-4 h-4" />
+                  View All Services
                 </Link>
               </div>
             </aside>

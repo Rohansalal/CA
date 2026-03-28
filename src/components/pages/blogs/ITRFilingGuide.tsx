@@ -12,19 +12,19 @@ export function ITRFilingGuide() {
             />
 
             {/* Hero Section */}
-            <section className="bg-slate-900 text-white py-20 relative overflow-hidden">
+            <section className="bg-slate-50 text-black py-20 relative overflow-hidden">
                 <div className="absolute inset-0 opacity-20">
                     <div className="absolute inset-0" style={{
-                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v6h6V4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                        backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v6h6V4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
                     }} />
                 </div>
                 <div className="max-w-4xl mx-auto px-4 relative z-10">
-                    <Link to="/resources" className="inline-flex items-center gap-2 text-red-400 hover:text-red-300 transition-colors mb-8">
+                    <Link to="/resources" className="inline-flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors mb-8">
                         <ArrowLeft className="w-5 h-5" />
                         Back to Resources
                     </Link>
-                    <div className="flex flex-wrap items-center gap-4 text-sm text-slate-400 mb-6">
-                        <span className="px-3 py-1 bg-red-500/10 text-red-400 rounded-full border border-red-500/20">Taxation</span>
+                    <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 mb-6">
+                        <span className="px-3 py-1 bg-red-100 text-red-600 rounded-full border border-red-200">Taxation</span>
                         <div className="flex items-center gap-1">
                             <Calendar className="w-4 h-4" />
                             <span>December 20, 2025</span>
@@ -37,7 +37,7 @@ export function ITRFilingGuide() {
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6">
                         ITR Filing Deadlines and Penalties: Complete Guide
                     </h1>
-                    <p className="text-xl text-slate-300 leading-relaxed max-w-3xl">
+                    <p className="text-xl text-slate-600 leading-relaxed max-w-3xl">
                         Everything you need to know about Income Tax Return filing deadlines, late fees, and consequences.
                     </p>
                 </div>
@@ -145,7 +145,7 @@ export function ITRFilingGuide() {
                     <h2 className="text-3xl font-bold text-slate-900 mb-6">Need help filing your ITR?</h2>
                     <button
                         onClick={() => window.location.href = '/#consultation-form'}
-                        className="px-8 py-4 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all shadow-lg"
+                        className="px-8 py-4 bg-slate-200 text-black font-semibold rounded-lg hover:bg-slate-300 transition-all shadow-lg"
                     >
                         GET EXPERT CA GUIDANCE
                     </button>

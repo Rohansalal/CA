@@ -1,4 +1,4 @@
-import { Calendar, ArrowRight, BookOpen, Download, Search } from 'lucide-react';
+import { Calendar, ArrowRight, Search, Mail, CheckCircle, ArrowUpRight } from 'lucide-react';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ImageWithFallback } from './figma/ImageWithFallback';
@@ -66,13 +66,6 @@ export function Resources() {
     },
   ];
 
-  const downloads = [
-    { title: 'GST Rate Card 2026', type: 'PDF', size: '2.4 MB' },
-    { title: 'Income Tax Slab Rates', type: 'PDF', size: '1.2 MB' },
-    { title: 'ROC Compliance Calendar', type: 'Excel', size: '0.8 MB' },
-    { title: 'TDS Rate Chart', type: 'PDF', size: '1.5 MB' },
-  ];
-
   const filteredPosts = blogPosts.filter((post) => {
     const matchesCategory = selectedCategory === 'all' || post.category.toLowerCase() === selectedCategory.toLowerCase();
     const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -100,32 +93,8 @@ export function Resources() {
                   placeholder="Search articles, guides, and resources..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-4 rounded-lg text-neutral-800 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-accent"
+                  className="w-full pl-12 pr-4 py-4 rounded-xl text-neutral-800 placeholder:text-neutral-500 focus:outline-none focus:ring-2 focus:ring-accent"
                 />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Newsletter Subscription */}
-      <section className="py-12 -mt-12 relative z-10">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="bg-accent rounded-2xl p-8 shadow-2xl">
-            <div className="grid md:grid-cols-2 gap-8 items-center">
-              <div>
-                <h3 className="text-2xl text-white mb-2">Subscribe to Tax Updates</h3>
-                <p className="text-white/90">Get monthly compliance reminders and tax updates directly in your inbox</p>
-              </div>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="Your email address"
-                  className="flex-1 px-4 py-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                />
-                <button className="px-6 py-3 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all whitespace-nowrap">
-                  SUBSCRIBE
-                </button>
               </div>
             </div>
           </div>
@@ -133,7 +102,7 @@ export function Resources() {
       </section>
 
       {/* Category Filter */}
-      <section className="py-8 bg-neutral-50 border-b border-neutral-200">
+      <section className="py-8 bg-white border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-wrap gap-3 justify-center">
             {categories.map((category) => (
@@ -142,7 +111,7 @@ export function Resources() {
                 onClick={() => setSelectedCategory(category.toLowerCase())}
                 className={`px-6 py-2 rounded-full font-medium transition-all ${selectedCategory === category.toLowerCase()
                   ? 'bg-primary text-white shadow-md'
-                  : 'bg-white text-neutral-700 hover:bg-neutral-100'
+                  : 'bg-slate-100 text-neutral-700 hover:bg-neutral-200'
                   }`}
               >
                 {category}
@@ -182,7 +151,7 @@ export function Resources() {
                     <span>•</span>
                     <span>{post.readTime}</span>
                   </div>
-                  <h3 className="text-xl text-primary mb-3 group-hover:text-accent transition-colors">
+                  <h3 className="text-xl font-bold text-slate-900 mb-3 group-hover:text-accent transition-colors">
                     {post.title}
                   </h3>
                   <p className="text-neutral-600 mb-4 line-clamp-3">{post.excerpt}</p>
@@ -200,88 +169,10 @@ export function Resources() {
         </div>
       </section>
 
-      {/* Downloadable Resources */}
-      <section className="py-20 bg-neutral-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl text-primary mb-4">Downloadable Resources</h2>
-            <p className="text-lg text-neutral-600">
-              Quick reference guides and tools for your business
-            </p>
-          </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {downloads.map((download, index) => (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-xl shadow-md hover:shadow-xl transition-all border border-neutral-200 group hover:-translate-y-1"
-              >
-                <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
-                  <BookOpen className="w-6 h-6 text-accent" />
-                </div>
-                <h3 className="text-lg text-primary mb-2">{download.title}</h3>
-                <div className="flex items-center justify-between text-sm text-neutral-500 mb-4">
-                  <span>{download.type}</span>
-                  <span>{download.size}</span>
-                </div>
-                <button className="w-full px-4 py-2 bg-primary text-white font-semibold rounded-lg hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
-                  <Download className="w-4 h-4" />
-                  Download
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* FAQ Section */}
-      <section className="py-20">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl lg:text-4xl text-primary mb-4">Frequently Asked Questions</h2>
-            <p className="text-lg text-neutral-600">
-              Quick answers to common tax and compliance questions
-            </p>
-          </div>
-          <div className="space-y-4">
-            {[
-              {
-                question: 'What is the deadline for ITR filing for AY 2025-26?',
-                answer: 'The deadline for individual taxpayers is July 31, 2025. For taxpayers requiring audit, the deadline is October 31, 2025.',
-              },
-              {
-                question: 'What are the current GST return filing due dates?',
-                answer: 'GSTR-1 is due by 11th of next month, GSTR-3B by 20th of next month. GSTR-9 (annual) is due by December 31st.',
-              },
-              {
-                question: 'Do I need a tax audit for my business?',
-                answer: 'Tax audit under section 44AB is mandatory if business turnover exceeds ₹1 crore (or ₹10 crore for businesses maintaining digital records) or professional receipts exceed ₹50 lakhs.',
-              },
-              {
-                question: 'What is the penalty for late GST filing?',
-                answer: 'Late fee of ₹50 per day (₹20 for nil returns) per Act (CGST + SGST), subject to maximum of ₹5,000.',
-              },
-            ].map((faq, index) => (
-              <details
-                key={index}
-                className="bg-white rounded-xl shadow-md border border-neutral-200 overflow-hidden group"
-              >
-                <summary className="px-6 py-4 cursor-pointer font-medium text-primary hover:bg-neutral-50 transition-colors list-none flex items-center justify-between">
-                  <span>{faq.question}</span>
-                  <ArrowRight className="w-5 h-5 transform group-open:rotate-90 transition-transform" />
-                </summary>
-                <div className="px-6 pb-4 text-neutral-700">
-                  {faq.answer}
-                </div>
-              </details>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-r from-primary to-secondary text-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl lg:text-4xl text-white mb-6">Need Personalized Advice?</h2>
+          <h2 className="text-3xl lg:text-4xl text-white font-bold mb-6">Need Personalized Advice?</h2>
           <p className="text-xl text-neutral-100 mb-8">
             Our chartered accountants are here to answer your specific tax and compliance questions
           </p>
@@ -290,10 +181,78 @@ export function Resources() {
           </button>
         </div>
       </section>
+
+      {/* Newsletter Subscription */}
+      <section className="py-16 relative z-10 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-slate-900 rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute inset-0" style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.4'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v6h6V4z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+              }} />
+            </div>
+            
+            <div className="relative z-10 grid lg:grid-cols-2 gap-10 items-center">
+              {/* Left Content */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <span className="px-3 py-1 bg-accent/20 text-accent text-sm font-semibold rounded-full flex items-center gap-1">
+                    <Mail className="w-3 h-3" />
+                    Free Newsletter
+                  </span>
+                </div>
+                <h3 className="text-3xl md:text-4xl text-white font-bold mb-4">
+                  Stay Ahead of Tax Deadlines
+                </h3>
+                <p className="text-lg text-slate-300 mb-6 leading-relaxed">
+                  Get curated tax updates, compliance reminders, and expert insights delivered straight to your inbox every month.
+                </p>
+                
+                {/* Trust Indicators */}
+                <div className="flex flex-wrap gap-6 text-sm text-slate-400">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-accent" />
+                    <span>10,000+ Subscribers</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-accent" />
+                    <span>No Spam, Unsubscribe Anytime</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Content - Form */}
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10">
+                <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+                  <div>
+                    <label className="block text-sm font-medium text-slate-300 mb-2">
+                      Email Address
+                    </label>
+                    <div className="relative">
+                      <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+                      <input
+                        type="email"
+                        placeholder="Enter your email"
+                        className="w-full pl-12 pr-4 py-4 bg-white border-2 border-orange-400 rounded-xl text-black placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-transparent transition-all"
+                      />
+                    </div>
+                  </div>
+                  
+                  <button className="w-full py-4 bg-accent text-white font-bold rounded-xl hover:bg-accent/90 transition-all flex items-center justify-center gap-2 group">
+                    <span>Subscribe Now</span>
+                    <ArrowUpRight className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-all" />
+                  </button>
+
+                  <p className="text-center text-sm text-slate-500">
+                    Join 10,000+ professionals who trust our tax updates
+                  </p>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
-
-
-
-

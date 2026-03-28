@@ -22,6 +22,14 @@ export interface ServiceCategory {
   subServices: SubService[];
 }
 
+export interface Industry {
+  id: string;
+  title: string;
+  description: string;
+  icon: React.ElementType;
+  route: string;
+}
+
 export const SERVICE_CATEGORIES: ServiceCategory[] = [
   {
     id: 'business-registrations',

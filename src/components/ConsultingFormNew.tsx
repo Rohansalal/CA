@@ -151,7 +151,7 @@ export function ConsultingFormNew() {
     if (validateStep(3)) {
       setIsSubmitting(true);
       try {
-        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/consultations`, {
+        const response = await fetch(`${import.meta.env.VITE_API_BASE_URL || '/api'}/consultations`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

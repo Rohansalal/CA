@@ -12,21 +12,32 @@ const api = axios.create({
 
 // Request interceptor: attach the right token
 api.interceptors.request.use((config) => {
-    // Prefer adminToken for admin routes, fall back to user token
+    const superAdminToken = localStorage.getItem('superAdminToken');
     const adminToken = localStorage.getItem('adminToken');
     const userToken = localStorage.getItem('token');
-
-    const isAdminRoute = config.url?.includes('/admin') ||
-        config.url?.includes('/api/admin') ||
-        config.url?.includes('/api/payments/verify-manual') ||
-        config.url?.includes('/api/leads') ||
-        config.url?.includes('/api/employees') ||
-        config.url?.includes('/api/tasks/admin');
-
-    const token = isAdminRoute ? (adminToken || userToken) : (userToken || adminToken);
-
-    if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
+    const url = config.url || '';
+    
+    // EXACT match for super-admin routes (must check BEFORE admin)
+    if (url.startsWith('/super-admin') || url.startsWith('/api/super-admin')) {
+        if (superAdminToken && config.headers) {
+            config.headers.Authorization = `Bearer ${superAdminToken}`;
+        }
+    }
+    // Exact match for admin routes
+    else if (url.startsWith('/admin') || url.startsWith('/api/admin') ||
+        url.includes('/hrms') || url.includes('/crm') || url.includes('/analytics') ||
+        url.includes('/employees') || url.includes('/leads') ||
+        url.includes('/compliance-calendar') || url.includes('/api/payments/verify-manual')) {
+        if (adminToken && config.headers) {
+            config.headers.Authorization = `Bearer ${adminToken}`;
+        }
+    }
+    // User routes
+    else {
+        const token = userToken || adminToken;
+        if (token && config.headers) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
     }
     return config;
 }, (error) => Promise.reject(error));
@@ -36,15 +47,29 @@ api.interceptors.response.use(
     (response) => response,
     (error) => {
         if (error.response?.status === 401) {
-            // Clear stale tokens
-            const isAdminRoute = error.config?.url?.includes('/admin');
-            if (isAdminRoute) {
+            const url = error.config?.url || '';
+            
+            // Super Admin routes (check BEFORE admin)
+            if (url.startsWith('/super-admin') || url.startsWith('/api/super-admin')) {
+                localStorage.removeItem('superAdminToken');
+                localStorage.removeItem('superAdminData');
+                if (!window.location.pathname.includes('/super-admin/login')) {
+                    window.location.href = '/super-admin/login';
+                }
+            }
+            // Admin routes
+            else if (url.startsWith('/admin') || url.includes('/hrms') ||
+                url.includes('/crm') || url.includes('/analytics') ||
+                url.includes('/employees') || url.includes('/leads') ||
+                url.includes('/compliance-calendar')) {
                 localStorage.removeItem('adminToken');
-                // Redirect to admin login if not already there
+                localStorage.removeItem('adminData');
                 if (!window.location.pathname.includes('/admin/login')) {
                     window.location.href = '/admin/login';
                 }
-            } else {
+            }
+            // User routes
+            else {
                 localStorage.removeItem('token');
                 if (!window.location.pathname.includes('/login')) {
                     window.location.href = '/login';

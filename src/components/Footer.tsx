@@ -48,13 +48,15 @@ export function Footer({ onNavigate }: FooterProps) {
 
   return (
     <footer className="bg-gradient-to-br from-primary via-primary to-secondary text-white">
+      {/* Orange accent top line */}
+      <div className="h-1 w-full bg-accent" />
       {/* Main Footer Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12">
           {/* Company Info */}
           <div>
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-46 h-24 sm:w-48 sm:h-28 bg-accent rounded-lg flex items-center justify-center p-1.5 shrink-0">
+              <div className="w-16 h-16 sm:w-20 sm:h-20 bg-accent rounded-lg flex items-center justify-center p-1 shrink-0">
                 <img src="/logo.png" alt="Logo" className="w-full h-full rounded-md object-contain bg-white border-0 shadow-none hover:shadow-lg transition-shadow" />
               </div>  
               <div>
@@ -65,19 +67,22 @@ export function Footer({ onNavigate }: FooterProps) {
             <p className="text-neutral-200 mb-6 leading-relaxed">
               Your trusted partner for taxation, audit, and business growth. Delivering excellence since 2014.
             </p>
-            <div className="flex gap-3">
-              <a href="#" className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-accent transition-colors">
-                <Facebook className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-accent transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-accent transition-colors">
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a href="#" className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center hover:bg-accent transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
+            <div className="flex gap-2.5">
+              {[
+                { icon: Facebook, label: 'Facebook' },
+                { icon: Twitter,  label: 'Twitter' },
+                { icon: Linkedin, label: 'LinkedIn' },
+                { icon: Instagram, label: 'Instagram' },
+              ].map(({ icon: Icon, label }) => (
+                <a
+                  key={label}
+                  href="#"
+                  aria-label={label}
+                  className="w-9 h-9 bg-white/10 rounded-full flex items-center justify-center hover:bg-white hover:text-primary transition-all duration-200 hover:scale-110"
+                >
+                  <Icon className="w-4 h-4" />
+                </a>
+              ))}
             </div>
           </div>
 
@@ -149,14 +154,17 @@ export function Footer({ onNavigate }: FooterProps) {
             {/* Newsletter */}
             <div className="mt-6">
               <h4 className="text-sm text-white mb-3 font-semibold">Subscribe to Updates</h4>
-              <div className="flex gap-2">
+              <div className="relative flex items-center">
                 <input
                   type="email"
-                  placeholder="Your email"
-                  className="flex-1 px-3 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder:text-neutral-300 text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                  placeholder="Your email address"
+                  className="w-full pl-4 pr-12 py-2.5 rounded-full bg-white/10 border border-white/20 text-white placeholder:text-neutral-400 text-sm focus:outline-none focus:ring-2 focus:ring-accent transition-all"
                 />
-                <button className="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors">
-                  <ArrowRight className="w-4 h-4" />
+                <button
+                  className="absolute right-1.5 p-2 bg-accent text-white rounded-full hover:bg-accent/90 transition-colors"
+                  aria-label="Subscribe"
+                >
+                  <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             </div>

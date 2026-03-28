@@ -1,8 +1,11 @@
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './user-panel/contexts/AuthContext';
 import { AdminProvider } from './admin-panel/contexts/AdminContext';
+import { SuperAdminProvider } from './super-admin/contexts/SuperAdminContext';
 import { ProtectedRoute } from './user-panel/components/ProtectedRoute';
 import { AdminProtectedRoute } from './admin-panel/components/AdminProtectedRoute';
+import { SuperAdminProtectedRoute } from './super-admin/components/SuperAdminProtectedRoute';
+import { AdminLayout } from './admin-panel/components/AdminLayout';
 import { CartProvider } from './user-panel/contexts/CartContext';
 import { ThemeProvider } from './components/theme-provider';
 
@@ -29,10 +32,20 @@ import { AdminLeads } from './admin-panel/pages/AdminLeads';
 import { AdminPayments } from './admin-panel/pages/AdminPayments';
 import { AdminNotifications } from './admin-panel/pages/AdminNotifications';
 import { AdminCRM } from './admin-panel/pages/AdminCRM';
+import { AdminHRMS } from './admin-panel/pages/AdminHRMS';
 import { AdminAssets } from './admin-panel/pages/AdminAssets';
+import { AdminITR } from './admin-panel/pages/AdminITR';
+
+// Super Admin Pages
+import { SuperAdminLogin } from './super-admin/pages/SuperAdminLogin';
+import { SuperAdminDashboard } from './super-admin/pages/SuperAdminDashboard';
+import { SuperAdminFirms } from './super-admin/pages/SuperAdminFirms';
 
 import { MyTasks } from './user-panel/pages/MyTasks';
 import { MyNotifications } from './user-panel/pages/MyNotifications';
+import { ItrBasicFormPage } from './user-panel/pages/ItrBasicFormPage';
+import { ItrStandardFormPage } from './user-panel/pages/ItrStandardFormPage';
+import { ItrPremiumFormPage } from './user-panel/pages/ItrPremiumFormPage';
 
 // Home Pages
 import { Home } from './components/Home';
@@ -139,13 +152,14 @@ function AppContent() {
   const currentPage = getPageFromRoute(location.pathname);
 
   // Show navigation and footer only on non-auth and non-dashboard and non-admin pages
-  const showNavigation = !['/login', '/register', '/dashboard', '/admin'].some(path => location.pathname.startsWith(path));
+  const showNavigation = !['/login', '/register', '/dashboard', '/admin', '/super-admin'].some(path => location.pathname.startsWith(path));
+  const showWhatsApp = !['/dashboard', '/admin'].some(path => location.pathname.startsWith(path));
 
   return (
     <div className="min-h-screen bg-neutral-50 relative">
       <Toaster position="top-right" richColors />
       <CrispChat />
-      <WhatsAppButton />
+      {showWhatsApp && <WhatsAppButton />}
       {showNavigation && <Navigation currentPage={currentPage} onNavigate={() => { }} />}
       {/* {location.pathname === '/' && <CookieConsent />} */}
       <main>
@@ -208,6 +222,38 @@ function AppContent() {
             element={
               <ProtectedRoute>
                 <MyNotifications />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/itr/basic/:orderItemId"
+            element={
+              <ProtectedRoute>
+                <ItrBasicFormPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/itr/standard/:orderItemId"
+            element={
+              <ProtectedRoute>
+                <ItrStandardFormPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/itr/premium/:orderItemId"
+            element={
+              <ProtectedRoute>
+                <ItrPremiumFormPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard/itr/elite/:orderItemId"
+            element={
+              <ProtectedRoute>
+                <ItrPremiumFormPage />
               </ProtectedRoute>
             }
           />
@@ -303,6 +349,15 @@ function AppContent() {
               </AdminProtectedRoute>
             }
           />
+          {/* HRMS Admin Route */}
+          <Route
+            path="/admin/hrms"
+            element={
+              <AdminProtectedRoute>
+                <AdminHRMS />
+              </AdminProtectedRoute>
+            }
+          />
           {/* Asset Repository Admin Route */}
           <Route
             path="/admin/assets"
@@ -310,6 +365,58 @@ function AppContent() {
               <AdminProtectedRoute>
                 <AdminAssets />
               </AdminProtectedRoute>
+            }
+          />
+          {/* ITR Submissions Admin Route */}
+          <Route
+            path="/admin/itr"
+            element={
+              <AdminProtectedRoute>
+                <AdminLayout><AdminITR /></AdminLayout>
+              </AdminProtectedRoute>
+            }
+          />
+
+          {/* Super Admin Routes */}
+          <Route path="/super-admin/login" element={<SuperAdminLogin />} />
+          <Route
+            path="/super-admin/dashboard"
+            element={
+              <SuperAdminProtectedRoute>
+                <SuperAdminDashboard />
+              </SuperAdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/super-admin/firms"
+            element={
+              <SuperAdminProtectedRoute>
+                <SuperAdminFirms />
+              </SuperAdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/super-admin/users"
+            element={
+              <SuperAdminProtectedRoute>
+                <SuperAdminDashboard />
+              </SuperAdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/super-admin/subscriptions"
+            element={
+              <SuperAdminProtectedRoute>
+                <SuperAdminDashboard />
+              </SuperAdminProtectedRoute>
+            }
+          />
+          <Route
+            path="/super-admin/analytics"
+            element={
+              <SuperAdminProtectedRoute>
+                <SuperAdminDashboard />
+              </SuperAdminProtectedRoute>
             }
           />
 
@@ -425,9 +532,11 @@ export default function App() {
       <ScrollToTop />
       <AuthProvider>
         <AdminProvider>
-          <CartProvider>
-            <AppContent />
-          </CartProvider>
+          <SuperAdminProvider>
+            <CartProvider>
+              <AppContent />
+            </CartProvider>
+          </SuperAdminProvider>
         </AdminProvider>
       </AuthProvider>
     </Router>

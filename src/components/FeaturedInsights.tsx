@@ -48,8 +48,8 @@ export function FeaturedInsights() {
                 {/* Section Header */}
                 <div className="text-center mb-16">
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 rounded-full mb-4">
-                        <BookOpen className="w-4 h-4 text-white" />
-                        <span className="text-sm font-semibold text-white uppercase tracking-wide">
+                        <BookOpen className="w-4 h-4 text-black" />
+                        <span className="text-sm font-semibold text-black uppercase tracking-wide">
                             Latest Insights
                         </span>
                     </div>
@@ -80,7 +80,7 @@ export function FeaturedInsights() {
 
                                 {/* Category Badge */}
                                 <div className="absolute top-4 left-4">
-                                    <span className={`px-4 py-1.5 bg-gradient-to-r ${post.gradient} text-white text-xs font-bold rounded-full uppercase tracking-wide`}>
+                                    <span className={`px-4 py-1.5 bg-gradient-to-r ${post.gradient} text-black text-xs font-bold rounded-full uppercase tracking-wide`}>
                                         {post.category}
                                     </span>
                                 </div>

@@ -13,32 +13,28 @@ interface ServicePricingProps {
     fallbackContent?: React.ReactNode;
 }
 
-const PLAN_CONFIG: Record<string, { gradient: string; badge?: string; ring: string; labelColor: string; cta: string }> = {
+const PLAN_CONFIG: Record<string, { gradient: string; badge?: string; ring: string; labelColor: string }> = {
     BASIC: {
         gradient: 'from-slate-50 to-white',
         ring: 'ring-slate-200',
         labelColor: 'text-slate-700',
-        cta: 'bg-slate-800 hover:bg-slate-700',
     },
     STANDARD: {
         gradient: 'from-blue-50 to-white',
         ring: 'ring-blue-200',
         labelColor: 'text-blue-700',
-        cta: 'bg-blue-600 hover:bg-blue-700',
     },
     PREMIUM: {
         gradient: 'from-indigo-600 to-blue-700',
         badge: 'Most Popular',
         ring: 'ring-indigo-500',
         labelColor: 'text-white',
-        cta: 'bg-white hover:bg-indigo-50 !text-indigo-700',
     },
     ELITE: {
         gradient: 'from-amber-50 to-orange-50',
         badge: 'Best Value',
         ring: 'ring-amber-300',
         labelColor: 'text-amber-800',
-        cta: 'bg-amber-500 hover:bg-amber-600',
     },
 };
 
@@ -200,26 +196,30 @@ export function ServicePricing({ serviceSlug, serviceName, fallbackContent }: Se
                                 <button
                                     onClick={() => handleAddToCart(plan)}
                                     disabled={isAdding}
-                                    className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-semibold text-sm border-2 transition-all duration-200 active:scale-95
+                                    className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 active:scale-95 group
                                         ${isPremium
-                                            ? 'border-white/30 text-white hover:bg-white/10'
-                                            : 'border-primary/20 text-primary hover:border-primary hover:bg-primary/5'
-                                        } ${isAdding ? 'opacity-70' : ''}`}
+                                            ? 'bg-white/10 text-white hover:bg-white/20 border-2 border-white/30'
+                                            : 'bg-gradient-to-r from-orange-500 to-orange-600 text-white hover:from-orange-600 hover:to-orange-700 shadow-lg shadow-orange-500/25 hover:shadow-orange-500/40 border-2 border-transparent'
+                                        } ${isAdding ? 'opacity-80' : ''}`}
                                 >
                                     {isAdding ? (
-                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+                                        </svg>
                                     ) : (
-                                        <ShoppingCart className="w-4 h-4" />
+                                        <svg className="w-4 h-4 transition-transform group-hover:scale-110" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                                        </svg>
                                     )}
-                                    {isAdding ? 'Added!' : 'Add to Cart'}
+                                    {isAdding ? 'Added to Cart' : 'Add to Cart'}
                                 </button>
 
                                 {/* Buy Now */}
                                 <button
                                     onClick={() => handleBuyNow(plan)}
-                                    className={`w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm text-white transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 ${config.cta}`}
+                                    className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl font-bold text-sm text-white transition-all duration-200 shadow-md hover:shadow-lg active:scale-95 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
                                 >
-                                    Get Started
+                                    Buy Now
                                     <ArrowRight className="w-4 h-4" />
                                 </button>
                             </div>

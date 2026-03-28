@@ -469,36 +469,42 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                                     {/* CTA Button */}
                                     <div
                                         style={{
-                                            display: "block",
+                                            display: "flex",
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            gap: "8px",
                                             width: "100%",
                                             padding: "14px 20px",
                                             textAlign: "center",
                                             fontFamily: "'Plus Jakarta Sans', sans-serif",
                                             fontSize: 14,
-                                            fontWeight: 600,
-                                            letterSpacing: "0.03em",
+                                            fontWeight: 700,
+                                            letterSpacing: "0.02em",
                                             borderRadius: 10,
                                             cursor: "pointer",
                                             textDecoration: "none",
-                                            border: featured ? "1.5px solid #ffffff" : "1.5px solid #2563eb",
-                                            color: featured ? "#0d3b82" : "#2563eb",
-                                            background: featured ? "#ffffff" : "transparent",
+                                            border: "none",
+                                            color: "#ffffff",
+                                            background: featured ? "#ffffff" : "linear-gradient(to right, #f97316, #ea580c)",
+                                            boxShadow: featured ? "none" : "0 4px 12px rgba(249, 115, 22, 0.3)",
                                             transition: "all 0.22s",
                                             marginTop: "auto"
                                         }}
                                         onMouseEnter={(e) => {
                                             if (!featured) {
-                                                e.currentTarget.style.background = "#2563eb";
-                                                e.currentTarget.style.color = "#ffffff";
+                                                e.currentTarget.style.background = "linear-gradient(to right, #ea580c, #c2410c)";
+                                                e.currentTarget.style.boxShadow = "0 6px 16px rgba(249, 115, 22, 0.4)";
+                                                e.currentTarget.style.transform = "translateY(-1px)";
                                             } else {
-                                                e.currentTarget.style.background = "transparent";
-                                                e.currentTarget.style.color = "#ffffff";
+                                                e.currentTarget.style.background = "#f3f4f6";
+                                                e.currentTarget.style.color = "#0d3b82";
                                             }
                                         }}
                                         onMouseLeave={(e) => {
                                             if (!featured) {
-                                                e.currentTarget.style.background = "transparent";
-                                                e.currentTarget.style.color = "#2563eb";
+                                                e.currentTarget.style.background = "linear-gradient(to right, #f97316, #ea580c)";
+                                                e.currentTarget.style.boxShadow = "0 4px 12px rgba(249, 115, 22, 0.3)";
+                                                e.currentTarget.style.transform = "translateY(0)";
                                             } else {
                                                 e.currentTarget.style.background = "#ffffff";
                                                 e.currentTarget.style.color = "#0d3b82";
@@ -506,6 +512,9 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                                         }}
                                         onClick={(e) => { e.stopPropagation(); handleAddToCart(plan); }}
                                     >
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" style={{ flexShrink: 0 }}>
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z" />
+                                        </svg>
                                         Add to Cart
                                     </div>
                                 </div>
