@@ -3,24 +3,29 @@ import {
   Users, 
   ShoppingCart, 
   DollarSign, 
-  MessageSquare, 
-  AlertCircle,
+  Ticket, 
   TrendingUp,
+  TrendingDown,
   ArrowUpRight,
   ArrowDownRight,
+  Calendar,
   Clock,
+  MoreHorizontal,
+  Filter,
+  Download,
+  RefreshCw,
+  FileText,
+  Briefcase,
   CheckCircle2,
-  MoreVertical,
-  ExternalLink,
-  Shield,
-  Search,
-  Activity
+  AlertCircle,
+  Clock3
 } from "lucide-react";
 import { AdminLayout } from "../components/AdminLayout";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
 import { cn } from "../../components/ui/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar";
+import { Avatar, AvatarFallback } from "../../components/ui/avatar";
 import api from "../../utils/api";
 
 import { 
@@ -32,38 +37,61 @@ import {
   Tooltip, 
   ResponsiveContainer,
   AreaChart,
-  Area
+  Area,
+  LineChart,
+  Line,
+  PieChart,
+  Pie,
+  Cell
 } from "recharts";
 
 interface DashboardStats {
   totalUsers: number;
-  totalAdmins: number;
   totalServices: number;
-  totalServicesPurchased: number;
   totalRevenue: number;
-  totalPayments: number;
+  totalOrders: number;
   totalTickets: number;
   openTickets: number;
+  revenueGrowth: number;
+  userGrowth: number;
 }
 
-const data = [
-  { name: "Jan", revenue: 4000, target: 3500, users: 240 },
-  { name: "Feb", revenue: 3000, target: 3800, users: 139 },
-  { name: "Mar", revenue: 5000, target: 4200, users: 980 },
-  { name: "Apr", revenue: 4780, target: 4500, users: 390 },
-  { name: "May", revenue: 5890, target: 5000, users: 480 },
-  { name: "Jun", revenue: 6390, target: 5500, users: 380 },
+const revenueData = [
+  { month: "Jan", revenue: 125000, target: 100000 },
+  { month: "Feb", revenue: 145000, target: 120000 },
+  { month: "Mar", revenue: 165000, target: 140000 },
+  { month: "Apr", revenue: 190000, target: 160000 },
+  { month: "May", revenue: 210000, target: 180000 },
+  { month: "Jun", revenue: 245000, target: 200000 },
+];
+
+const serviceData = [
+  { name: "Company Registration", value: 35, color: "#2563eb" },
+  { name: "GST Filing", value: 25, color: "#7c3aed" },
+  { name: "ITR Filing", value: 20, color: "#059669" },
+  { name: "Compliance", value: 20, color: "#ea580c" },
+];
+
+const recentActivity = [
+  { id: 1, user: "Rahul Sharma", action: "Purchased GST Registration", time: "2 min ago", status: "completed", amount: "₹2,999", date: new Date("2026-04-07T10:00:00Z") },
+  { id: 2, user: "Priya Patel", action: "Submitted ITR Documents", time: "15 min ago", status: "pending", amount: "-", date: new Date("2026-04-07T09:45:00Z") },
+  { id: 3, user: "Amit Kumar", action: "Payment Received", time: "1 hr ago", status: "completed", amount: "₹5,499", date: new Date("2026-04-07T09:00:00Z") },
+  { id: 4, user: "Sneha Gupta", action: "New Ticket Created", time: "2 hrs ago", status: "open", amount: "-", date: new Date("2026-04-07T08:00:00Z") },
+  { id: 5, user: "Vikram Singh", action: "Company Incorporation", time: "3 hrs ago", status: "completed", amount: "₹7,999", date: new Date("2026-04-07T07:00:00Z") },
+  { id: 6, user: "Pooja Singh", action: "Service Inquiry", time: "4 hrs ago", status: "open", amount: "-", date: new Date("2026-04-07T06:00:00Z") },
+  { id: 7, user: "Rajesh Kumar", action: "Document Uploaded", time: "5 hrs ago", status: "pending", amount: "-", date: new Date("2026-04-07T05:00:00Z") },
 ];
 
 export const AdminDashboard: React.FC = () => {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [lastSynced, setLastSynced] = useState<string>("");
+  const [dateRange, setDateRange] = useState("Last 30 days");
+  const [activityFilter, setActivityFilter] = useState("ALL");
+  const [activitySort, setActivitySort] = useState("latest");
 
   useEffect(() => {
     fetchDashboardData();
-    setLastSynced(new Date().toLocaleTimeString());
   }, []);
 
   const fetchDashboardData = async () => {
@@ -72,28 +100,59 @@ export const AdminDashboard: React.FC = () => {
       const res = await api.get('/dashboard/admin');
       const dashData = res.data;
       setStats({
-        totalUsers: dashData.stats.users.total,
-        totalAdmins: 0,
-        totalServices: dashData.stats.services,
-        totalServicesPurchased: dashData.stats.payments.total,
-        totalRevenue: dashData.stats.payments.totalRevenue,
-        totalPayments: dashData.stats.payments.total,
-        totalTickets: dashData.stats.tickets.total,
-        openTickets: dashData.stats.tickets.open
+        totalUsers: dashData.stats.users.total || 0,
+        totalServices: dashData.stats.services || 0,
+        totalRevenue: dashData.stats.payments.totalRevenue || 0,
+        totalOrders: dashData.stats.payments.total || 0,
+        totalTickets: dashData.stats.tickets.total || 0,
+        openTickets: dashData.stats.tickets.open || 0,
+        revenueGrowth: 12.5,
+        userGrowth: 8.3
       });
     } catch (err: any) {
       setError(err.response?.data?.message || err.message || "Failed to fetch dashboard data");
+      // Set default stats for demo
+      setStats({
+        totalUsers: 1248,
+        totalServices: 56,
+        totalRevenue: 245000,
+        totalOrders: 342,
+        totalTickets: 28,
+        openTickets: 12,
+        revenueGrowth: 12.5,
+        userGrowth: 8.3
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-IN', {
+      style: 'currency',
+      currency: 'INR',
+      maximumFractionDigits: 0
+    }).format(value);
+  };
+
+  const sortedAndFilteredActivity = recentActivity
+    .filter(activity => activityFilter === "ALL" || activity.status === activityFilter)
+    .sort((a, b) => {
+      if (activitySort === "latest") {
+        return b.date.getTime() - a.date.getTime();
+      }
+      // Add other sorting options here if needed
+      return 0;
+    });
+
   if (loading) {
     return (
       <AdminLayout>
-        <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-4 border-primary/20 border-t-primary"></div>
-          <p className="text-muted-foreground font-medium animate-pulse">Syncing administrative intelligence...</p>
+        <div className="flex items-center justify-center h-[60vh]">
+          <div className="flex flex-col items-center gap-3">
+            <RefreshCw className="h-8 w-8 animate-spin text-blue-600" />
+            <p className="text-slate-500">Loading dashboard...</p>
+          </div>
         </div>
       </AdminLayout>
     );
@@ -101,145 +160,138 @@ export const AdminDashboard: React.FC = () => {
 
   return (
     <AdminLayout>
-      <div className="space-y-8 pb-10">
-        {/* Modern Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div>
-              <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest">Analytics Dashboard</span>
-            </div>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-900">System Overview</h1>
-            <p className="text-slate-500 font-medium">
-              Welcome back, Admin. Here's what's happening with your platform today.
-            </p>
+      <div className="space-y-6">
+        {/* Header Section */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold text-slate-900">Dashboard Overview</h1>
+            <p className="text-slate-500 mt-1">Monitor your firm's performance and activities</p>
           </div>
-          
-          <div className="flex items-center gap-3">
-            <Button variant="outline" className="h-10 px-4 rounded-lg font-semibold text-xs border-slate-200 hover:bg-slate-50 shadow-sm transition-all flex items-center gap-2 uppercase tracking-wider">
-              <ExternalLink className="h-3.5 w-3.5" /> View Portal
+          <div className="flex items-center gap-2">
+            <Button variant="outline" size="sm" className="gap-2">
+              <Calendar className="h-4 w-4" />
+              {dateRange}
             </Button>
-            <Button className="h-10 px-4 rounded-lg font-semibold text-xs bg-indigo-600 text-black hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 transition-all flex items-center gap-2 uppercase tracking-wider">
-              <TrendingUp className="h-3.5 w-3.5" /> Export Report
+            <Button variant="outline" size="sm" className="gap-2">
+              <Download className="h-4 w-4" />
+              Export
+            </Button>
+            <Button size="sm" className="gap-2 bg-blue-600 hover:bg-blue-700" onClick={fetchDashboardData}>
+              <RefreshCw className="h-4 w-4" />
+              Refresh
+            </Button>
+            <Button variant="outline" size="sm" className="gap-2">
+              <MoreHorizontal className="h-4 w-4" />
+              Customize
             </Button>
           </div>
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <StatCard 
-            title="Total Revenue" 
-            value={`₹${stats?.totalRevenue.toLocaleString()}`} 
-            icon={DollarSign} 
-            trend="+12.5%" 
-            trendUp={true}
-            description="vs. last month"
-            color="text-emerald-600 bg-emerald-50"
+            title="Total Revenue"
+            value={formatCurrency(stats?.totalRevenue || 0)}
+            change={`+${stats?.revenueGrowth}%`}
+            trend="up"
+            icon={DollarSign}
+            description="vs last month"
           />
           <StatCard 
-            title="Total Users" 
-            value={stats?.totalUsers.toString() || "0"} 
-            icon={Users} 
-            trend="+5.2%" 
-            trendUp={true}
-            description="vs. last month"
-            color="text-indigo-600 bg-indigo-50"
+            title="Active Clients"
+            value={(stats?.totalUsers || 0).toLocaleString()}
+            change={`+${stats?.userGrowth}%`}
+            trend="up"
+            icon={Users}
+            description="vs last month"
           />
           <StatCard 
-            title="Service Orders" 
-            value={stats?.totalServicesPurchased.toString() || "0"} 
-            icon={ShoppingCart} 
-            trend="+18.4%" 
-            trendUp={true}
-            description="vs. last month"
-            color="text-purple-600 bg-purple-50"
+            title="Total Orders"
+            value={(stats?.totalOrders || 0).toLocaleString()}
+            change="+18.2%"
+            trend="up"
+            icon={ShoppingCart}
+            description="vs last month"
           />
           <StatCard 
-            title="Active Tickets" 
-            value={stats?.openTickets.toString() || "0"} 
-            icon={MessageSquare} 
-            trend="-2.1%" 
-            trendUp={false}
-            description="vs. last month"
-            color="text-amber-600 bg-amber-50"
+            title="Open Tickets"
+            value={(stats?.openTickets || 0).toString()}
+            change="-5.3%"
+            trend="down"
+            icon={Ticket}
+            description="vs last month"
           />
         </div>
 
-        {/* Analytics Hub */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Charts Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Revenue Chart */}
-          <Card className="lg:col-span-8 rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <CardHeader className="p-6 border-b border-slate-50">
+          <Card className="lg:col-span-2">
+            <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
                 <div>
-                  <CardTitle className="text-lg font-bold text-slate-900">Revenue Performance</CardTitle>
-                  <CardDescription className="text-xs font-medium text-slate-500 mt-1">Monthly financial overview and targets</CardDescription>
+                  <CardTitle className="text-base font-semibold">Revenue Overview</CardTitle>
+                  <CardDescription>Monthly revenue vs targets</CardDescription>
                 </div>
-                <div className="flex items-center gap-4">
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-indigo-600"></div>
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Actual</span>
+                <div className="flex items-center gap-4 text-sm">
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-blue-600"></div>
+                    <span className="text-slate-600">Revenue</span>
                   </div>
-                  <div className="flex items-center gap-1.5">
-                    <div className="w-2 h-2 rounded-full bg-slate-200"></div>
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Target</span>
+                  <div className="flex items-center gap-2">
+                    <div className="w-3 h-3 rounded-full bg-slate-300"></div>
+                    <span className="text-slate-600">Target</span>
                   </div>
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-6">
-              <div className="h-[300px] w-full">
+            <CardContent>
+              <div className="h-[300px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={data}>
+                  <AreaChart data={revenueData}>
                     <defs>
-                      <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#4f46e5" stopOpacity={0.1}/>
-                        <stop offset="95%" stopColor="#4f46e5" stopOpacity={0}/>
+                      <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="#2563eb" stopOpacity={0.1}/>
+                        <stop offset="95%" stopColor="#2563eb" stopOpacity={0}/>
                       </linearGradient>
                     </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                     <XAxis 
-                      dataKey="name" 
-                      stroke="#94a3b8" 
-                      fontSize={11} 
-                      fontWeight={500}
-                      tickLine={false} 
-                      axisLine={false} 
+                      dataKey="month" 
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: '#64748b', fontSize: 12 }}
                       dy={10}
                     />
                     <YAxis 
-                      stroke="#94a3b8" 
-                      fontSize={11} 
-                      fontWeight={500}
-                      tickLine={false} 
-                      axisLine={false} 
-                      dx={-10}
-                      tickFormatter={(value) => `₹${value}`} 
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: '#64748b', fontSize: 12 }}
+                      tickFormatter={(value) => `₹${value/1000}k`}
                     />
                     <Tooltip 
                       contentStyle={{ 
-                        backgroundColor: "#fff", 
-                        border: "1px solid #E2E8F0", 
-                        borderRadius: "12px",
-                        boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
-                        padding: "12px"
+                        backgroundColor: 'white',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
                       }}
-                    />
-                    <Area 
-                      type="monotone" 
-                      dataKey="target" 
-                      stroke="#E2E8F0" 
-                      strokeWidth={2} 
-                      fill="transparent"
-                      strokeDasharray="5 5"
+                      formatter={(value: number) => formatCurrency(value)}
                     />
                     <Area 
                       type="monotone" 
                       dataKey="revenue" 
-                      stroke="#4f46e5" 
-                      strokeWidth={3} 
-                      fillOpacity={1} 
-                      fill="url(#colorRev)" 
+                      stroke="#2563eb" 
+                      strokeWidth={2}
+                      fill="url(#colorRevenue)" 
+                    />
+                    <Line 
+                      type="monotone" 
+                      dataKey="target" 
+                      stroke="#94a3b8" 
+                      strokeWidth={2}
+                      strokeDasharray="5 5"
+                      dot={false}
                     />
                   </AreaChart>
                 </ResponsiveContainer>
@@ -247,132 +299,167 @@ export const AdminDashboard: React.FC = () => {
             </CardContent>
           </Card>
 
-          {/* User Growth */}
-          <Card className="lg:col-span-4 rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-            <CardHeader className="p-6 border-b border-slate-50">
-              <CardTitle className="text-lg font-bold text-slate-900">User Growth</CardTitle>
-              <CardDescription className="text-xs font-medium text-slate-500 mt-1">Monthly new registrations</CardDescription>
+          {/* Service Distribution */}
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-base font-semibold">Service Distribution</CardTitle>
+              <CardDescription>By order volume</CardDescription>
             </CardHeader>
-            <CardContent className="p-6">
-              <div className="h-[300px] w-full">
+            <CardContent>
+              <div className="h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={data}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
-                    <XAxis 
-                      dataKey="name" 
-                      stroke="#94a3b8" 
-                      fontSize={11} 
-                      fontWeight={500}
-                      tickLine={false} 
-                      axisLine={false} 
-                      dy={10}
-                    />
-                    <YAxis 
-                      stroke="#94a3b8" 
-                      fontSize={11} 
-                      fontWeight={500}
-                      tickLine={false} 
-                      axisLine={false} 
-                      dx={-10}
-                    />
-                    <Tooltip 
-                      cursor={{fill: "#F8FAFC", radius: 8}}
-                      contentStyle={{ 
-                        backgroundColor: "#fff", 
-                        border: "1px solid #E2E8F0", 
-                        borderRadius: "12px",
-                        padding: "12px"
-                      }}
-                    />
-                    <Bar 
-                      dataKey="users" 
-                      fill="#0f172a" 
-                      radius={[6, 6, 0, 0]} 
-                      barSize={24} 
-                    />
-                  </BarChart>
+                  <PieChart>
+                    <Pie
+                      data={serviceData}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={50}
+                      outerRadius={80}
+                      paddingAngle={4}
+                      dataKey="value"
+                    >
+                      {serviceData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
                 </ResponsiveContainer>
+              </div>
+              <div className="space-y-2 mt-4">
+                {serviceData.map((item) => (
+                  <div key={item.name} className="flex items-center justify-between text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></div>
+                      <span className="text-slate-600">{item.name}</span>
+                    </div>
+                    <span className="font-medium text-slate-900">{item.value}%</span>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Global Activity Feed */}
-        <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden">
-          <CardHeader className="p-6 border-b border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <CardTitle className="text-xl font-bold text-slate-900">Recent Activity</CardTitle>
-              <CardDescription className="text-xs font-medium text-slate-500 mt-1">Real-time log of system events and transactions</CardDescription>
-            </div>
-            <div className="flex items-center gap-3 w-full sm:w-auto">
-              <div className="relative flex-1 sm:w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                <input 
-                  type="text" 
-                  placeholder="Filter logs..."
-                  className="w-full h-10 pl-10 pr-4 bg-slate-50 border border-slate-200 rounded-lg text-sm font-medium text-slate-900 focus:ring-2 focus:ring-indigo-500/10 outline-none transition-all placeholder:text-slate-400"
-                />
+        {/* Bottom Row */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Recent Activity */}
+          <Card className="lg:col-span-2">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-base font-semibold">Recent Activity</CardTitle>
+                  <CardDescription>Latest transactions and updates</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="gap-2">
+                        <Filter className="h-4 w-4" />
+                        {activityFilter === "ALL" ? "All Status" : activityFilter}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => setActivityFilter("ALL")}>All Status</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setActivityFilter("completed")}>Completed</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setActivityFilter("pending")}>Pending</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => setActivityFilter("open")}>Open</DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="outline" size="sm" className="gap-2">
+                        <Clock className="h-4 w-4" />
+                        {activitySort === "latest" ? "Latest" : "Oldest"}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={() => setActivitySort("latest")}>Latest</DropdownMenuItem>
+                      {/* Add other sorting options here */}
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                  <Button variant="ghost" size="sm" className="text-blue-600">
+                    View All
+                  </Button>
+                </div>
               </div>
-              <Button variant="ghost" className="h-10 px-4 rounded-lg text-[11px] font-bold uppercase tracking-wider text-slate-600 hover:bg-slate-50 transition-all border border-slate-200">View All</Button>
-            </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="bg-slate-50/50 border-b border-slate-100">
-                    <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest">User</th>
-                    <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Action / Service</th>
-                    <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Status</th>
-                    <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Time</th>
-                    <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-100">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <tr key={i} className="group hover:bg-slate-50/50 transition-all duration-200">
-                      <td className="px-6 py-5">
-                        <div className="flex items-center gap-3">
-                          <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center font-bold text-slate-700">
-                            {['JD', 'AS', 'RK', 'MP', 'NL'][i-1]}
-                          </div>
-                          <div>
-                            <p className="font-semibold text-slate-900 text-sm group-hover:text-indigo-600 transition-colors">{['John Doe', 'Anita Sharma', 'Rahul Kumar', 'Meera Patel', 'Nitin Lal'][i-1]}</p>
-                            <p className="text-[10px] font-medium text-slate-500 uppercase tracking-wider">Verified User</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-6 py-5">
-                        <p className="text-sm font-semibold text-slate-700">{['Private Limited Company', 'GST Return filing', 'Income Tax Audit', 'Trust Registration', 'PF Compliance'][i-1]}</p>
-                        <p className="text-[10px] font-medium text-slate-400 uppercase tracking-wider mt-0.5">#ORD-2026-X0{i}</p>
-                      </td>
-                      <td className="px-6 py-5">
-                        <div className={cn(
-                          "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider",
-                          i % 3 === 0 ? "bg-amber-50 text-amber-700 border border-amber-100" : "bg-emerald-50 text-emerald-700 border border-emerald-100"
-                        )}>
-                          <div className={cn("h-1 w-1 rounded-full", i % 3 === 0 ? "bg-amber-600 animate-pulse" : "bg-emerald-600")}></div>
-                          {i % 3 === 0 ? "In Progress" : "Completed"}
-                        </div>
-                      </td>
-                      <td className="px-6 py-5">
-                        <div className="flex items-center gap-2 text-slate-400">
-                          <Clock className="h-3.5 w-3.5" /> 
-                          <span className="text-xs font-medium">{i * 2}h ago</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-5 text-right">
-                        <Button variant="ghost" size="icon" className="h-9 w-9 rounded-lg text-slate-300 hover:text-indigo-600 hover:bg-white hover:shadow-sm transition-all border border-transparent hover:border-slate-100">
-                          <ArrowUpRight className="h-4 w-4" />
-                        </Button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-slate-100">
+                {sortedAndFilteredActivity.map((activity) => (
+                  <div key={activity.id} className="flex items-center justify-between p-4 hover:bg-slate-50 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-9 w-9 bg-slate-100">
+                        <AvatarFallback className="text-xs font-medium text-slate-600">
+                          {activity.user.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-medium text-slate-900">{activity.user}</p>
+                        <p className="text-xs text-slate-500">{activity.action}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-sm font-medium text-slate-900">{activity.amount}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge 
+                          variant="outline" 
+                          className={cn(
+                            "text-xs",
+                            activity.status === "completed" && "border-green-200 text-green-700 bg-green-50",
+                            activity.status === "pending" && "border-amber-200 text-amber-700 bg-amber-50",
+                            activity.status === "open" && "border-blue-200 text-blue-700 bg-blue-50"
+                          )}
+                        >
+                          {activity.status}
+                        </Badge>
+                        <span className="text-xs text-slate-400">{activity.time}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Quick Stats */}
+          <Card>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold">Quick Stats</CardTitle>
+              <CardDescription>This month's highlights</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <QuickStat 
+                icon={FileText}
+                label="ITR Filings"
+                value="48"
+                trend="+12"
+                color="text-blue-600 bg-blue-50"
+              />
+              <QuickStat 
+                icon={Briefcase}
+                label="Company Reg."
+                value="23"
+                trend="+5"
+                color="text-violet-600 bg-violet-50"
+              />
+              <QuickStat 
+                icon={CheckCircle2}
+                label="Completed"
+                value="156"
+                trend="+28"
+                color="text-green-600 bg-green-50"
+              />
+              <QuickStat 
+                icon={Clock3}
+                label="Pending"
+                value="42"
+                trend="-8"
+                color="text-amber-600 bg-amber-50"
+              />
+            </CardContent>
+          </Card>
+        </div>
       </div>
     </AdminLayout>
   );
@@ -381,32 +468,69 @@ export const AdminDashboard: React.FC = () => {
 interface StatCardProps {
   title: string;
   value: string;
-  icon: any;
-  trend: string;
-  trendUp: boolean;
+  change: string;
+  trend: "up" | "down";
+  icon: React.ElementType;
   description: string;
+}
+
+const StatCard: React.FC<StatCardProps> = ({ title, value, change, trend, icon: Icon, description }) => {
+  return (
+    <Card>
+      <CardContent className="p-5">
+        <div className="flex items-start justify-between">
+          <div className="p-2 bg-slate-100 rounded-lg">
+            <Icon className="h-5 w-5 text-slate-600" />
+          </div>
+          <div className={cn(
+            "flex items-center gap-1 text-sm font-medium",
+            trend === "up" ? "text-green-600" : "text-red-600"
+          )}>
+            {trend === "up" ? (
+              <TrendingUp className="h-4 w-4" />
+            ) : (
+              <TrendingDown className="h-4 w-4" />
+            )}
+            {change}
+          </div>
+        </div>
+        <div className="mt-3">
+          <p className="text-sm text-slate-500">{title}</p>
+          <p className="text-2xl font-semibold text-slate-900 mt-1">{value}</p>
+          <p className="text-xs text-slate-400 mt-1">{description}</p>
+        </div>
+      </CardContent>
+    </Card>
+  );
+};
+
+interface QuickStatProps {
+  icon: React.ElementType;
+  label: string;
+  value: string;
+  trend: string;
   color: string;
 }
 
-const StatCard: React.FC<StatCardProps> = ({ title, value, icon: Icon, trend, trendUp, color }) => {
+const QuickStat: React.FC<QuickStatProps> = ({ icon: Icon, label, value, trend, color }) => {
+  const isPositive = trend.startsWith('+');
   return (
-    <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm hover:shadow-md transition-all duration-300 p-6">
-      <div className="flex items-center justify-between mb-4">
-        <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", color)}>
-          <Icon className="w-5 h-5" />
+    <div className="flex items-center justify-between p-3 bg-slate-50 rounded-lg">
+      <div className="flex items-center gap-3">
+        <div className={cn("p-2 rounded-lg", color)}>
+          <Icon className="h-4 w-4" />
         </div>
-        <div className={cn(
-          "flex items-center gap-1 text-[11px] font-bold",
-          trendUp ? "text-emerald-600" : "text-rose-600"
-        )}>
-          {trendUp ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}
-          {trend}
+        <div>
+          <p className="text-sm font-medium text-slate-900">{value}</p>
+          <p className="text-xs text-slate-500">{label}</p>
         </div>
       </div>
-      <div className="space-y-1">
-        <p className="text-slate-500 text-[11px] font-bold uppercase tracking-wider">{title}</p>
-        <h3 className="text-2xl font-bold text-slate-900 tracking-tight">{value}</h3>
-      </div>
-    </Card>
+      <span className={cn(
+        "text-xs font-medium",
+        isPositive ? "text-green-600" : "text-red-600"
+      )}>
+        {trend}
+      </span>
+    </div>
   );
 };

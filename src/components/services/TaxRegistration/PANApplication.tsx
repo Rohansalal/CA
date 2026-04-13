@@ -1,549 +1,255 @@
-import { CreditCard, CheckCircle, FileText, Clock, ArrowRight, AlertCircle, User, Globe, Building2, Fingerprint } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../user-panel/contexts/AuthContext';
+import React, { useState } from 'react';
+import {
+    CreditCard, CheckCircle, FileText, Clock, ArrowRight, AlertCircle, User, Globe, Building2, Fingerprint,
+    Shield, Award, Zap, TrendingUp, Crown, Phone
+} from 'lucide-react';
+import { ServiceTemplate, ServiceContent } from '../ServiceTemplate';
 
 export function PANApplication() {
-    const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const [fetchedService, setFetchedService] = useState<any>(null);
 
-    const handleStartRegistration = () => {
-        if (isAuthenticated) {
-            navigate('/dashboard', { state: { selectedService: 'PAN Application' } });
-        } else {
-            navigate('/login', { state: { returnTo: '/dashboard', selectedService: 'PAN Application' } });
-        }
+    // Fetch dynamic content
+    React.useEffect(() => {
+        const fetchService = async () => {
+            try {
+                const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+                const res = await fetch(`${API_URL}/services/slug/pan-application`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setFetchedService(data.service);
+                }
+            } catch (err) {
+                console.error("Failed to fetch PAN service details", err);
+            }
+        };
+        fetchService();
+    }, []);
+
+    const defaultContent: ServiceContent = {
+        title: "PAN Application",
+        subtitle: "Get Your PAN Card in 3-5 Working Days",
+        description: "Essential identity for every taxpayer. Apply for a new PAN, correct details, or request a reprint. Fast and totally online with expert assistance.",
+        heroFeatures: [
+            { icon: Award, text: "e-PAN in 3 Days" },
+            { icon: Shield, text: "Lifetime Validity" },
+            { icon: Clock, text: "100% Online" }
+        ],
+        process: [
+            { step: "1", title: "Document Upload", description: "Upload your Aadhaar and other documents securely through our portal." },
+            { step: "2", title: "Form Filing", description: "Our experts fill Form 49A/49AA with accurate details matching your IDs." },
+            { step: "3", title: "Payment & KYC", description: "Pay government fee and complete Aadhaar e-KYC authentication." },
+            { step: "4", title: "PAN Generation", description: "NSDL/UTIITSL processes your application and generates your PAN." }
+        ],
+        typesTitle: "Who Can Apply for PAN?",
+        types: [
+            {
+                title: 'Individual (Indian)',
+                description: 'For Indian citizens residing in India or abroad.',
+                icon: User,
+                features: ['Form 49A', 'Aadhaar e-KYC', 'Photo & Signature', 'Instant e-PAN'],
+            },
+            {
+                title: 'Entities & Companies',
+                description: 'For Companies, LLPs, Partnerships, Trusts, and NGOs.',
+                icon: Building2,
+                features: ['Form 49A', 'Incorporation Deed', 'Auth Signatory KYC', 'No photo'],
+            },
+            {
+                title: 'Foreign Citizens',
+                description: 'For NRIs and Foreign Companies transacting in India.',
+                icon: Globe,
+                features: ['Form 49AA', 'Passport/OCI', 'Apostilled docs', 'Intl dispatch'],
+            },
+        ],
+        // Default plans
+        plans: [
+            {
+                id: 1,
+                name: 'Individual',
+                price: 499,
+                color: 'bg-blue-500',
+                description: "For Indian Citizens",
+                features: [
+                    'Form 49A Filing',
+                    'Govt Fees (₹107) Included',
+                    'e-PAN Generation',
+                    'Dispatch Tracking',
+                    'Email Support'
+                ]
+            },
+            {
+                id: 2,
+                name: 'Organization',
+                price: 999,
+                color: 'bg-green-500',
+                recommended: true,
+                description: "For Firm/Company/LLP",
+                features: [
+                    'Form 49A Filing',
+                    'Govt Fees Included',
+                    'Document Scrutiny',
+                    'Correction Support',
+                    'Priority Processing',
+                    'Dedicated Manager'
+                ]
+            },
+            {
+                id: 3,
+                name: 'Foreign / NRI',
+                price: 2999,
+                color: 'bg-purple-500',
+                description: "For NRIs & Foreign Entities",
+                features: [
+                    'Form 49AA Filing',
+                    'Govt Fees (₹1017) Included',
+                    'International Dispatch',
+                    'Priority Support',
+                    'Document Verification',
+                    'Expert Assistance'
+                ]
+            }
+        ],
+        descriptionTitle: "What is PAN?",
+        descriptionContent: "Permanent Account Number (PAN) is a unique 10-digit alphanumeric identity assigned to all taxpayers in India. It is mandatory for filing income tax returns, opening bank accounts, making high-value transactions, and serves as a universally accepted proof of identity. The PAN system helps the government track financial transactions and prevent tax evasion.",
+        faqs: [
+            {
+                q: 'How long does it take to get a new PAN?',
+                a: 'e-PAN is usually generated within 2-4 days. Physical PAN card takes about 10-15 working days to reach your address via registered post.',
+            },
+            {
+                q: 'Can a minor apply for PAN?',
+                a: 'Yes, a PAN can be allotted to a minor. The application is filed by a Representative Assessee (Parent/Guardian). No photo appears on minor\'s PAN.',
+            },
+            {
+                q: 'What should I do if my PAN has errors?',
+                a: 'You need to file a "Request for New PAN Card or/and Changes or Correction in PAN Data" form along with supporting proofs for the correct details.',
+            },
+            {
+                q: 'Is Aadhaar-PAN linking mandatory?',
+                a: 'Yes, linking Aadhaar with PAN is mandatory. Failure to link may result in your PAN becoming inoperative and higher TDS deduction.',
+            },
+            {
+                q: 'Can a foreign company apply for PAN?',
+                a: 'Yes, foreign entities generating income in India must apply for PAN using Form 49AA. This is mandatory for compliance with Indian tax laws.',
+            },
+        ],
+        checklist: [
+            "Aadhaar Card (Identity & Address Proof)",
+            "Birth Certificate (Date of Birth Proof)",
+            "Passport Size Photos (2 copies)",
+            "ID Proof (Voter ID/Passport/Driving License)",
+            "Office Address Proof (if applicable)",
+            "Certificate of Incorporation (for Companies)"
+        ],
+        termsAndConditions: [
+            "Government fees are non-refundable once application is submitted.",
+            "PAN processing time depends on NSDL/UTIITSL workload.",
+            "Name and DOB must exactly match Aadhaar/supporting documents.",
+            "Duplicate PAN possession is illegal with ₹10,000 penalty.",
+            "Physical card dispatch may take additional 10-15 days."
+        ],
+        benefits: [
+            'Universal Valid Proof of Identity',
+            'Mandatory for Income Tax Returns',
+            'Essential for Opening Bank Accounts',
+            'Required for Property Transactions',
+            'Mandatory for Investments & Trading',
+            'Needed for Credit Cards & Loans',
+        ],
+        criticalConsiderations: [
+            {
+                title: 'Aadhaar Link Mandatory',
+                description: 'PAN must be linked with Aadhaar. Inoperative PAN leads to higher TDS and compliance issues.',
+                icon: Fingerprint,
+            },
+            {
+                title: 'No Duplicate PAN',
+                description: 'Possessing more than one PAN is illegal under Section 272B with ₹10,000 penalty.',
+                icon: AlertCircle,
+            },
+            {
+                title: 'Minor PAN Rules',
+                description: 'PAN for minors has no photo/signature. Must be updated with photo after turning 18.',
+                icon: User,
+            },
+            {
+                title: 'Data Accuracy',
+                description: 'Name and DOB must exactly match Aadhaar to avoid rejection or correction needs.',
+                icon: FileText,
+            }
+        ],
+        // New detailed content fields
+        documentsRequired: [
+            'Aadhaar Card (Proof of Identity & Address)',
+            'Birth Certificate (Proof of Date of Birth)',
+            'Passport Size Photographs (2 Nos)',
+            'Voter ID / Passport / Driving License (Alternative ID)',
+            'Certificate of Incorporation (For Companies)',
+            'Partnership Deed (For Firms)',
+            'Trust Deed (For Trusts)',
+            'NOC from Office Address (For Business)',
+        ],
+        dataRequired: [
+            'Full Name (as per Aadhaar)',
+            'Date of Birth / Incorporation',
+            'Father\'s Name (for individuals)',
+            'Residential Address',
+            'Office Address (if applicable)',
+            'Mobile Number & Email ID',
+            'Source of Income',
+            'AO Code (Area Code details)',
+        ],
+        serviceDetails: [
+            {
+                title: 'Form 49A Filing',
+                description: 'Complete filing of PAN application form with accurate details verification.',
+                icon: FileText,
+            },
+            {
+                title: 'Aadhaar e-KYC',
+                description: 'Digital signature using Aadhaar OTP - no physical documents needed.',
+                icon: Shield,
+            },
+            {
+                title: 'Document Verification',
+                description: 'Expert scrutiny of all documents to ensure compliance and avoid rejection.',
+                icon: CheckCircle,
+            },
+            {
+                title: 'Tracking & Support',
+                description: 'Real-time status tracking with dedicated support throughout the process.',
+                icon: TrendingUp,
+            },
+        ],
+        timeline: [
+            { stage: 'Application Filing', duration: '1 Day' },
+            { stage: 'Document Verification', duration: '1-2 Days' },
+            { stage: 'NSDL Processing', duration: '5-7 Days' },
+            { stage: 'Card Dispatch', duration: '7-10 Days' },
+        ]
     };
 
-    const applicantTypes = [
-        {
-            type: 'Individual (Indian)',
-            description: 'For Indian citizens residing in India or abroad.',
-            icon: User,
-            features: ['Form 49A', 'Aadhaar e-KYC available', 'Photo & Signature update', 'Instant e-PAN option'],
-        },
-        {
-            type: 'Entities (Non-Individual)',
-            description: 'For Companies, LLPs, Partnerships, Trusts, and NGOs.',
-            icon: Building2,
-            features: ['Form 49A', 'Incorporation Deed required', 'Auth Signatory KYC', 'No photo on card'],
-        },
-        {
-            type: 'Foreign Citizens',
-            description: 'For NRIs and Foreign Companies transacting in India.',
-            icon: Globe,
-            features: ['Form 49AA', 'Passport/OCI required', 'Apostilled documents', 'International dispatch'],
-        },
-    ];
+    // Merge fetched plans if available
+    const content = { ...defaultContent };
+    if (fetchedService && fetchedService.plans && fetchedService.plans.length > 0) {
+        content.plans = fetchedService.plans.map((p: any, index: number) => {
+            const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-yellow-500'];
+            const color = colors[index % colors.length];
 
-    const benefits = [
-        'Universal Valid Proof of Identity',
-        'Mandatory for Income Tax Returns (ITR)',
-        'Essential for Opening Bank Accounts',
-        'Required for Buying/Selling Vehicles & Property',
-        'Mandatory for Investments (Shares, MF)',
-        'Claiming Income Tax Refunds',
-        'Applying for Credit Cards/Loans',
-        'Getting Telephone/Internet Connection',
-    ];
+            return {
+                id: p.id,
+                name: p.planType,
+                price: p.discountedPrice || p.price,
+                description: p.planType === 'Standard' ? 'Most Popular Choice' : '',
+                recommended: p.planType === 'Standard' || p.isPopular,
+                color: color,
+                features: p.scopes ? p.scopes.map((s: any) => s.title || s.description) : (p.features || [])
+            };
+        });
+    }
 
-    const criticalConsiderations = [
-        {
-            title: 'Aadhaar Link',
-            description: 'Mandatory to link PAN with Aadhaar. Inoperative PAN leads to higher TDS.',
-            icon: Fingerprint,
-        },
-        {
-            title: 'Duplicate PAN',
-            description: 'Possessing more than one PAN is illegal. Penalty of ₹10,000 applies.',
-            icon: AlertCircle,
-        },
-        {
-            title: 'Minor Applicant',
-            description: 'PAN for minors does not have photo/signature. It must be updated after 18.',
-            icon: User,
-        },
-        {
-            title: 'Data Match',
-            description: 'Name and DOB on PAN application must exactly match Aadhaar/Supporting Documents.',
-            icon: FileText,
-        },
-    ];
-
-    const documents = [
-        'Aadhaar Card (Proof of Identity & Address)',
-        'Voter ID / Passport / Driving License (Alternative)',
-        'Birth Certificate (Proof of Date of Birth)',
-        'Passport Size Photographs (2 Nos)',
-        'Certificate of Incorporation (For Companies)',
-        'Partnership Deed (For Firms)',
-        'Trust Deed (For Trusts)',
-        'NOC from Office Address (For Business)',
-    ];
-
-    const mandatoryDeclarations = [
-        'Name as per Aadhaar',
-        'Date of Birth / Incorporation',
-        'Father’s Name (Even for married women)',
-        'Residential Address',
-        'Office Address (Mark for Communication)',
-        'Mobile Number & Email ID',
-        'Source of Income (Salary/Business/Other)',
-        'AO Code (Area Code, AO Type, Range Code)',
-    ];
-
-    const process = [
-        {
-            step: 'Form Selection',
-            description: 'Choosing Form 49A (Indian) or 49AA (Foreign) based on status',
-            time: 'Instant',
-        },
-        {
-            step: 'Data Entry',
-            description: 'Filling applicant details carefully matching valid IDs',
-            time: '1 Day',
-        },
-        {
-            step: 'Payment',
-            description: 'Payment of Govt Fee (₹107 for Indian, ₹1017 for Foreign dispatch)',
-            time: 'Instant',
-        },
-        {
-            step: 'KYC & Sign',
-            description: 'Aadhaar OTP Authentication or Physical Document Submission',
-            time: '1 Day',
-        },
-        {
-            step: 'Processing',
-            description: 'Validation by NSDL/UTIITSL and Income Tax Department',
-            time: '5-10 Days',
-        },
-        {
-            step: 'Dispatch',
-            description: 'Delivery of Physical PAN Card to registered address',
-            time: 'Final Step',
-        },
-    ];
-
-    const relatedCompliances = [
-        {
-            compliance: 'Link Aadhaar',
-            form: 'Online',
-            frequency: 'One Time',
-            dueDate: 'Immediate',
-        },
-        {
-            compliance: 'Update Profile',
-            form: 'e-Filing',
-            frequency: 'As needed',
-            dueDate: 'Before filing ITR',
-        },
-        {
-            compliance: 'Correction',
-            form: 'CSF Form',
-            frequency: 'Event Based',
-            dueDate: 'On change of name/addr',
-        },
-    ];
-
-    const upgradePaths = [
-        {
-            from: 'Physical Mode',
-            to: 'Paperless e-KYC',
-            benefit: 'No need to send physical documents',
-            process: 'Use Aadhaar OTP for signature',
-        },
-        {
-            from: 'e-PAN Only',
-            to: 'Physical Card',
-            benefit: 'Get hard copy wallet size card',
-            process: 'Apply for Reprint of PAN',
-        },
-    ];
-
-    const pricing = [
-        {
-            plan: 'Individual',
-            price: '₹499',
-            desc: 'Indian Citizens',
-            features: [
-                'Form 49A Filing',
-                'Govt Fees Included',
-                'e-PAN Generation',
-                'Dispatch Tracking'
-            ]
-        },
-        {
-            plan: 'Organization',
-            price: '₹999',
-            desc: 'Firm/Company',
-            features: [
-                'Form 49A Filing',
-                'Govt Fees Included',
-                'Document Scrutiny',
-                'Correction Support'
-            ]
-        },
-        {
-            plan: 'Foreign / NRI',
-            price: '₹2,999',
-            features: [
-                'Form 49AA Filing',
-                'Govt Fees Included',
-                'Intl Dispatch',
-                'Priority Support'
-            ]
-        }
-    ];
-
-    const faqs = [
-        {
-            q: 'How long does it take to get a new PAN?',
-            a: 'e-PAN is usually generated within 2-4 days. Physical PAN card takes about 10-15 working days to reach your address.',
-        },
-        {
-            q: 'Can a minor apply for PAN?',
-            a: 'Yes, a PAN can be allotted to a minor. The application is filed by a Representative Assessee (Parent/Guardian). No photo appears on minor’s PAN.',
-        },
-        {
-            q: 'What should I do if my PAN has errors?',
-            a: 'You need to file a "Request for New PAN Card or/and Changes or Correction in PAN Data" form along with supporting proofs for the correct details.',
-        },
-        {
-            q: 'Is it mandatory to link PAN with bank account?',
-            a: 'Yes, for receiving tax refunds and for high-value transactions, banks require your PAN to be linked to your account.',
-        },
-        {
-            q: 'Can a foreign company apply for PAN?',
-            a: 'Yes, foreign entities generating income in India must apply for PAN using Form 49AA.',
-        },
-    ];
-
-    return (
-        <div className="bg-white min-h-screen">
-            {/* Hero Section */}
-            <section className="bg-gradient-to-br from-primary via-primary to-secondary text-white py-16 lg:py-20">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="max-w-4xl">
-                        <div className="inline-block px-4 py-2 bg-accent/20 rounded-full text-sm font-semibold mb-4">
-                            Permanent Account Number
-                        </div>
-                        <h1 className="text-3xl lg:text-5xl text-white mb-4">PAN Application & Correction</h1>
-                        <p className="text-xl text-neutral-100 leading-relaxed mb-6">
-                            Essential identity for every taxpayer. Apply for a new PAN, correct details, or request a reprint. Fast and totally online.
-                        </p>
-                        <div className="flex flex-wrap gap-4">
-                            <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg">
-                                <Clock className="w-5 h-5 text-accent" />
-                                <span>e-PAN in 3 Days</span>
-                            </div>
-                            <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg">
-                                <CreditCard className="w-5 h-5 text-accent" />
-                                <span>Lifetime Validity</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Applicant Types */}
-            <section className="py-16 -mt-8 relative z-10">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {applicantTypes.map((type, index) => (
-                            <div
-                                key={index}
-                                className="bg-white p-8 rounded-xl shadow-lg border border-neutral-200 hover:shadow-2xl transition-all"
-                            >
-                                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
-                                    <type.icon className="w-6 h-6 text-white" />
-                                </div>
-                                <h3 className="text-2xl text-primary mb-3">{type.type}</h3>
-                                <p className="text-neutral-600 mb-6">{type.description}</p>
-                                <ul className="space-y-3">
-                                    {type.features.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-2">
-                                            <CheckCircle className="w-4 h-4 text-accent flex-shrink-0 mt-1" />
-                                            <span className="text-sm text-neutral-700">{feature}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Benefits & Considerations */}
-            <section className="py-16 bg-neutral-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-12">
-                        {/* Benefits */}
-                        <div>
-                            <h2 className="text-3xl lg:text-4xl text-primary mb-6">Power of PAN</h2>
-                            <div className="space-y-3">
-                                {benefits.map((benefit, index) => (
-                                    <div key={index} className="flex items-start gap-3 bg-white p-4 rounded-lg shadow-sm">
-                                        <CheckCircle className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                                        <span className="text-neutral-700">{benefit}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Critical Considerations */}
-                        <div>
-                            <h2 className="text-3xl lg:text-4xl text-primary mb-6">Important Rules</h2>
-                            <div className="space-y-4">
-                                {criticalConsiderations.map((item, index) => (
-                                    <div key={index} className="bg-orange-50 p-6 rounded-lg border border-orange-200">
-                                        <div className="flex items-start gap-3">
-                                            <item.icon className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                                            <div>
-                                                <h3 className="text-lg text-orange-900 font-semibold mb-1">{item.title}</h3>
-                                                <p className="text-orange-800 text-sm">{item.description}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Documents Required */}
-            <section className="py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-12">
-                        <div>
-                            <h2 className="text-3xl lg:text-4xl text-primary mb-6">Documents Checklist</h2>
-                            <p className="text-lg text-neutral-600 mb-6">
-                                Keep these ready for upload
-                            </p>
-                            <div className="space-y-3">
-                                {documents.map((doc, index) => (
-                                    <div key={index} className="flex items-start gap-3 bg-neutral-50 p-4 rounded-lg">
-                                        <FileText className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                                        <span className="text-neutral-700">{doc}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div>
-                            <h2 className="text-3xl lg:text-4xl text-primary mb-6">Application Details</h2>
-                            <p className="text-lg text-neutral-600 mb-6">
-                                Information required in Form 49A
-                            </p>
-                            <div className="bg-gradient-to-br from-primary to-secondary rounded-xl p-6 text-white">
-                                <div className="space-y-3">
-                                    {mandatoryDeclarations.map((clause, index) => (
-                                        <div key={index} className="flex items-start gap-3">
-                                            <CheckCircle className="w-4 h-4 text-accent flex-shrink-0 mt-1" />
-                                            <span className="text-sm text-neutral-100">{clause}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Process */}
-            <section className="py-16 bg-neutral-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl lg:text-4xl text-primary mb-4">Application Process</h2>
-                        <p className="text-lg text-neutral-600">Simple steps to get your PAN card</p>
-                    </div>
-                    <div className="max-w-4xl mx-auto space-y-6">
-                        {process.map((step, index) => (
-                            <div
-                                key={index}
-                                className="bg-white rounded-xl shadow-lg border border-neutral-200 p-6 hover:shadow-2xl transition-all"
-                            >
-                                <div className="flex items-start gap-6">
-                                    <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-lg">
-                                        {index + 1}
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="flex items-start justify-between gap-4 mb-2">
-                                            <h3 className="text-xl text-primary font-semibold">{step.step}</h3>
-                                            <span className="text-sm text-accent font-medium flex items-center gap-1 flex-shrink-0">
-                                                <Clock className="w-4 h-4" />
-                                                {step.time}
-                                            </span>
-                                        </div>
-                                        <p className="text-neutral-600">{step.description}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Related Compliances */}
-            <section className="py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl lg:text-4xl text-primary mb-4">Post-PAN Actions</h2>
-                        <p className="text-lg text-neutral-600">Things to do after receiving PAN</p>
-                    </div>
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {relatedCompliances.map((item, index) => (
-                            <div
-                                key={index}
-                                className="bg-white rounded-xl shadow-lg border border-neutral-200 p-6 hover:shadow-2xl transition-all"
-                            >
-                                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
-                                    <FileText className="w-6 h-6 text-primary" />
-                                </div>
-                                <h3 className="text-xl text-primary mb-2 font-semibold">{item.compliance}</h3>
-                                <div className="space-y-2 text-sm">
-                                    <div className="flex justify-between">
-                                        <span className="text-neutral-500">Method:</span>
-                                        <span className="text-neutral-800 font-medium">{item.form}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-neutral-500">Frequency:</span>
-                                        <span className="text-neutral-800 font-medium">{item.frequency}</span>
-                                    </div>
-                                    <div className="flex justify-between">
-                                        <span className="text-neutral-500">Time:</span>
-                                        <span className="text-accent font-medium">{item.dueDate}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Upgrade Options */}
-            <section className="py-16 bg-neutral-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl lg:text-4xl text-primary mb-4">Application Modes</h2>
-                        <p className="text-lg text-neutral-600">Choose the method that suits you</p>
-                    </div>
-                    <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                        {upgradePaths.map((option, index) => (
-                            <div
-                                key={index}
-                                className="bg-white rounded-xl shadow-lg border border-neutral-200 p-8 hover:shadow-2xl transition-all"
-                            >
-                                <div className="flex items-center gap-3 mb-4">
-                                    <FileText className="w-8 h-8 text-secondary" />
-                                    <ArrowRight className="w-6 h-6 text-neutral-400" />
-                                    <Fingerprint className="w-8 h-8 text-primary" />
-                                </div>
-                                <h3 className="text-xl text-primary mb-2 font-semibold">
-                                    {option.from} → {option.to}
-                                </h3>
-                                <p className="text-neutral-600 mb-4">{option.benefit}</p>
-                                <div className="text-sm text-neutral-500 bg-neutral-50 p-3 rounded-lg">
-                                    <strong>Process:</strong> {option.process}
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Pricing Section */}
-            <section className="py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-4">Service Packages</h2>
-                        <p className="text-lg text-gray-600">Affordable PAN Application Services</p>
-                    </div>
-                    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                        {pricing.map((plan, index) => (
-                            <div key={index} className={`relative bg-white rounded-2xl shadow-lg border ${index === 1 ? 'border-accent shadow-xl scale-105 z-10' : 'border-neutral-200'} p-8 flex flex-col`}>
-                                {index === 1 && (
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-accent text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                                        Best Value
-                                    </div>
-                                )}
-                                <h3 className="text-xl font-bold text-gray-900 mb-6">{plan.plan}</h3>
-                                <div className="mb-8">
-                                    <span className="text-4xl font-bold text-primary">{plan.price}</span>
-                                    <span className="text-gray-500"> /applicant</span>
-                                </div>
-                                <ul className="space-y-4 mb-8 flex-1">
-                                    {plan.features?.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
-                                            <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" />
-                                            {feature}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <button
-                                    onClick={handleStartRegistration}
-                                    className={`w-full py-3 rounded-xl font-bold transition-all ${index === 1
-                                        ? 'bg-accent text-white hover:bg-accent/90 shadow-lg hover:shadow-accent/30'
-                                        : 'bg-primary/5 text-primary hover:bg-primary hover:text-white'
-                                        }`}
-                                >
-                                    Get Started
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* FAQs */}
-            <section className="py-16">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl lg:text-4xl text-primary mb-4">Frequently Asked Questions</h2>
-                    </div>
-                    <div className="space-y-4">
-                        {faqs.map((faq, index) => (
-                            <details
-                                key={index}
-                                className="bg-white rounded-xl shadow-md border border-neutral-200 overflow-hidden group"
-                            >
-                                <summary className="px-6 py-4 cursor-pointer font-medium text-primary hover:bg-neutral-50 transition-colors list-none flex items-center justify-between">
-                                    <span>{faq.q}</span>
-                                    <ArrowRight className="w-5 h-5 transform group-open:rotate-90 transition-transform" />
-                                </summary>
-                                <div className="px-6 pb-4 text-neutral-700 leading-relaxed">
-                                    {faq.a}
-                                </div>
-                            </details>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* CTA */}
-            <section className="py-16 bg-gradient-to-r from-primary to-secondary text-white">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-3xl lg:text-4xl text-white mb-4">Need a PAN Card?</h2>
-                    <p className="text-xl text-neutral-100 mb-8">
-                        Apply online in minutes and get your PAN delivered to your doorstep.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button
-                            onClick={handleStartRegistration}
-                            className="px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center justify-center gap-2">
-                            APPLY NOW
-                            <ArrowRight className="w-5 h-5" />
-                        </button>
-                        <button className="px-8 py-4 bg-white text-primary font-semibold rounded-lg hover:bg-neutral-100 transition-all">
-                            TRACK STATUS
-                        </button>
-                    </div>
-                </div>
-            </section>
-        </div>
-    );
+    return <ServiceTemplate serviceSlug="pan-application" serviceId={fetchedService?.id} content={content} />;
 }
-
 
 
 

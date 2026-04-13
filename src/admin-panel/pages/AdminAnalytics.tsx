@@ -123,12 +123,12 @@ export const AdminAnalytics: React.FC = () => {
                     <div className="flex items-center gap-3">
                         <Button 
                             variant="outline" 
-                            className="h-10 px-4 rounded-lg font-semibold text-xs border-slate-200 hover:bg-slate-50 shadow-sm transition-all"
+                            className="h-10 px-4 rounded-xl font-semibold text-xs border-slate-200 hover:bg-slate-50 shadow-sm transition-all"
                             onClick={fetchAnalytics}
                         >
                             <RefreshCw className={cn("h-3.5 w-3.5 mr-2", loading && "animate-spin")} /> Refresh
                         </Button>
-                        <Button className="h-10 px-4 rounded-lg font-semibold text-xs bg-slate-900 text-black hover:bg-slate-800 shadow-lg shadow-slate-200 transition-all">
+                        <Button className="h-10 px-4 rounded-xl font-semibold text-xs bg-slate-900 text-white hover:bg-slate-800 shadow-lg shadow-slate-200 transition-all">
                             <BarChart2 className="h-3.5 w-3.5 mr-2" /> Export Report
                         </Button>
                     </div>
@@ -304,13 +304,13 @@ export const AdminAnalytics: React.FC = () => {
                     <CardContent className="p-0">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
-                                <thead>
-                                    <tr className="bg-slate-50/30 border-b border-slate-100">
-                                        <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Service Profile</th>
+                                <thead className="bg-slate-50/30">
+                                    <tr>
+                                        <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest rounded-tl-xl">Service Profile</th>
                                         <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Tiers</th>
                                         <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Orders</th>
                                         <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest">Revenue</th>
-                                        <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest text-right">Status Mix</th>
+                                        <th className="px-6 py-4 text-[11px] font-bold text-slate-500 uppercase tracking-widest text-right rounded-tr-xl">Status Mix</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-slate-100">
@@ -318,7 +318,7 @@ export const AdminAnalytics: React.FC = () => {
                                         <tr key={service.id} className="group hover:bg-slate-50/50 transition-all duration-200">
                                             <td className="px-6 py-5">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="h-10 w-10 rounded-lg bg-slate-100 flex items-center justify-center text-slate-700 font-bold group-hover:bg-indigo-600 group-hover:text-black transition-all">
+                                                    <div className="h-10 w-10 rounded-xl bg-slate-100 flex items-center justify-center text-slate-700 font-bold group-hover:bg-indigo-600 group-hover:text-black transition-all">
                                                         {service.name.charAt(0).toUpperCase()}
                                                     </div>
                                                     <div>
@@ -404,7 +404,7 @@ const AnalyticsCard: React.FC<AnalyticsCardProps> = ({ title, value, icon: Icon,
                         <Icon className="h-5 w-5" />
                     </div>
                     <div className={cn(
-                        "flex items-center gap-1 px-2 py-1 rounded-lg text-[11px] font-bold",
+                        "flex items-center gap-1 px-2 py-1 rounded-xl text-[11px] font-bold",
                         trendUp ? "text-emerald-600 bg-emerald-50" : "text-red-600 bg-red-50"
                     )}>
                         {trendUp ? <ArrowUpRight className="h-3 w-3" /> : <ArrowDownRight className="h-3 w-3" />}

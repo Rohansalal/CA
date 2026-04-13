@@ -20,16 +20,34 @@
   <!-- Razorpay Checkout -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
-  <!-- Crisp Chat -->
+  <!-- Crisp Chat — load only on medium+ viewports to avoid double widgets on phones -->
   <script type="text/javascript">
-    window.$crisp = [];
-    window.CRISP_WEBSITE_ID = "23408afc-2ed5-488e-babe-140cb1b63d1a";
     (function () {
-      d = document;
-      s = d.createElement("script");
-      s.src = "https://client.crisp.chat/l.js";
-      s.async = 1;
-      d.getElementsByTagName("head")[0].appendChild(s);
+      var minWidth = 768; // px threshold to load crisp
+      function loadCrisp() {
+        if (window.CRISP_WEBSITE_ID || window.$crisp) return; // already loaded
+        window.$crisp = [];
+        window.CRISP_WEBSITE_ID = "23408afc-2ed5-488e-babe-140cb1b63d1a";
+        var d = document;
+        var s = d.createElement("script");
+        s.src = "https://client.crisp.chat/l.js";
+        s.async = 1;
+        d.getElementsByTagName("head")[0].appendChild(s);
+      }
+
+      if (typeof window !== 'undefined') {
+        if (window.innerWidth >= minWidth) {
+          loadCrisp();
+        } else {
+          var onResize = function () {
+            if (window.innerWidth >= minWidth) {
+              loadCrisp();
+              window.removeEventListener('resize', onResize);
+            }
+          };
+          window.addEventListener('resize', onResize);
+        }
+      }
     })();
   </script>
 </head>

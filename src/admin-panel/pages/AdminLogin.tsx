@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../../user-panel/contexts/AuthContext';
 import { useAdmin } from '../contexts/AdminContext';
 import { Mail, Lock, AlertCircle, Loader, Shield, Eye, EyeOff } from 'lucide-react';
+import { Button } from '../../components/ui/button';
+import { Input } from '../../components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../../components/ui/card';
 
 export const AdminLogin: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -24,9 +26,7 @@ export const AdminLogin: React.FC = () => {
 
     try {
       setLoading(true);
-      // Use the dedicated admin login function which hits /api/auth/admin/login
       await adminLogin(email, password);
-      // If successful, adminLogin sets the token effectively in AdminContext
       navigate('/admin/dashboard');
     } catch (err) {
       setError('Login failed. Please check your credentials.');
@@ -39,105 +39,93 @@ export const AdminLogin: React.FC = () => {
   const isFormValid = email && password && !loading;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary via-primary/95 to-secondary flex items-center justify-center p-4 py-12">
-      <div className="w-full max-w-lg">
-        {/* Logo Section */}
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 py-12">
+      <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full mb-4 shadow-lg">
-            <Shield className="w-8 h-8 text-primary" />
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-900 rounded-2xl mb-4 shadow-lg">
+            <Shield className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold text-black mb-2">Admin Panel</h1>
-          <p className="text-neutral-100">Precision Associates</p>
+          <h1 className="text-4xl font-bold text-slate-900 mb-2">Admin Panel</h1>
+          <p className="text-slate-500">Precision Associates</p>
         </div>
 
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-2xl p-8">
-          <h2 className="text-3xl font-bold text-primary mb-6 text-center">Admin Login</h2>
-
-          {/* Error Alert */}
-          {error && (
-            <div className="mb-6 flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
-              <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-              <p className="text-red-700 text-sm">{error}</p>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Email Field */}
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <Mail className="w-4 h-4 text-primary" />
-                Admin Email
-              </label>
-              <div className="relative">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@example.com"
-                  className="w-full pl-4 pr-4 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                  disabled={loading}
-                />
+        <Card className="rounded-2xl shadow-xl border-slate-200">
+          <CardHeader className="text-center">
+            <CardTitle className="text-2xl font-bold text-slate-900">Secure Sign In</CardTitle>
+            <CardDescription>Enter your administrative credentials</CardDescription>
+          </CardHeader>
+          <CardContent className="p-8">
+            {error && (
+              <div className="mb-6 flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+                <AlertCircle className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                <p className="text-red-700 text-sm">{error}</p>
               </div>
-            </div>
+            )}
 
-            {/* Password Field */}
-            <div>
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700 mb-2">
-                <Lock className="w-4 h-4 text-primary" />
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  type={showPassword ? 'text' : 'password'}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder="••••••••"
-                  className="w-full pl-4 pr-12 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition"
-                  disabled={loading}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3.5 text-gray-400 hover:text-gray-600 transition-colors"
-                  disabled={loading}
-                >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Admin Email</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <Input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="admin@example.com"
+                    className="pl-10 h-11"
+                    disabled={loading}
+                  />
+                </div>
               </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Password</label>
+                <div className="relative">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <Input
+                    type={showPassword ? 'text' : 'password'}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="••••••••"
+                    className="pl-10 pr-10 h-11"
+                    disabled={loading}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 text-slate-400 hover:text-slate-600"
+                    disabled={loading}
+                  >
+                    {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  </Button>
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                disabled={!isFormValid}
+                className="w-full h-12 text-sm font-semibold bg-slate-900 text-white hover:bg-slate-800"
+              >
+                {loading ? (
+                  <>
+                    <Loader className="w-5 h-5 animate-spin mr-2" />
+                    Signing in...
+                  </>
+                ) : (
+                  'Admin Login'
+                )}
+              </Button>
+            </form>
+
+            <div className="mt-6 text-center">
+              <Link to="/" className="text-sm text-slate-600 hover:text-slate-900 font-medium transition inline-flex items-center gap-1">
+                <span>←</span> Back to Home
+              </Link>
             </div>
-
-            {/* Login Button */}
-            <button
-              type="submit"
-              disabled={!isFormValid}
-              className="w-full py-3 bg-gradient-to-r from-primary to-secondary text-black font-semibold rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-            >
-              {loading ? (
-                <>
-                  <Loader className="w-5 h-5 animate-spin" />
-                  Signing in...
-                </>
-              ) : (
-                'Admin Login'
-              )}
-            </button>
-          </form>
-
-          {/* Security Notice */}
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-blue-800 text-xs leading-relaxed">
-              <strong>Security Notice:</strong> This admin panel is protected. Only users with authorized roles can access.
-            </p>
-          </div>
-
-          {/* Back to Home */}
-          <div className="mt-6 text-center">
-            <Link to="/" className="text-sm text-primary hover:text-primary/80 font-medium transition inline-flex items-center gap-1">
-              <span>←</span> Back to Home
-            </Link>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

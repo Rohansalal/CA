@@ -11,22 +11,23 @@ interface LoginFormProps {
   onSwitchToRegister: () => void;
   onSuccess: (role: string) => void;
   locationState: Record<string, unknown>;
+  isMobile?: boolean;
 }
 
 const slideVariants: Variants = {
-  enter: (dir: number) => ({ x: dir > 0 ? 72 : -72, opacity: 0 }),
+  enter: (dir: number) => ({ x: dir > 0 ? 48 : -48, opacity: 0 }),
   center: {
     x: 0, opacity: 1,
-    transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] },
+    transition: { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] },
   },
   exit: (dir: number) => ({
-    x: dir > 0 ? -72 : 72, opacity: 0,
-    transition: { duration: 0.28, ease: [0.4, 0, 1, 1] },
+    x: dir > 0 ? -48 : 48, opacity: 0,
+    transition: { duration: 0.25, ease: [0.4, 0, 1, 1] },
   }),
 };
 
 export const LoginForm: React.FC<LoginFormProps> = ({
-  direction, onSwitchToRegister, onSuccess, locationState,
+  direction, onSwitchToRegister, onSuccess, locationState, isMobile = false,
 }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -64,13 +65,16 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       initial="enter"
       animate="center"
       exit="exit"
+      role="tabpanel"
+      id="panel-login"
+      aria-labelledby="tab-login"
     >
-      {/* Heading */}
+      {/* Heading - hidden on mobile as it's in the page header */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.06 }}
-        className="mb-7"
+        className={`${isMobile ? 'hidden' : 'mb-7'}`}
       >
         <h2
           className="text-[1.75rem] font-bold text-[#0b2c4d] tracking-[-0.03em] leading-tight"
@@ -88,14 +92,16 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         <motion.div
           initial={{ opacity: 0, y: -6 }}
           animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-3 p-4 mb-5 bg-red-50 border border-red-100 rounded-2xl"
+          className="flex items-start gap-3 p-3 sm:p-4 mb-4 sm:mb-5 bg-red-50 border border-red-100 rounded-xl sm:rounded-2xl"
+          role="alert"
+          aria-live="polite"
         >
-          <AlertCircle className="w-4.5 h-4.5 text-red-500 shrink-0 mt-0.5" />
-          <p className="text-red-600 text-[13.5px] leading-snug">{error}</p>
+          <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 shrink-0 mt-0.5" />
+          <p className="text-red-600 text-[13px] sm:text-[13.5px] leading-snug">{error}</p>
         </motion.div>
       )}
 
-      <form onSubmit={handleSubmit} noValidate className="space-y-4">
+      <form onSubmit={handleSubmit} noValidate className="space-y-3 sm:space-y-4">
         <InputField
           label="Email address"
           type="email"
@@ -107,18 +113,19 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           delay={0.09}
           disabled={loading}
           autoComplete="email"
+          aria-label="Email address"
         />
 
         {/* Password with inline forgot link */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">
-            <label className="text-[13.5px] font-semibold text-[#2d3748] tracking-[-0.01em]">
+            <label className="text-[13px] sm:text-[13.5px] font-semibold text-[#2d3748] tracking-[-0.01em]">
               Password
             </label>
             <Link
               to="/forgot-password"
-              className="text-[12.5px] font-semibold text-[#136da1] hover:text-[#0b2c4d] transition-colors"
-              tabIndex={-1}
+              className="text-[11.5px] sm:text-[12.5px] font-semibold text-[#136da1] hover:text-[#0b2c4d] transition-colors"
+              tabIndex={loading ? -1 : 0}
             >
               Forgot password?
             </Link>
@@ -133,10 +140,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({
               <motion.button
                 type="button"
                 onClick={() => setShowPwd((p) => !p)}
-                whileHover={{ scale: 1.18 }}
-                whileTap={{ scale: 0.88 }}
-                className="text-[#94a3b8] hover:text-[#475569] transition-colors focus:outline-none"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="text-[#94a3b8] hover:text-[#475569] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded p-1"
                 tabIndex={-1}
+                aria-label={showPwd ? 'Hide password' : 'Show password'}
               >
                 {showPwd ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
               </motion.button>
@@ -145,6 +153,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({
             delay={0.13}
             disabled={loading}
             autoComplete="current-password"
+            aria-label="Password"
           />
         </div>
 
@@ -156,15 +165,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.32, delay: 0.2 }}
           whileHover={!loading ? {
-            scale: 1.018,
-            boxShadow: '0 10px 32px rgba(13,93,145,0.45)',
+            scale: 1.015,
+            boxShadow: '0 8px 24px rgba(13,93,145,0.4)',
             y: -1,
           } : {}}
-          whileTap={!loading ? { scale: 0.982 } : {}}
-          className="w-full h-[54px] rounded-2xl text-white text-[15px] font-bold flex items-center justify-center gap-2.5 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          whileTap={!loading ? { scale: 0.985 } : {}}
+          className="w-full h-[48px] sm:h-[54px] rounded-xl sm:rounded-2xl text-white text-[14px] sm:text-[15px] font-bold flex items-center justify-center gap-2.5 mt-2 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           style={{
             background: 'linear-gradient(135deg, #2196f3 0%, #136da1 50%, #0d5a8e 100%)',
-            boxShadow: '0 4px 20px rgba(19,109,161,0.35)',
+            boxShadow: '0 4px 16px rgba(19,109,161,0.3)',
           }}
         >
           {loading ? (
@@ -179,9 +188,9 @@ export const LoginForm: React.FC<LoginFormProps> = ({
       </form>
 
       {/* Divider */}
-      <div className="flex items-center gap-3 my-6">
+      <div className="flex items-center gap-3 my-5 sm:my-6">
         <div className="flex-1 h-px bg-[#e2e8f0]" />
-        <span className="text-[11.5px] text-[#a0aec0] font-medium tracking-widest uppercase">or</span>
+        <span className="text-[11px] sm:text-[11.5px] text-[#a0aec0] font-medium tracking-widest uppercase">or</span>
         <div className="flex-1 h-px bg-[#e2e8f0]" />
       </div>
 
@@ -189,13 +198,13 @@ export const LoginForm: React.FC<LoginFormProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.25 }}
-        className="text-center text-[14px] text-[#64748b]"
+        className="text-center text-[13px] sm:text-[14px] text-[#64748b]"
       >
         Don't have an account?{' '}
         <button
           type="button"
           onClick={onSwitchToRegister}
-          className="font-bold text-[#136da1] hover:text-[#0b2c4d] transition-colors"
+          className="font-bold text-[#136da1] hover:text-[#0b2c4d] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded px-1"
         >
           Sign up free →
         </button>

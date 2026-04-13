@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import api from '../../utils/api';
+import { AUTH_MODE, getUserToken, removeUserToken, setUserToken } from '../../utils/auth';
 
 interface UserProfile {
   businessName?: string;
@@ -41,18 +42,30 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Check if user is already logged in on mount
+  // Check if user is already logged in on mount.
   useEffect(() => {
     const checkAuth = async () => {
       setLoading(true);
       try {
+        const token = getUserToken();
+        if (AUTH_MODE === 'bearer' && !token) {
+          setUser(null);
+          setLoading(false);
+          return;
+        }
+
         const response = await api.get('/auth/me');
         setUser(response.data.user);
       } catch (err: any) {
-        if (err.response?.status !== 401 && err.response?.status !== 403) {
+        // Don't redirect on auth check failure - just clear user
+        if (err.response?.status === 401 || err.response?.status === 403) {
+          if (AUTH_MODE === 'bearer') {
+            removeUserToken();
+          }
+          setUser(null);
+        } else if (err.response?.status !== 401 && err.response?.status !== 403) {
           console.error('Network or system error during auth check:', err);
         }
-        setUser(null);
       } finally {
         setLoading(false);
       }
@@ -68,6 +81,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     try {
       const response = await api.post('/auth/login', { email, password });
       const data = response.data;
+      if (data.token && AUTH_MODE === 'bearer') {
+        setUserToken(data.token);
+      }
       setUser(data.user);
       return data.user;
     } catch (err: any) {
@@ -84,7 +100,11 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setError(null);
     try {
       const response = await api.post('/auth/register', { name, email, phone, password });
-      setUser(response.data.user);
+      const data = response.data;
+      if (data.token && AUTH_MODE === 'bearer') {
+        setUserToken(data.token);
+      }
+      setUser(data.user);
     } catch (err: any) {
       const errorMsg = err.response?.data?.error || err.message || 'Registration failed';
       setError(errorMsg);
@@ -100,6 +120,9 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } catch (err) {
       console.error('Logout request failed:', err);
     } finally {
+      if (AUTH_MODE === 'bearer') {
+        removeUserToken();
+      }
       setUser(null);
       setError(null);
     }

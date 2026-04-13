@@ -7,8 +7,8 @@ import {
 import { useAuth } from '../../user-panel/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'sonner';
-
-const API = import.meta.env.VITE_API_BASE_URL || '/api';
+import api from '../../utils/api';
+import { useServiceBySlug, useCreateOrder } from '../../hooks';
 
 interface PlanScope { id: number; title: string; isIncluded: boolean; }
 interface ServicePlan {
@@ -62,17 +62,23 @@ const savePct = (price: string, discounted?: string) => {
    MODAL
 ══════════════════════════════════════════════════════════ */
 export const PlanSelectionModal: React.FC<Props> = ({ isOpen, onClose, serviceName }) => {
-  const [plans, setPlans]       = useState<ServicePlan[]>([]);
-  const [loading, setLoading]   = useState(true);
-  const [selecting, setSelecting] = useState<number | null>(null);
-  const [serviceId, setServiceId] = useState<number | null>(null);
   const [activeMobile, setActiveMobile] = useState(0);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const createOrder = useCreateOrder();
+
+  // Build slug from service name
+  const slug = serviceName
+    ? serviceName.toLowerCase()
+        .replace(/[–—]/g, '').replace(/[^a-z0-9\s-]/g, '')
+        .trim().replace(/\s+/g, '-').replace(/-+/g, '-')
+    : '';
+
+  const { data: service, isLoading: loading } = useServiceBySlug(slug);
+  const plans: ServicePlan[] = (service?.plans || []) as ServicePlan[];
 
   useEffect(() => {
-    if (isOpen && serviceName) { setActiveMobile(0); fetchPlans(); }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (isOpen) setActiveMobile(0);
   }, [isOpen, serviceName]);
 
   useEffect(() => {
@@ -80,70 +86,28 @@ export const PlanSelectionModal: React.FC<Props> = ({ isOpen, onClose, serviceNa
     return () => { document.body.style.overflow = ''; };
   }, [isOpen]);
 
-  const fetchPlans = async () => {
-    try {
-      setLoading(true);
-      const slug = serviceName.toLowerCase()
-        .replace(/[–—]/g, '').replace(/[^a-z0-9\s-]/g, '')
-        .trim().replace(/\s+/g, '-').replace(/-+/g, '-');
-      const token = localStorage.getItem('token');
-      const headers: Record<string, string> = {};
-      if (token) headers['Authorization'] = `Bearer ${token}`;
-      const res = await fetch(`${API}/services/slug/${slug}`, { headers, credentials: 'include' });
-      if (!res.ok) throw new Error('Service not found');
-      const data = await res.json();
-      setServiceId(data.service.id);
-      setPlans(data.service.plans || []);
-    } catch {
-      toast.error('Could not load plans. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [selectingPlanId, setSelectingPlanId] = useState<number | null>(null);
 
   const handleSelectPlan = async (plan: ServicePlan) => {
     if (!isAuthenticated) {
       navigate('/login', { state: { returnTo: window.location.pathname, openPlanModal: serviceName } });
       return;
     }
-    setSelecting(plan.id);
+    if (!service?.id) {
+      toast.error('Service not found. Please try again.');
+      return;
+    }
+    setSelectingPlanId(plan.id);
     try {
-      const token = localStorage.getItem('token');
-      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
-      if (token) headers['Authorization'] = `Bearer ${token}`;
-      const response = await fetch(`${API}/orders/create`, {
-        method: 'POST', headers, credentials: 'include',
-        body: JSON.stringify({ serviceId, planId: plan.id }),
-      });
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err.error || 'Failed to create order');
-      }
-      const data = await response.json();
-      toast.success('Service added! Redirecting to fill your details…');
+      const data = await createOrder.mutateAsync({ serviceId: service.id, planId: plan.id });
+      toast.success('Service added! Redirecting to payment…');
       onClose();
-
       const orderItemId = data.order?.items?.[0]?.id;
-      const orderId     = data.order?.id;
-      const planType    = (data.order?.items?.[0]?.planType || '').toUpperCase();
-      const isITR       = serviceName.toLowerCase().includes('itr') ||
-                          serviceName.toLowerCase().includes('income tax');
-
-      if (isITR && orderItemId) {
-        if (planType.includes('BASIC'))         navigate(`/dashboard/itr/basic/${orderItemId}`);
-        else if (planType.includes('STANDARD')) navigate(`/dashboard/itr/standard/${orderItemId}`);
-        else if (planType.includes('PREMIUM'))  navigate(`/dashboard/itr/premium/${orderItemId}`);
-        else if (planType.includes('ELITE'))    navigate(`/dashboard/itr/elite/${orderItemId}`);
-        else navigate('/dashboard');
-      } else if (orderId) {
-        navigate(`/dashboard/order/${orderId}/submit-details`);
-      } else {
-        navigate('/dashboard');
-      }
-    } catch (err: any) {
-      toast.error(err.message || 'Failed to select plan');
+      navigate(orderItemId ? `/dashboard/order/${orderItemId}/payment` : '/dashboard');
+    } catch {
+      // error handled by hook
     } finally {
-      setSelecting(null);
+      setSelectingPlanId(null);
     }
   };
 
@@ -278,7 +242,7 @@ export const PlanSelectionModal: React.FC<Props> = ({ isOpen, onClose, serviceNa
                             plan={plans[activeMobile]}
                             index={activeMobile}
                             totalPlans={plans.length}
-                            selecting={selecting}
+                            selecting={selectingPlanId}
                             onSelect={handleSelectPlan}
                           />
                         </motion.div>
@@ -301,7 +265,7 @@ export const PlanSelectionModal: React.FC<Props> = ({ isOpen, onClose, serviceNa
                           plan={plan}
                           index={idx}
                           totalPlans={plans.length}
-                          selecting={selecting}
+                          selecting={selectingPlanId}
                           onSelect={handleSelectPlan}
                         />
                       ))}

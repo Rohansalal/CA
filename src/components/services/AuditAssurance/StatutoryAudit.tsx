@@ -1,442 +1,252 @@
-import { Scale, CheckCircle, FileText, Clock, ArrowRight, Shield, Building2, Gavel, AlertCircle, Briefcase } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../user-panel/contexts/AuthContext';
+import React, { useState } from 'react';
+import {
+    Scale, CheckCircle, FileText, Clock, ArrowRight, Shield, Building2, Gavel, AlertCircle,
+    Award, Zap, TrendingUp
+} from 'lucide-react';
+import { ServiceTemplate, ServiceContent } from '../ServiceTemplate';
 
 export function StatutoryAudit() {
-    const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const [fetchedService, setFetchedService] = useState<any>(null);
 
-    const handleStartService = () => {
-        if (isAuthenticated) {
-            navigate('/dashboard', { state: { selectedService: 'Statutory Audit' } });
-        } else {
-            navigate('/login', { state: { returnTo: '/dashboard', selectedService: 'Statutory Audit' } });
-        }
+    // Fetch dynamic content
+    React.useEffect(() => {
+        const fetchService = async () => {
+            try {
+                const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+                const res = await fetch(`${API_URL}/services/slug/statutory-audit`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setFetchedService(data.service);
+                }
+            } catch (err) {
+                console.error("Failed to fetch Statutory Audit service details", err);
+            }
+        };
+        fetchService();
+    }, []);
+
+    const defaultContent: ServiceContent = {
+        title: "Statutory Audit",
+        subtitle: "Independent Assurance on Financial Statements",
+        description: "Comprehensive statutory audit services ensuring compliance with Companies Act, 2013 and Accounting Standards. Independent opinion for stakeholder confidence.",
+        heroFeatures: [
+            { icon: Award, text: "MCA Compliant" },
+            { icon: Shield, text: "Risk Assessment" },
+            { icon: Clock, text: "Timely Reporting" }
+        ],
+        process: [
+            { step: "1", title: "Appointment", description: "Filing ADT-1 and issuing Engagement Letter defining audit scope." },
+            { step: "2", title: "Planning", description: "Understanding business operations, risk assessment, and audit strategy." },
+            { step: "3", title: "Execution", description: "Substantive testing of transactions, balances, and internal controls." },
+            { step: "4", title: "Reporting", description: "Drafting Audit Report with true and fair opinion on financials." }
+        ],
+        typesTitle: "Our Audit Approach",
+        types: [
+            {
+                title: 'Independent Opinion',
+                description: 'True & Fair view certification of financial statements.',
+                icon: Scale,
+                features: ['Financial Analysis', 'Accounting Standards', 'Fraud Detection'],
+            },
+            {
+                title: 'Legal Compliance',
+                description: 'Full compliance with Companies Act, 2013 requirements.',
+                icon: Gavel,
+                features: ['Section 143', 'CARO 2020', 'Ind AS Compliance'],
+            },
+            {
+                title: 'Stakeholder Trust',
+                description: 'Enhanced credibility for banks, investors, and regulators.',
+                icon: Shield,
+                features: ['Investor Confidence', 'Bank Loans', 'Valuation Support'],
+            },
+        ],
+        // Default plans
+        plans: [
+            {
+                id: 1,
+                name: 'Small Company',
+                price: 15000,
+                color: 'bg-blue-500',
+                description: "For Startups & Small Cos",
+                features: [
+                    'Turnover < ₹50 Lakhs',
+                    'Basic Audit Report',
+                    'Compliance Check',
+                    'AOC-4 Filing Support',
+                    'Email Support'
+                ]
+            },
+            {
+                id: 2,
+                name: 'Medium Company',
+                price: 35000,
+                color: 'bg-green-500',
+                recommended: true,
+                description: "For Growing Businesses",
+                features: [
+                    'Turnover < ₹5 Crore',
+                    'Detailed CARO Reporting',
+                    'Internal Controls Review',
+                    'Tax Audit Coordination',
+                    'Priority Support'
+                ]
+            },
+            {
+                id: 3,
+                name: 'Large Enterprise',
+                price: 'Custom',
+                color: 'bg-purple-500',
+                description: "For Listed & Large Cos",
+                features: [
+                    'Full IFRS/Ind AS Audit',
+                    'IFC Assessment',
+                    'Consolidated Statements',
+                    'Board Presentation',
+                    'Dedicated Audit Team'
+                ]
+            }
+        ],
+        descriptionTitle: "What is Statutory Audit?",
+        descriptionContent: "Statutory Audit is a mandatory audit of financial statements conducted by an independent Chartered Accountant to ensure they present a true and fair view of the company's financial position. Required under Section 143 of the Companies Act 2013, it involves examination of books of accounts, vouchers, and financial records. The auditor provides an opinion on whether financial statements comply with accounting standards and applicable laws, giving stakeholders confidence in the reported financial information.",
+        faqs: [
+            {
+                q: 'Is Statutory Audit mandatory for all companies?',
+                a: 'Yes, every company registered under the Companies Act 2013, irrespective of turnover or business activity, must get its annual accounts audited by a practicing Chartered Accountant.',
+            },
+            {
+                q: 'What is CARO 2020?',
+                a: 'Companies (Auditor\'s Report) Order, 2020 requires auditors to report on 21 specific matters including inventory, loans, fixed assets, fraud, and related party transactions.',
+            },
+            {
+                q: 'Can a relative of director be appointed as auditor?',
+                a: 'No, a person who is a relative of a director or key managerial personnel cannot be appointed as auditor. Also, indebtedness > ₹5 Lakhs disqualifies an auditor.',
+            },
+            {
+                q: 'What are penalties for non-compliance?',
+                a: 'Minimum fine of ₹25,000 under Section 147. Officers in default may face imprisonment up to 1 year. Company cannot file annual returns without audit.',
+            },
+            {
+                q: 'What is the audit deadline?',
+                a: 'Audit must be completed before AGM (Annual General Meeting), which should be held within 6 months from financial year end (by September 30th).',
+            },
+        ],
+        checklist: [
+            "Books of Accounts (Tally/Zoho/ERP)",
+            "Bank Statements & Reconciliation",
+            "Vouchers & Bills (Purchase/Sales)",
+            "Fixed Asset Register",
+            "Inventory Records",
+            "Statutory Registers",
+            "Previous Year Audit Report",
+            "Board Minutes & Resolutions"
+        ],
+        termsAndConditions: [
+            "Audit fees are based on company size and complexity.",
+            "All statutory documents must be provided for verification.",
+            "Management representation letter is mandatory.",
+            "Fraud detection is incidental, not primary audit objective.",
+            "Timely cooperation is essential for audit completion."
+        ],
+        benefits: [
+            'Mandatory legal compliance',
+            'True & fair financial reporting',
+            'Fraud and error detection',
+            'Improved internal controls',
+            'Investor & banker confidence',
+            'Loan and funding eligibility',
+        ],
+        criticalConsiderations: [
+            {
+                title: '₹25,000 Penalty',
+                description: 'Section 147 imposes minimum ₹25,000 fine. Officers may face imprisonment up to 1 year for willful non-compliance.',
+                icon: AlertCircle,
+            },
+            {
+                title: 'Auditor Independence',
+                description: 'Auditor holding securities or indebted > ₹5 Lakhs cannot be appointed. Must maintain strict independence.',
+                icon: Shield,
+            },
+            {
+                title: 'Mandatory Rotation',
+                description: 'Listed and certain class companies must rotate auditors after specified tenure to ensure independence.',
+                icon: Clock,
+            },
+            {
+                title: 'Fraud Reporting',
+                description: 'Auditor must report fraud > ₹1 Crore to Central Government under Section 143(12).',
+                icon: Scale,
+            }
+        ],
+        // New detailed content fields
+        documentsRequired: [
+            'Books of Accounts (Tally/Zoho/ERP)',
+            'Supporting Vouchers & Bills',
+            'Bank Statements & Confirmations',
+            'Minutes of Board Meetings',
+            'Previous Audit Report',
+            'Statutory Registers',
+            'Shareholding Patterns',
+            'Related Party Transactions',
+        ],
+        dataRequired: [
+            'Trial Balance & Financials',
+            'List of Related Parties',
+            'Contingent Liabilities Statement',
+            'Fixed Asset Register Details',
+            'Inventory Valuation Method',
+            'Legal Case Details',
+            'Internal Control Documentation',
+            'Management Representations',
+        ],
+        serviceDetails: [
+            {
+                title: 'Financial Statement Audit',
+                description: 'Comprehensive audit of Balance Sheet, P&L Account, and Cash Flow Statement per Ind AS.',
+                icon: FileText,
+            },
+            {
+                title: 'CARO 2020 Compliance',
+                description: 'Detailed reporting on 21 specific clauses as mandated by Companies Auditor Report Order.',
+                icon: Gavel,
+            },
+            {
+                title: 'Internal Controls Review',
+                description: 'Assessment of Internal Financial Controls over Financial Reporting (IFC-FR).',
+                icon: Shield,
+            },
+            {
+                title: 'Risk-Based Audit',
+                description: 'Identification of material misstatements through risk assessment procedures.',
+                icon: TrendingUp,
+            },
+        ],
+        timeline: [
+            { stage: 'Appointment', duration: 'Day 1' },
+            { stage: 'Planning', duration: 'Week 1' },
+            { stage: 'Field Work', duration: '2-3 Weeks' },
+            { stage: 'Reporting', duration: 'Week 4' },
+        ]
     };
 
-    const features = [
-        {
-            icon: Scale,
-            title: 'Independent Opinion',
-            description: 'True & Fair view of financial statements.',
-            features: ['Financial Analysis', 'Accounting Standards', 'Fraud Detection'],
-        },
-        {
-            icon: Gavel,
-            title: 'Legal Compliance',
-            description: 'Compliance with Companies Act, 2013.',
-            features: ['Section 143', 'CARO 2020', 'Accounting Standards'],
-        },
-        {
-            icon: Shield,
-            title: 'Stakeholder Trust',
-            description: 'Assurance for banks & investors.',
-            features: ['Investor Confidence', 'Bank Loans', 'Valuation Support'],
-        },
-    ];
+    // Merge fetched plans if available
+    const content = { ...defaultContent };
+    if (fetchedService && fetchedService.plans && fetchedService.plans.length > 0) {
+        content.plans = fetchedService.plans.map((p: any, index: number) => {
+            const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-yellow-500'];
+            const color = colors[index % colors.length];
 
-    const benefits = [
-        'Mandatory for all companies',
-        'Adds credibility to financial statements',
-        'Helps in detection of fraud/error',
-        'Improvement in internal systems',
-        'Ensures accounting standards compliance',
-        'Required for loans and funding',
-        'Valuable insights for management',
-        'Protects shareholder interests'
-    ];
+            return {
+                id: p.id,
+                name: p.planType,
+                price: p.discountedPrice || p.price,
+                description: p.planType === 'Standard' ? 'Most Popular Choice' : '',
+                recommended: p.planType === 'Standard' || p.isPopular,
+                color: color,
+                features: p.scopes ? p.scopes.map((s: any) => s.title || s.description) : (p.features || [])
+            };
+        });
+    }
 
-    const criticalConsiderations = [
-        {
-            title: 'Penalty Alert',
-            description: 'Section 147: Minimum Fine ₹25,000. Imprisonment up to 1 year for officers in default if willful.',
-            icon: AlertCircle,
-        },
-        {
-            title: 'Disqualification',
-            description: 'Auditor cannot be appointed if he holds security or is indebted > ₹5 Lakhs.',
-            icon: Shield,
-        },
-        {
-            title: 'Rotation',
-            description: 'Mandatory rotation of auditors for listed and certain class of companies.',
-            icon: Clock,
-        },
-        {
-            title: 'Reporting',
-            description: 'Auditor must report fraud to Central Govt if amount > ₹1 Crore.',
-            icon: Scale,
-        },
-    ];
-
-    const documents = [
-        'Books of Accounts (Tally/Zoho etc)',
-        'Supporting Vouchers & Bills',
-        'Bank Statements & Confirmations',
-        'Minutes of Board Meetings',
-        'Previous Audit Report',
-        'Statutory Registers',
-        'Shareholding Patterns'
-    ];
-
-    const dataRequired = [
-        'Trial Balance & Financials',
-        'List of Related Parties',
-        'Contingent Liabilities',
-        'Fixed Asset Register',
-        'Inventory Valuation Certificate',
-        'Legal Case details',
-        'Internal Control Notes'
-    ];
-
-    const process = [
-        {
-            step: 'Appointment',
-            description: 'Filing ADT-1 and issue of Engagement Letter.',
-            time: 'Day 1',
-        },
-        {
-            step: 'Planning',
-            description: 'Understanding business and risk assessment.',
-            time: 'Day 2-3',
-        },
-        {
-            step: 'Execution',
-            description: 'Substantive testing of transactions and balances.',
-            time: 'Week 2',
-        },
-        {
-            step: 'Reporting',
-            description: 'Drafting Audit Report and discussion with management.',
-            time: 'Week 3',
-        },
-        {
-            step: 'Finalization',
-            description: 'Signing of Financial Statements and Audit Report.',
-            time: 'Final',
-        },
-        {
-            step: 'Filing',
-            description: 'Assistance in filing AOC-4 with ROC.',
-            time: 'Post Audit',
-        }
-    ];
-
-    const pricing = [
-        {
-            plan: 'Small Co.',
-            price: '₹15,000',
-            desc: 'Startups',
-            features: [
-                'Turnover < ₹50 Lakhs',
-                'Basic Audit Report',
-                'Compliance Check',
-                'Annual Filing Support'
-            ]
-        },
-        {
-            plan: 'Medium Co.',
-            price: '₹35,000',
-            desc: 'Growing',
-            features: [
-                'Turnover < ₹5 Cr',
-                'Detailed Reporting',
-                'CARO Reporting',
-                'Tax Audit Verification'
-            ]
-        },
-        {
-            plan: 'Large Co.',
-            price: 'Custom',
-            desc: 'Enterprise',
-            features: [
-                'Complete Audit',
-                'Internal Financial Controls',
-                'Consolidated Statements',
-                'Board Presentation'
-            ]
-        }
-    ];
-
-    const faqs = [
-        {
-            q: 'Is Statutory Audit mandatory for small companies?',
-            a: 'Yes, every company registered under the Companies Act, irrespective of turnover or loss, must get its accounts audited.',
-        },
-        {
-            q: 'What is CARO 2020?',
-            a: 'Companies (Auditor\'s Report) Order, 2020 requires auditor to report on 21 specific clauses including inventory, loans, fraud, etc.',
-        },
-        {
-            q: 'Can use a relative as auditor?',
-            a: 'No, a relative of a director or key managerial personnel cannot be appointed as an auditor.',
-        },
-        {
-            q: 'What if accounts are not audited?',
-            a: 'The company cannot file its annual return (AOC-4), attracting heavy penalties. Directors may also face disqualification.',
-        },
-        {
-            q: 'When should the audit be completed?',
-            a: 'Ideally before the AGM (Annual General Meeting), which must be held within 6 months from the end of financial year (i.e., by 30th Sept).',
-        },
-    ];
-
-    return (
-        <div className="bg-white min-h-screen">
-            {/* Hero Section */}
-            <section className="bg-gradient-to-br from-primary via-primary to-secondary text-white py-16 lg:py-20">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="max-w-4xl">
-                        <div className="inline-block px-4 py-2 bg-accent/20 rounded-full text-sm font-semibold mb-4">
-                            Corporate Compliance
-                        </div>
-                        <h1 className="text-3xl lg:text-5xl text-white mb-4">Statutory Audit</h1>
-                        <p className="text-xl text-neutral-100 leading-relaxed mb-6">
-                            Independent assurance on your financial statements. We ensure compliance with Companies Act, 2013 and Accounting Standards.
-                        </p>
-                        <div className="flex flex-wrap gap-4">
-                            <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg">
-                                <Building2 className="w-5 h-5 text-accent" />
-                                <span>Mandatory for All</span>
-                            </div>
-                            <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg">
-                                <Shield className="w-5 h-5 text-accent" />
-                                <span>Risk Assessment</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Features Types */}
-            <section className="py-16 -mt-8 relative z-10">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {features.map((item, index) => (
-                            <div
-                                key={index}
-                                className="bg-white p-8 rounded-xl shadow-lg border border-neutral-200 hover:shadow-2xl transition-all"
-                            >
-                                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
-                                    <item.icon className="w-6 h-6 text-white" />
-                                </div>
-                                <h3 className="text-2xl text-primary mb-3">{item.title}</h3>
-                                <p className="text-neutral-600 mb-6">{item.description}</p>
-                                <ul className="space-y-3">
-                                    {item.features.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-2">
-                                            <CheckCircle className="w-4 h-4 text-accent flex-shrink-0 mt-1" />
-                                            <span className="text-sm text-neutral-700">{feature}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Benefits & Considerations */}
-            <section className="py-16 bg-neutral-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-12">
-                        {/* Benefits */}
-                        <div>
-                            <h2 className="text-3xl lg:text-4xl text-primary mb-6">Why Audit?</h2>
-                            <div className="space-y-3">
-                                {benefits.map((benefit, index) => (
-                                    <div key={index} className="flex items-start gap-3 bg-white p-4 rounded-lg shadow-sm">
-                                        <CheckCircle className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                                        <span className="text-neutral-700">{benefit}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Critical Rules */}
-                        <div>
-                            <h2 className="text-3xl lg:text-4xl text-primary mb-6">Critical Rules</h2>
-                            <div className="space-y-4">
-                                {criticalConsiderations.map((item, index) => (
-                                    <div key={index} className="bg-orange-50 p-6 rounded-lg border border-orange-200">
-                                        <div className="flex items-start gap-3">
-                                            <item.icon className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                                            <div>
-                                                <h3 className="text-lg text-orange-900 font-semibold mb-1">{item.title}</h3>
-                                                <p className="text-orange-800 text-sm">{item.description}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Documents Required */}
-            <section className="py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-12">
-                        <div>
-                            <h2 className="text-3xl lg:text-4xl text-primary mb-6">Documents Required</h2>
-                            <p className="text-lg text-neutral-600 mb-6">
-                                Standard list of documents for audit
-                            </p>
-                            <div className="space-y-3">
-                                {documents.map((doc, index) => (
-                                    <div key={index} className="flex items-start gap-3 bg-neutral-50 p-4 rounded-lg">
-                                        <FileText className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                                        <span className="text-neutral-700">{doc}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div>
-                            <h2 className="text-3xl lg:text-4xl text-primary mb-6">Data Needed</h2>
-                            <p className="text-lg text-neutral-600 mb-6">
-                                Specific information for verification
-                            </p>
-                            <div className="bg-gradient-to-br from-primary to-secondary rounded-xl p-6 text-white">
-                                <div className="space-y-3">
-                                    {dataRequired.map((item, index) => (
-                                        <div key={index} className="flex items-start gap-3">
-                                            <CheckCircle className="w-4 h-4 text-accent flex-shrink-0 mt-1" />
-                                            <span className="text-sm text-neutral-100">{item}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Process */}
-            <section className="py-16 bg-neutral-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl lg:text-4xl text-primary mb-4">Audit Process</h2>
-                        <p className="text-lg text-neutral-600">Methodical approach to assurance</p>
-                    </div>
-                    <div className="max-w-4xl mx-auto space-y-6">
-                        {process.map((step, index) => (
-                            <div
-                                key={index}
-                                className="bg-white rounded-xl shadow-lg border border-neutral-200 p-6 hover:shadow-2xl transition-all"
-                            >
-                                <div className="flex items-start gap-6">
-                                    <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-lg">
-                                        {index + 1}
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="flex items-start justify-between gap-4 mb-2">
-                                            <h3 className="text-xl text-primary font-semibold">{step.step}</h3>
-                                            <span className="text-sm text-accent font-medium flex items-center gap-1 flex-shrink-0">
-                                                <Clock className="w-4 h-4" />
-                                                {step.time}
-                                            </span>
-                                        </div>
-                                        <p className="text-neutral-600">{step.description}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Pricing Section */}
-            <section className="py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-4">Professional Fees</h2>
-                        <p className="text-lg text-gray-600">Transparent pricing based on turnover & complexity.</p>
-                    </div>
-                    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                        {pricing.map((plan, index) => (
-                            <div key={index} className={`relative bg-white rounded-2xl shadow-lg border ${index === 1 ? 'border-accent shadow-xl scale-105 z-10' : 'border-neutral-200'} p-8 flex flex-col`}>
-                                {index === 1 && (
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-accent text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                                        {plan.desc}
-                                    </div>
-                                )}
-                                <h3 className="text-xl font-bold text-gray-900 mb-6">{plan.plan}</h3>
-                                <div className="mb-8">
-                                    <span className="text-4xl font-bold text-primary">{plan.price}</span>
-                                    {plan.price !== 'Custom' && <span className="text-gray-500"></span>}
-                                </div>
-                                <ul className="space-y-4 mb-8 flex-1">
-                                    {plan.features.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
-                                            <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" />
-                                            {feature}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <button
-                                    onClick={handleStartService}
-                                    className={`w-full py-3 rounded-xl font-bold transition-all ${index === 1
-                                        ? 'bg-accent text-white hover:bg-accent/90 shadow-lg hover:shadow-accent/30'
-                                        : 'bg-primary/5 text-primary hover:bg-primary hover:text-white'
-                                        }`}
-                                >
-                                    Appoint Auditor
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* FAQs */}
-            <section className="py-16">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl lg:text-4xl text-primary mb-4">Frequently Asked Questions</h2>
-                    </div>
-                    <div className="space-y-4">
-                        {faqs.map((faq, index) => (
-                            <details
-                                key={index}
-                                className="bg-white rounded-xl shadow-md border border-neutral-200 overflow-hidden group"
-                            >
-                                <summary className="px-6 py-4 cursor-pointer font-medium text-primary hover:bg-neutral-50 transition-colors list-none flex items-center justify-between">
-                                    <span>{faq.q}</span>
-                                    <ArrowRight className="w-5 h-5 transform group-open:rotate-90 transition-transform" />
-                                </summary>
-                                <div className="px-6 pb-4 text-neutral-700 leading-relaxed">
-                                    {faq.a}
-                                </div>
-                            </details>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* CTA Section */}
-            <section className="py-16 bg-gradient-to-r from-primary to-secondary text-white">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-3xl md:text-5xl font-bold mb-6">Need a Statutory Auditor?</h2>
-                    <p className="text-xl text-blue-100 mb-10">
-                        Get your accounts audited by expert Chartered Accountants.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button
-                            onClick={handleStartService}
-                            className="px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center justify-center gap-2">
-                            CONTACT US
-                            <ArrowRight className="w-5 h-5" />
-                        </button>
-                    </div>
-                </div>
-            </section>
-        </div>
-    );
+    return <ServiceTemplate serviceSlug="statutory-audit" serviceId={fetchedService?.id} content={content} />;
 }
-
-
-
-
-

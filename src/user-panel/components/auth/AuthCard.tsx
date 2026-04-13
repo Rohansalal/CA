@@ -11,6 +11,7 @@ interface AuthCardProps {
   onLoginSuccess: (role: string) => void;
   onRegisterSuccess: () => void;
   locationState: Record<string, unknown>;
+  isMobile?: boolean;
 }
 
 export const AuthCard: React.FC<AuthCardProps> = ({
@@ -18,6 +19,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({
   onLoginSuccess,
   onRegisterSuccess,
   locationState,
+  isMobile = false,
 }) => {
   const [mode, setMode] = useState<Mode>(initialMode);
   const [direction, setDirection] = useState<number>(0);
@@ -32,22 +34,24 @@ export const AuthCard: React.FC<AuthCardProps> = ({
 
   return (
     <motion.div
-      initial={{ opacity: 0, scale: 0.94, y: 20 }}
-      animate={{ opacity: 1, scale: 1, y: 0 }}
-      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-      className="relative w-full rounded-[28px] overflow-hidden bg-white"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      className="relative w-full bg-white"
       style={{
-        border: '1px solid rgba(0,0,0,0.07)',
-        boxShadow:
-          '0 1px 2px rgba(0,0,0,0.04), 0 6px 20px rgba(0,0,0,0.06), 0 20px 48px rgba(0,0,0,0.06)',
+        borderRadius: isMobile ? '20px' : '28px',
+        border: '1px solid rgba(0,0,0,0.06)',
+        boxShadow: isMobile 
+          ? '0 4px 24px rgba(0,0,0,0.08)' 
+          : '0 1px 2px rgba(0,0,0,0.04), 0 6px 20px rgba(0,0,0,0.06), 0 20px 48px rgba(0,0,0,0.06)',
       }}
     >
       {/* Card body */}
-      <div className="p-8 sm:p-10">
+      <div className={`${isMobile ? 'p-5 sm:p-6' : 'p-8 sm:p-10'}`}>
 
         {/* Toggle */}
-        <div className="mb-8">
-          <ToggleSwitch mode={mode} onChange={handleModeChange} />
+        <div className={`${isMobile ? 'mb-5' : 'mb-8'}`}>
+          <ToggleSwitch mode={mode} onChange={handleModeChange} isMobile={isMobile} />
         </div>
 
         {/* Animated form */}
@@ -60,6 +64,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({
                 onSwitchToRegister={() => handleModeChange('register')}
                 onSuccess={onLoginSuccess}
                 locationState={locationState}
+                isMobile={isMobile}
               />
             ) : (
               <SignupForm
@@ -68,6 +73,7 @@ export const AuthCard: React.FC<AuthCardProps> = ({
                 onSwitchToLogin={() => handleModeChange('login')}
                 onSuccess={onRegisterSuccess}
                 locationState={locationState}
+                isMobile={isMobile}
               />
             )}
           </AnimatePresence>

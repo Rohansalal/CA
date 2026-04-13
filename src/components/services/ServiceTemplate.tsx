@@ -6,7 +6,10 @@ import {
     ArrowRight,
     Shield,
     FileText,
-    AlertCircle
+    AlertCircle,
+    Zap,
+    Clock,
+    Phone
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../user-panel/contexts/AuthContext';
@@ -50,6 +53,10 @@ export interface ServiceContent {
     descriptionContent?: string;
     process?: { step: string, title: string, description: string }[];
     testimonials?: { name: string, role?: string, review: string, rating: number }[];
+    
+    // New Detailed Content Fields
+    serviceDetails?: { title: string, description: string, icon: React.ElementType }[];
+    timeline?: { stage: string, duration: string }[];
 }
 
 interface ServiceTemplateProps {
@@ -119,37 +126,89 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
             <section className="bg-gradient-to-br from-primary via-primary to-secondary text-white py-20 lg:py-24 relative overflow-hidden">
                 <div className="absolute inset-0 bg-grid-white/[0.05] bg-[length:20px_20px]"></div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-                    <div className="max-w-4xl">
-                        <div className="inline-block px-4 py-2 bg-white/10 backdrop-blur-md rounded-full text-sm font-semibold mb-6 border border-white/20">
-                            {content.title}
-                        </div>
-                        <h1 className="text-4xl lg:text-6xl font-bold text-white mb-6 tracking-tight">
-                            {content.subtitle}
-                        </h1>
-                        <p className="text-xl text-blue-100 leading-relaxed mb-8 max-w-2xl">
-                            {content.description}
-                        </p>
-
-                        {content.heroFeatures && (
-                            <div className="flex flex-wrap gap-4">
-                                {content.heroFeatures.map((feat, idx) => (
-                                    <div key={idx} className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg border border-white/10 backdrop-blur-sm">
-                                        <feat.icon className="w-5 h-5 text-accent" />
-                                        <span className="font-medium">{feat.text}</span>
-                                    </div>
-                                ))}
+                    <div className="grid lg:grid-cols-2 gap-12 items-center">
+                        {/* Left Content */}
+                        <div>
+                            <div className="inline-block px-4 py-2 bg-white/10 backdrop-blur-md rounded-full text-sm font-semibold mb-6 border border-white/20">
+                                {content.title}
                             </div>
-                        )}
+                            <h1 className="text-4xl lg:text-5xl font-bold text-white mb-6 tracking-tight">
+                                {content.subtitle}
+                            </h1>
+                            <p className="text-xl text-blue-100 leading-relaxed mb-8">
+                                {content.description}
+                            </p>
 
-                        <br />
-                        <br />
-                        <div className="mt-10">
+                            {content.heroFeatures && (
+                                <div className="flex flex-wrap gap-4 mb-8">
+                                    {content.heroFeatures.map((feat, idx) => (
+                                        <div key={idx} className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg border border-white/10 backdrop-blur-sm">
+                                            <feat.icon className="w-5 h-5 text-accent" />
+                                            <span className="font-medium">{feat.text}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
                             <button
                                 onClick={() => document.getElementById('plans')?.scrollIntoView({ behavior: 'smooth' })}
                                 className="px-8 py-4 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl shadow-lg shadow-accent/20 transition-all flex items-center gap-2"
                             >
                                 View Plans <ArrowRight className="w-5 h-5" />
                             </button>
+                        </div>
+
+                        {/* Right Form */}
+                        <div className="bg-white rounded-2xl p-8 shadow-2xl">
+                            <h3 className="text-2xl font-bold text-gray-900 mb-2">Get Started Now</h3>
+                            <p className="text-black mb-6">Fill in your details and our expert will call you back</p>
+                            
+                            <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-900 mb-1">Full Name</label>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Enter your name"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none text-gray-900 placeholder-gray-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-900 mb-1">Email Address</label>
+                                    <input 
+                                        type="email" 
+                                        placeholder="Enter your email"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none text-gray-900 placeholder-gray-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-900 mb-1">Phone Number</label>
+                                    <input 
+                                        type="tel" 
+                                        placeholder="Enter your phone"
+                                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none text-gray-900 placeholder-gray-500"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium text-gray-900 mb-1">Service Interested In</label>
+                                    <select className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary outline-none text-gray-900 bg-white">
+                                        <option value="" className="text-gray-900">Select a service</option>
+                                        <option value="basic" className="text-gray-900">Basic Plan</option>
+                                        <option value="standard" className="text-gray-900">Standard Plan</option>
+                                        <option value="premium" className="text-gray-900">Premium Plan</option>
+                                    </select>
+                                </div>
+                                <button 
+                                    type="submit"
+                                    onClick={() => navigate('/login')}
+                                    className="w-full py-4 bg-accent hover:bg-accent/90 text-white font-bold rounded-xl shadow-lg transition-all flex items-center justify-center gap-2"
+                                >
+                                    <Phone className="w-5 h-5" />
+                                    Request Callback
+                                </button>
+                            </form>
+                            <p className="text-xs text-black mt-4 text-center">
+                                By submitting, you agree to our Terms & Privacy Policy
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -224,6 +283,116 @@ export function ServiceTemplate({ serviceSlug, serviceId, content }: ServiceTemp
                                 </div>
                             ))}
                         </div>
+                    </div>
+                </section>
+            )}
+
+            <br />
+            <br />
+            <br />
+            <br />
+
+            {/* Detailed Service Info Section */}
+            {(content.documentsRequired || content.dataRequired) && (
+                <section className="py-20 bg-gradient-to-b from-blue-50 to-white">
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div className="text-center mb-12">
+                            <h2 className="text-3xl font-bold text-gray-900 mb-4">Complete Service Details</h2>
+                            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                                Everything you need to know about our {content.title} service
+                            </p>
+                        </div>
+
+                        <div className="grid lg:grid-cols-2 gap-8">
+                            {/* Documents Required */}
+                            {content.documentsRequired && (
+                                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                                    <div className="bg-blue-600 px-6 py-4">
+                                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                            <FileText className="w-6 h-6" />
+                                            Documents Required
+                                        </h3>
+                                    </div>
+                                    <div className="p-6">
+                                        <ul className="space-y-3">
+                                            {content.documentsRequired.map((doc, idx) => (
+                                                <li key={idx} className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
+                                                    <div className="w-6 h-6 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                        <span className="text-white text-xs font-bold">{idx + 1}</span>
+                                                    </div>
+                                                    <span className="text-gray-700">{doc}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Data/Information Required */}
+                            {content.dataRequired && (
+                                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                                    <div className="bg-green-600 px-6 py-4">
+                                        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+                                            <Shield className="w-6 h-6" />
+                                            Information We Need
+                                        </h3>
+                                    </div>
+                                    <div className="p-6">
+                                        <ul className="space-y-3">
+                                            {content.dataRequired.map((item, idx) => (
+                                                <li key={idx} className="flex items-start gap-3 p-3 bg-green-50 rounded-lg">
+                                                    <div className="w-6 h-6 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                                                        <span className="text-white text-xs font-bold">{idx + 1}</span>
+                                                    </div>
+                                                    <span className="text-gray-700">{item}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Additional Service Details */}
+                        {content.serviceDetails && (
+                            <div className="mt-8 bg-white rounded-2xl shadow-lg border border-gray-100 p-8">
+                                <h3 className="text-2xl font-bold text-gray-900 mb-6 flex items-center gap-2">
+                                    <Zap className="w-6 h-6 text-amber-500" />
+                                    Service Features & Inclusions
+                                </h3>
+                                <div className="grid md:grid-cols-2 gap-6">
+                                    {content.serviceDetails.map((detail, idx) => (
+                                        <div key={idx} className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+                                            <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                                                <detail.icon className="w-6 h-6 text-blue-600" />
+                                            </div>
+                                            <div>
+                                                <h4 className="font-bold text-gray-900 mb-1">{detail.title}</h4>
+                                                <p className="text-sm text-gray-600">{detail.description}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Timeline Info */}
+                        {content.timeline && (
+                            <div className="mt-8 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-lg p-8 text-white">
+                                <h3 className="text-2xl font-bold mb-6 flex items-center gap-2">
+                                    <Clock className="w-6 h-6" />
+                                    Processing Timeline
+                                </h3>
+                                <div className="grid md:grid-cols-4 gap-4">
+                                    {content.timeline.map((item, idx) => (
+                                        <div key={idx} className="bg-white/10 backdrop-blur-sm rounded-xl p-4 text-center">
+                                            <div className="text-3xl font-bold mb-2">{item.duration}</div>
+                                            <div className="text-sm text-white/80">{item.stage}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </section>
             )}

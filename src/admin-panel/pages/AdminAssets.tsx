@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { 
   FileSearch, 
   FileText, 
@@ -11,7 +11,9 @@ import {
   User, 
   Clock, 
   Tag,
-  Paperclip
+  Paperclip,
+  UploadCloud,
+  PlusCircle
 } from "lucide-react";
 import { AdminLayout } from "../components/AdminLayout";
 import { Button } from "../../components/ui/button";
@@ -20,6 +22,13 @@ import { Badge } from "../../components/ui/badge";
 import { Input } from "../../components/ui/input";
 import api from "../../utils/api";
 import { cn } from "../../components/ui/utils";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger,
+  DropdownMenuSeparator
+} from "../../components/ui/dropdown-menu";
 
 interface Asset {
   id: string;
@@ -39,6 +48,7 @@ export const AdminAssets: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterType, setFilterType] = useState("ALL");
+  const [isDragging, setIsDragging] = useState(false);
 
   useEffect(() => {
     fetchAssets();
@@ -54,6 +64,61 @@ export const AdminAssets: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleFileUpload = useCallback(async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+      formData.append('assets', files[i]);
+    }
+
+    try {
+      // Simulate upload
+      setLoading(true);
+      await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate API call
+      console.log("Uploading files:", files);
+      // In a real scenario, you'd call your API here:
+      // await api.post('/admin/upload-assets', formData);
+      fetchAssets(); // Refresh assets after upload
+    } catch (error) {
+      console.error("Error uploading files:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const handleDragEnter = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  }, []);
+
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  }, []);
+
+  const handleDrop = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      handleFileUpload(e.dataTransfer.files);
+      e.dataTransfer.clearData();
+    }
+  }, [handleFileUpload]);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleFileUpload(e.target.files);
   };
 
   const filteredAssets = assets.filter(asset => {
@@ -94,13 +159,27 @@ export const AdminAssets: React.FC = () => {
           </div>
           
           <div className="flex items-center gap-3">
+             <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                    <Button variant="outline" className="h-10 px-4 rounded-xl border-slate-200 transition-all hover:bg-slate-50 flex items-center gap-2 uppercase tracking-wider text-[11px] font-bold">
+                        <PlusCircle className="h-4 w-4" />
+                        Bulk Actions
+                    </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                    <DropdownMenuItem>Download Selected</DropdownMenuItem>
+                    <DropdownMenuItem>Delete Selected</DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>Tag Selected</DropdownMenuItem>
+                </DropdownMenuContent>
+             </DropdownMenu>
              <Button variant="outline" className="h-10 px-4 rounded-xl border-slate-200 transition-all hover:bg-slate-50 flex items-center gap-2 uppercase tracking-wider text-[11px] font-bold" onClick={fetchAssets}>
                 Refresh List
              </Button>
           </div>
         </div>
 
-        {/* Filters */}
+        {/* Filters and Upload */}
         <Card className="rounded-2xl border-slate-200 bg-white shadow-sm overflow-hidden">
           <CardContent className="p-4 md:p-6">
             <div className="flex flex-col md:flex-row gap-4">
@@ -129,6 +208,35 @@ export const AdminAssets: React.FC = () => {
                   </Button>
                 ))}
               </div>
+            </div>
+            {/* File Upload Area */}
+            <div 
+                className={cn(
+                    "mt-6 border-2 border-dashed rounded-2xl p-6 text-center transition-colors",
+                    isDragging ? "border-indigo-500 bg-indigo-50/50" : "border-slate-200 bg-slate-50"
+                )}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+            >
+                <input 
+                    type="file" 
+                    multiple 
+                    className="hidden" 
+                    id="asset-upload-input" 
+                    onChange={handleFileSelect} 
+                />
+                <label htmlFor="asset-upload-input" className="cursor-pointer flex flex-col items-center justify-center">
+                    <UploadCloud className={cn(
+                        "h-10 w-10 mb-3 transition-colors",
+                        isDragging ? "text-indigo-600" : "text-slate-400"
+                    )} />
+                    <p className="text-sm font-medium text-slate-700">
+                        {isDragging ? "Drop files here to upload" : "Drag & drop files or click to browse"}
+                    </p>
+                    <p className="text-xs text-slate-500 mt-1">Supports all common document and image formats</p>
+                </label>
             </div>
           </CardContent>
         </Card>

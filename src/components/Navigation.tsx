@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../user-panel/contexts/AuthContext';
 import {
   Menu, X, Phone, Mail, ChevronDown, ArrowRight,
-  User, LogOut, LayoutDashboard, Settings, ShoppingCart
+  User, LogOut, LayoutDashboard, Settings
 } from 'lucide-react';
 import { cn } from './ui/utils';
 import { useCart } from '../user-panel/contexts/CartContext';
@@ -125,7 +125,7 @@ export default function Navigation({
 
   const navRef = useRef<HTMLElement>(null);
   const profileRef = useRef<HTMLDivElement>(null);
-  const hoverTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hoverTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ── Close everything ──────────────────────────────────────
 
@@ -229,19 +229,19 @@ export default function Navigation({
                 className="flex items-center gap-2 hover:text-accent transition-colors"
               >
                 <Phone className="w-4 h-4" />
-                <span>+91 9811105573</span>
+                <span className="hidden md:inline">+91 9811105573</span>
               </a>
               <a
                 href="mailto:info@caavinash.in"
                 className="flex items-center gap-2 hover:text-accent transition-colors"
               >
                 <Mail className="w-4 h-4" />
-                <span>info@caavinash.in</span>
+                <span className="hidden md:inline">info@caavinash.in</span>
               </a>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="hidden md:flex items-center gap-2">
               <span className="text-accent">✓</span>
-              <span>ICAI Registered | 21+ Years Experience</span>
+              <span className="hidden md:inline">ICAI Registered | 21+ Years Experience</span>
             </div>
           </div>
         </div>
@@ -251,7 +251,7 @@ export default function Navigation({
       {/* MAIN NAV BAR                                         */}
       {/* ════════════════════════════════════════════════════ */}
       <div className="max-w-[95vw] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-20 sm:h-24 lg:h-28">
+        <div className="flex flex-nowrap justify-between items-center h-20 sm:h-24 lg:h-28">
 
           {/* Logo ─────────────────────────────────────────── */}
           <button
@@ -274,7 +274,7 @@ export default function Navigation({
           </button>
 
           {/* Desktop Nav Links ────────────────────────────── */}
-          <div className="hidden lg:flex items-center gap-6 xl:gap-8">
+          <div className="hidden lg:flex items-center gap-6 xl:gap-8 whitespace-nowrap">
             {NAV_ITEMS.map((item) => (
               <div
                 key={item.id}
@@ -285,7 +285,7 @@ export default function Navigation({
                 <button
                   onClick={() => handleNavClick(item.route, item.id)}
                   className={cn(
-                    'text-sm font-medium transition-colors relative flex items-center gap-1.5 py-2',
+                    'text-sm font-medium transition-colors relative flex items-center gap-1.5 py-2 whitespace-nowrap',
                     currentPage === item.id || (item.hasSubmenu && isServicesOpen)
                       ? 'text-primary'
                       : 'text-neutral-700 hover:text-primary'
@@ -321,7 +321,11 @@ export default function Navigation({
               className="relative p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:bg-slate-100 transition-all shadow-sm"
               aria-label="View Cart"
             >
-              <ShoppingCart className="w-5 h-5 text-slate-700" />
+              <svg className="w-5 h-5 text-slate-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="8" cy="21" r="1" />
+                <circle cx="19" cy="21" r="1" />
+                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+              </svg>
               {cart.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-accent text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-white shadow-sm">
                   {cart.length}
@@ -431,7 +435,11 @@ export default function Navigation({
               className="relative p-2.5 rounded-xl bg-white border border-slate-100 shadow-sm"
               aria-label="View Cart"
             >
-              <ShoppingCart className="w-5 h-5 text-primary" />
+              <svg className="w-5 h-5 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.75} strokeLinecap="round" strokeLinejoin="round" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="8" cy="21" r="1" />
+                <circle cx="19" cy="21" r="1" />
+                <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+              </svg>
               {cart.length > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 bg-accent text-white text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center ring-2 ring-white shadow-sm">
                   {cart.length}

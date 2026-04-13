@@ -84,3 +84,14 @@
   }
   .scrollbar-hide::-webkit-scrollbar { display: none; }
 }
+
+/* ── Hide chat widgets (Crisp) on small screens to preserve mobile real-estate ── */
+@media (max-width: 767px) {
+  /* Crisp chatbox and common wrappers */
+  #crisp-chatbox, .crisp-client, .crisp-1, .crisp-1 * {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+}

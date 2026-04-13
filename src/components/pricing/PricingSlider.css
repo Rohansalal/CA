@@ -1,0 +1,72 @@
+/* Swiper Custom Styles for Pricing Slider */
+
+/* Hide default Swiper navigation arrows */
+.pricing-slider .swiper-button-next,
+.pricing-slider .swiper-button-prev {
+  display: none !important;
+}
+
+/* Pagination dots container */
+.pricing-slider .swiper-pagination {
+  bottom: 0 !important;
+}
+
+/* Pagination bullet */
+.pricing-slider .swiper-pagination-bullet {
+  width: 10px;
+  height: 10px;
+  background: #d1d5db;
+  opacity: 1;
+  transition: all 0.3s ease;
+}
+
+/* Active pagination bullet */
+.pricing-slider .swiper-pagination-bullet-active {
+  background: #111827;
+  width: 24px;
+  border-radius: 5px;
+}
+
+/* Dynamic bullets */
+.pricing-slider .swiper-pagination-bullet-active-main {
+  background: #111827;
+}
+
+.pricing-slider .swiper-pagination-bullet-active-prev,
+.pricing-slider .swiper-pagination-bullet-active-next {
+  background: #9ca3af;
+  transform: scale(0.8);
+}
+
+/* Slide wrapper */
+.pricing-slider .swiper-slide {
+  height: auto;
+}
+
+/* Ensure smooth transitions */
+.pricing-slider .swiper-wrapper {
+  align-items: stretch;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .pricing-slider .swiper-button-prev-custom,
+  .pricing-slider .swiper-button-next-custom {
+    display: none;
+  }
+  
+  .pricing-slider .swiper-pagination {
+    bottom: -10px !important;
+  }
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .pricing-slider .swiper-slide {
+    cursor: grab;
+  }
+  
+  .pricing-slider .swiper-slide:active {
+    cursor: grabbing;
+  }
+}

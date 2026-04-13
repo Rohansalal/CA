@@ -11,17 +11,18 @@ interface SignupFormProps {
   onSwitchToLogin: () => void;
   onSuccess: () => void;
   locationState: Record<string, unknown>;
+  isMobile?: boolean;
 }
 
 const slideVariants: Variants = {
-  enter: (dir: number) => ({ x: dir > 0 ? 72 : -72, opacity: 0 }),
+  enter: (dir: number) => ({ x: dir > 0 ? 48 : -48, opacity: 0 }),
   center: {
     x: 0, opacity: 1,
-    transition: { duration: 0.4, ease: [0.25, 0.1, 0.25, 1] },
+    transition: { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] },
   },
   exit: (dir: number) => ({
-    x: dir > 0 ? -72 : 72, opacity: 0,
-    transition: { duration: 0.28, ease: [0.4, 0, 1, 1] },
+    x: dir > 0 ? -48 : 48, opacity: 0,
+    transition: { duration: 0.25, ease: [0.4, 0, 1, 1] },
   }),
 };
 
@@ -29,11 +30,12 @@ const STRENGTH_META: Record<number, { label: string; color: string; bg: string }
   0: { label: '', color: '#e2e8f0', bg: '#e2e8f0' },
   1: { label: 'Weak', color: '#f56565', bg: '#fff5f5' },
   2: { label: 'Fair', color: '#ed8936', bg: '#fffaf0' },
-  3: { label: 'Strong', color: '#48bb78', bg: '#f0fff4' },
+  3: { label: 'Good', color: '#68d391', bg: '#f0fff4' },
+  4: { label: 'Strong', color: '#48bb78', bg: '#f0fff4' },
 };
 
 export const SignupForm: React.FC<SignupFormProps> = ({
-  direction, onSwitchToLogin, onSuccess, locationState,
+  direction, onSwitchToLogin, onSuccess, locationState, isMobile = false,
 }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -48,7 +50,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
   const { register, loading, error, clearError } = useAuth();
 
   const [pwdChecks, setPwdChecks] = useState({
-    len: false, upper: false, num: false, match: false,
+    len: false, upper: false, num: false, special: false, match: false,
   });
 
   useEffect(() => {
@@ -56,11 +58,12 @@ export const SignupForm: React.FC<SignupFormProps> = ({
       len: password.length >= 8,
       upper: /[A-Z]/.test(password),
       num: /[0-9]/.test(password),
+      special: /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password),
       match: password === confirm && confirm.length > 0,
     });
   }, [password, confirm]);
 
-  const strength = [pwdChecks.len, pwdChecks.upper, pwdChecks.num].filter(Boolean).length;
+  const strength = [pwdChecks.len, pwdChecks.upper, pwdChecks.num, pwdChecks.special].filter(Boolean).length;
   const sm = STRENGTH_META[strength];
 
   const validate = () => {
@@ -70,6 +73,9 @@ export const SignupForm: React.FC<SignupFormProps> = ({
     else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) e.email = 'Enter a valid email address';
     if (!phone || phone.length < 10) e.phone = 'Enter a valid 10-digit number';
     if (!pwdChecks.len) e.password = 'Password must be at least 8 characters';
+    else if (!pwdChecks.upper) e.password = 'Password must contain at least one uppercase letter';
+    else if (!pwdChecks.num) e.password = 'Password must contain at least one number';
+    else if (!pwdChecks.special) e.password = 'Password must contain at least one special character (e.g. @#$!)';
     if (!pwdChecks.match) e.confirm = 'Passwords do not match';
     if (!agreed) e.terms = 'Please agree to the terms to continue';
     setErrors(e);
@@ -84,8 +90,8 @@ export const SignupForm: React.FC<SignupFormProps> = ({
       await register(name, email, phone, password);
       toast.success('Account created! Redirecting...');
       onSuccess();
-    } catch {
-      toast.error(error || 'Failed to create account.');
+    } catch (err: any) {
+      toast.error(err.message || 'Failed to create account.');
     }
   };
 
@@ -109,13 +115,16 @@ export const SignupForm: React.FC<SignupFormProps> = ({
       initial="enter"
       animate="center"
       exit="exit"
+      role="tabpanel"
+      id="panel-register"
+      aria-labelledby="tab-register"
     >
-      {/* Heading */}
+      {/* Heading - hidden on mobile */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.35, delay: 0.06 }}
-        className="mb-6"
+        className={`${isMobile ? 'hidden' : 'mb-6'}`}
       >
         <h2
           className="text-[1.75rem] font-bold text-[#0b2c4d] tracking-[-0.03em] leading-tight"
@@ -132,10 +141,12 @@ export const SignupForm: React.FC<SignupFormProps> = ({
       {error && (
         <motion.div
           initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
-          className="flex items-start gap-3 p-4 mb-5 bg-red-50 border border-red-100 rounded-2xl"
+          className="flex items-start gap-3 p-3 sm:p-4 mb-4 sm:mb-5 bg-red-50 border border-red-100 rounded-xl sm:rounded-2xl"
+          role="alert"
+          aria-live="polite"
         >
-          <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-          <p className="text-red-600 text-[13.5px] leading-snug">{error}</p>
+          <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 text-red-500 shrink-0 mt-0.5" />
+          <p className="text-red-600 text-[13px] sm:text-[13.5px] leading-snug">{error}</p>
         </motion.div>
       )}
 
@@ -197,7 +208,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
                 {/* Bar + label */}
                 <div className="flex items-center gap-2.5">
                   <div className="flex gap-1.5 flex-1">
-                    {[1, 2, 3].map((lvl) => (
+                    {[1, 2, 3, 4].map((lvl) => (
                       <motion.div
                         key={lvl}
                         className="h-[4px] flex-1 rounded-full"
@@ -224,6 +235,7 @@ export const SignupForm: React.FC<SignupFormProps> = ({
                     { ok: pwdChecks.len, text: '8+ chars' },
                     { ok: pwdChecks.upper, text: 'Uppercase' },
                     { ok: pwdChecks.num, text: 'Number' },
+                    { ok: pwdChecks.special, text: 'Symbol (!@#$)' },
                   ].map((r, i) => (
                     <span
                       key={i}
@@ -365,15 +377,15 @@ export const SignupForm: React.FC<SignupFormProps> = ({
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.32, delay: 0.24 }}
           whileHover={!loading ? {
-            scale: 1.018,
-            boxShadow: '0 10px 32px rgba(13,93,145,0.45)',
+            scale: 1.015,
+            boxShadow: '0 8px 24px rgba(13,93,145,0.4)',
             y: -1,
           } : {}}
-          whileTap={!loading ? { scale: 0.982 } : {}}
-          className="w-full h-[54px] rounded-2xl text-white text-[15px] font-bold flex items-center justify-center gap-2.5 mt-1 disabled:opacity-50 disabled:cursor-not-allowed"
+          whileTap={!loading ? { scale: 0.985 } : {}}
+          className="w-full h-[48px] sm:h-[54px] rounded-xl sm:rounded-2xl text-white text-[14px] sm:text-[15px] font-bold flex items-center justify-center gap-2.5 mt-1 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
           style={{
             background: 'linear-gradient(135deg, #2196f3 0%, #136da1 50%, #0d5a8e 100%)',
-            boxShadow: '0 4px 20px rgba(19,109,161,0.35)',
+            boxShadow: '0 4px 16px rgba(19,109,161,0.3)',
           }}
         >
           {loading ? (
@@ -388,9 +400,9 @@ export const SignupForm: React.FC<SignupFormProps> = ({
       </form>
 
       {/* Divider */}
-      <div className="flex items-center gap-3 my-6">
+      <div className="flex items-center gap-3 my-5 sm:my-6">
         <div className="flex-1 h-px bg-[#e2e8f0]" />
-        <span className="text-[11.5px] text-[#a0aec0] font-medium tracking-widest uppercase">or</span>
+        <span className="text-[11px] sm:text-[11.5px] text-[#a0aec0] font-medium tracking-widest uppercase">or</span>
         <div className="flex-1 h-px bg-[#e2e8f0]" />
       </div>
 
@@ -398,13 +410,13 @@ export const SignupForm: React.FC<SignupFormProps> = ({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.28 }}
-        className="text-center text-[14px] text-[#64748b]"
+        className="text-center text-[13px] sm:text-[14px] text-[#64748b]"
       >
         Already have an account?{' '}
         <button
           type="button"
           onClick={onSwitchToLogin}
-          className="font-bold text-[#136da1] hover:text-[#0b2c4d] transition-colors"
+          className="font-bold text-[#136da1] hover:text-[#0b2c4d] transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded px-1"
         >
           Log in →
         </button>

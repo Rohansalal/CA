@@ -311,16 +311,11 @@ export const Dashboard: React.FC = () => {
     setShowRoadmapModal(true);
   };
 
-  /** Navigate to the correct form page for a NEED_DOCUMENTS order item */
+  /** Navigate to the dynamic form page for a NEED_DOCUMENTS order item */
   const handleFillForm = (svc: UserService) => {
     const itemId = svc.orderItemId;
     if (!itemId) { setActiveTab('documents'); return; }
-    const pt = (svc.planType || svc.planName || '').toUpperCase();
-    if (pt.includes('BASIC'))    { navigate(`/dashboard/itr/basic/${itemId}`); return; }
-    if (pt.includes('STANDARD')) { navigate(`/dashboard/itr/standard/${itemId}`); return; }
-    if (pt.includes('PREMIUM'))  { navigate(`/dashboard/itr/premium/${itemId}`); return; }
-    if (pt.includes('ELITE'))    { navigate(`/dashboard/itr/elite/${itemId}`); return; }
-    navigate(`/dashboard/order/${svc.orderId}/submit-details`);
+    navigate(`/dashboard/order/${itemId}/form`);
   };
 
   const handlePurchaseBySlug = async (slug: string, selectedPlan?: any) => {

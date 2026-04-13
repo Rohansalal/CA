@@ -4,7 +4,7 @@ import { useAdmin } from '../contexts/AdminContext';
 import {
     User, Mail, Shield, ArrowLeft, Save, Edit2, Lock,
     Activity, Server, Database, CheckCircle, AlertTriangle,
-    Camera, Clock, Key, ShieldCheck, Globe, Cpu, LogOut,
+    Camera, Clock, Key, ShieldCheck, Globe, Cpu, LogOut,Search,
     Eye, EyeOff, Upload, Trash2, Smartphone, Monitor, Tablet
 } from 'lucide-react';
 import { toast } from 'sonner';
@@ -61,11 +61,29 @@ export const AdminProfile: React.FC = () => {
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordStrength, setPasswordStrength] = useState(0); // 0-4 for strength
+    const [auditLogSearchTerm, setAuditLogSearchTerm] = useState('');
 
     useEffect(() => {
         fetchProfile();
         fetchAuditLogs();
     }, []);
+
+    useEffect(() => {
+        calculatePasswordStrength(newPassword);
+    }, [newPassword]);
+
+    const calculatePasswordStrength = (password: string) => {
+        let strength = 0;
+        if (password.length > 0) {
+            strength = 1; // At least some length
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) strength++;
+            if (/\d/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+        }
+        setPasswordStrength(strength);
+    };
 
     const fetchProfile = async () => {
         try {
@@ -87,7 +105,7 @@ export const AdminProfile: React.FC = () => {
         try {
             const response = await api.get('/admin/audit-logs');
             const logs = response.data.logs || [];
-            setAuditLogs(logs.slice(0, 5));
+            setAuditLogs(logs); // Store all logs for filtering
         } catch (err) {
             console.error('Failed to fetch audit logs');
         }
@@ -106,14 +124,15 @@ export const AdminProfile: React.FC = () => {
             return;
         }
 
-        if (newPassword && newPassword !== confirmPassword) {
-            toast.error('Credential mismatch: New passphrases do not match');
-            return;
-        }
-
-        if (newPassword && newPassword.length < 8) {
-            toast.error('Security Protocol: New passphrase must be at least 8 characters');
-            return;
+        if (newPassword) {
+            if (newPassword !== confirmPassword) {
+                toast.error('Credential mismatch: New passphrases do not match');
+                return;
+            }
+            if (passwordStrength < 3) { // Require at least medium strength
+                toast.error('Security Protocol: New passphrase is too weak. Please use a stronger password.');
+                return;
+            }
         }
 
         try {
@@ -132,6 +151,7 @@ export const AdminProfile: React.FC = () => {
             setCurrentPassword('');
             setNewPassword('');
             setConfirmPassword('');
+            setPasswordStrength(0);
 
             // Update global state
             verifyAdminAccess();
@@ -189,6 +209,11 @@ export const AdminProfile: React.FC = () => {
             setUploadingAvatar(false);
         }
     };
+
+    const filteredAuditLogs = auditLogs.filter(log => 
+        log.action.toLowerCase().includes(auditLogSearchTerm.toLowerCase()) ||
+        log.details.toLowerCase().includes(auditLogSearchTerm.toLowerCase())
+    );
 
     if (loading) {
         return (
@@ -424,6 +449,22 @@ export const AdminProfile: React.FC = () => {
                                                             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                                                         </button>
                                                     </div>
+                                                    <div className="flex gap-1 mt-2">
+                                                        {Array.from({ length: 5 }).map((_, i) => (
+                                                            <div
+                                                                key={i}
+                                                                className={cn(
+                                                                    "h-1 flex-1 rounded-full",
+                                                                    i < passwordStrength ? (
+                                                                        passwordStrength === 1 ? "bg-red-500" :
+                                                                        passwordStrength === 2 ? "bg-orange-500" :
+                                                                        passwordStrength === 3 ? "bg-yellow-500" :
+                                                                        "bg-green-500"
+                                                                    ) : "bg-slate-200"
+                                                                )}
+                                                            />
+                                                        ))}
+                                                    </div>
                                                 </div>
                                                 <div className="space-y-3">
                                                     <label className="text-[11px] font-bold text-slate-500 uppercase tracking-[0.15em] ml-1">Confirm Passphrase</label>
@@ -479,13 +520,22 @@ export const AdminProfile: React.FC = () => {
                                             <CardDescription className="text-xs font-medium text-slate-500">History of your recent administrative actions</CardDescription>
                                         </div>
                                     </div>
-                                    <Button variant="ghost" className="text-[10px] font-bold uppercase tracking-widest text-indigo-600 hover:bg-indigo-50 rounded-lg">View Full Log</Button>
+                                    <div className="relative">
+                                        <Input
+                                            type="text"
+                                            placeholder="Search audit logs..."
+                                            value={auditLogSearchTerm}
+                                            onChange={(e) => setAuditLogSearchTerm(e.target.value)}
+                                            className="h-9 pl-9 bg-white border-slate-200 rounded-lg text-sm focus:ring-indigo-500/5 focus:border-indigo-500"
+                                        />
+                                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                    </div>
                                 </div>
                             </CardHeader>
                             <CardContent className="p-0">
-                                {auditLogs.length > 0 ? (
+                                {filteredAuditLogs.length > 0 ? (
                                     <div className="divide-y divide-slate-50">
-                                        {auditLogs.map((log) => (
+                                        {filteredAuditLogs.map((log) => (
                                             <div key={log.id} className="p-6 md:px-8 flex items-start gap-5 hover:bg-slate-50/80 transition-all group cursor-default">
                                                 <div className="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center shrink-0 group-hover:border-indigo-100 group-hover:shadow-sm transition-all">
                                                     <Cpu className="w-5 h-5 text-slate-400 group-hover:text-indigo-500 transition-colors" />

@@ -1,441 +1,240 @@
-import { Filter, CheckCircle, FileText, Clock, ArrowRight, Shield, Calculator, FileSearch, Building2, AlertTriangle } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../user-panel/contexts/AuthContext';
+﻿import React, { useState } from 'react';
+import { Filter, CheckCircle, FileText, Clock, ArrowRight, Shield, Calculator, FileSearch, Building2, AlertTriangle, Award, Zap } from 'lucide-react';
+import { ServiceTemplate, ServiceContent } from '../ServiceTemplate';
 
 export function GSTAudit() {
-    const navigate = useNavigate();
-    const { isAuthenticated } = useAuth();
+    const [fetchedService, setFetchedService] = useState<any>(null);
 
-    const handleStartService = () => {
-        if (isAuthenticated) {
-            navigate('/dashboard', { state: { selectedService: 'GST Audit' } });
-        } else {
-            navigate('/login', { state: { returnTo: '/dashboard', selectedService: 'GST Audit' } });
-        }
+    // Fetch dynamic content
+    React.useEffect(() => {
+        const fetchService = async () => {
+            try {
+                const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+                const res = await fetch(`${API_URL}/services/slug/gst-audit`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setFetchedService(data.service);
+                }
+            } catch (err) {
+                console.error("Failed to fetch GST Audit service details", err);
+            }
+        };
+        fetchService();
+    }, []);
+
+    const defaultContent: ServiceContent = {
+        title: "GST Audit",
+        subtitle: "GST Annual Return & Reconciliation",
+        description: "Expert assistance for GSTR-9/9C filing and Department Audits. Ensure 100% compliance and avoid litigation.",
+        heroFeatures: [
+            { icon: Clock, text: "Due: 31st Dec" },
+            { icon: Shield, text: "Risk Mitigation" },
+            { icon: Award, text: "GSTR-9/9C" }
+        ],
+        process: [
+            { step: "1", title: "Data Consolidation", description: "Aggregating financial data and GST portal data for the financial year." },
+            { step: "2", title: "Detailed Verification", description: "Transaction level checking of invoices, e-way bills, and stock records." },
+            { step: "3", title: "Draft Reconciliation", description: "Preparation of GSTR-9C draft and identifying gaps." },
+            { step: "4", title: "Filing", description: "Uploading the final GSTR-9 and 9C on the portal." }
+        ],
+        typesTitle: "GST Audit Types",
+        types: [
+            {
+                title: 'Annual Reconciliation (9C)',
+                description: 'Reconciling Audited Financials with GST Returns (GSTR-9). Mandatory for turnover > â‚¹5 Cr.',
+                icon: Calculator,
+                features: ['Book vs Return matching', 'Turnover verification', 'ITC Reconciliation', 'Tax Liability check'],
+            },
+            {
+                title: 'Department Audit (Sec 65)',
+                description: 'Detailed scrutiny of records by GST authorities at your business premises.',
+                icon: FileSearch,
+                features: ['Notice Reply', 'Document Compilation', 'Representation', 'Legal Defense'],
+            },
+            {
+                title: 'Special Audit (Sec 66)',
+                description: 'Audit directed by the department to be conducted by a CA/CMA nominated by them.',
+                icon: Shield,
+                features: ['Complex Case Analysis', 'Valuation Disputes', 'ITC Fraud Investigation', 'Detailed Report'],
+            },
+        ],
+        plans: [
+            {
+                id: 1,
+                name: 'Review',
+                price: 10000,
+                color: 'bg-blue-500',
+                description: "For Small Biz",
+                features: [
+                    'GSTR-9 Review',
+                    'Basic Reconciliation',
+                    'Filing Support'
+                ]
+            },
+            {
+                id: 2,
+                name: 'Standard',
+                price: 20000,
+                color: 'bg-green-500',
+                recommended: true,
+                description: "Most Popular",
+                features: [
+                    'GSTR-9 + 9C',
+                    'Detailed ITC Check',
+                    'Drafting Reconciliation',
+                    'Review Meeting'
+                ]
+            },
+            {
+                id: 3,
+                name: 'Department',
+                price: 0,
+                color: 'bg-purple-500',
+                description: "Custom Pricing",
+                features: [
+                    'Notice Reply',
+                    'Department Representation',
+                    'Hearing Attendance',
+                    'Appeal Filing'
+                ]
+            }
+        ],
+        descriptionTitle: "What is GST Audit?",
+        descriptionContent: "GST Audit involves examination of records, returns and other documents maintained by a GST registered person. It verifies the correctness of turnover declared, taxes paid, refund claimed and input tax credit availed. GSTR-9 is the annual return and GSTR-9C is the reconciliation statement required for taxpayers with turnover exceeding â‚¹5 Crore. Our experts ensure accurate reconciliation and compliance to avoid notices and penalties.",
+        faqs: [
+            {
+                q: 'Is GST Audit by CA mandatory?',
+                a: 'No, the mandatory requirement for CA certification on GSTR-9C was removed in Budget 2021. It is now self-certified. However, professional help is recommended for accuracy.',
+            },
+            {
+                q: 'What is the due date for GSTR-9/9C?',
+                a: 'The due date is typically 31st December following the end of the financial year. For example, for FY 22-23, due date is 31st Dec 2023.',
+            },
+            {
+                q: 'What happens if I miss the due date?',
+                a: 'Late fee is levied at â‚¹200 per day (subject to caps based on turnover). Delay can also attract scrutiny and interest on unpaid tax.',
+            },
+            {
+                q: 'Can I claim missed ITC in Annual Return?',
+                a: 'No, usually the time limit to claim ITC for a FY ends on 30th November of the next year. Annual return is primarily for reconciliation, not for claiming new credits.',
+            },
+            {
+                q: 'Is GSTR-9C required if turnover is below â‚¹5 Cr?',
+                a: 'No, filing of GSTR-9C is optional for taxpayers having aggregate turnover up to â‚¹5 Crores.',
+            },
+        ],
+        checklist: [
+            "Audited Financial Statements",
+            "GSTR-1, GSTR-3B & GSTR-9 copies",
+            "Sales and Purchase Registers",
+            "Input Tax Credit Register",
+            "E-Way Bill Reports",
+            "Tax Payment Challans"
+        ],
+        termsAndConditions: [
+            "GST audit fees vary based on turnover and transaction volume.",
+            "All GST returns and financial statements must be provided.",
+            "Due date for filing is 31st December unless extended.",
+            "Management representation letter is required.",
+            "Late filing attracts penalty of â‚¹200 per day."
+        ],
+        benefits: [
+            'Identification of Revenue Leakages',
+            'Verification of Input Tax Credit (ITC) eligibility',
+            'Avoidance of future litigation and interest',
+            'Correct classification of Goods/Services',
+            'Validation of Place of Supply rules',
+            'Assurance on tax positions taken',
+            'Refund of excess tax paid (if any)',
+            'Peace of Mind during Department visits'
+        ],
+        criticalConsiderations: [
+            {
+                title: 'Self Certification',
+                description: 'GSTR-9C is now self-certified. The responsibility of accuracy lies entirely on the taxpayer.',
+                icon: CheckCircle,
+            },
+            {
+                title: 'Turnover Limits',
+                description: 'GSTR-9 is mandatory if turnover > â‚¹2 Cr. GSTR-9C is mandatory if turnover > â‚¹5 Cr.',
+                icon: Building2,
+            },
+            {
+                title: 'ITC Reversal',
+                description: 'Specific focus on Rule 42/43 reversals and blocked credits under Section 17(5).',
+                icon: AlertTriangle,
+            },
+            {
+                title: 'Limitation Period',
+                description: 'Notices can be issued up to 5 years from due date. Records must be preserved for 72 months.',
+                icon: Clock,
+            }
+        ],
+        documentsRequired: [
+            'Audited Financial Statements (Balance Sheet/P&L)',
+            'Copies of filed GSTR-1, GSTR-3B & GSTR-9',
+            'Sales and Purchase Registers (Excel)',
+            'Input Tax Credit Register',
+            'E-Way Bill Reports',
+            'Tax Payment Challans',
+            'Refund Orders (if any)',
+            'Previous Audit/Scrutiny Orders'
+        ],
+        dataRequired: [
+            'Turnover Reconciliation',
+            'Rate-wise Liability Calculation',
+            'ITC Claimed vs Availment in Books',
+            'Un-reconciled differences',
+            'Non-GST / Exempt supply details',
+            'Details of Demands/Refunds',
+            'HSN Summary'
+        ],
+        serviceDetails: [
+            {
+                title: 'GSTR-9 Filing',
+                description: 'Annual return filing with consolidated summary of all monthly/quarterly returns.',
+                icon: FileText,
+            },
+            {
+                title: 'GSTR-9C Reconciliation',
+                description: 'Reconciliation between audited financials and GST returns with certification.',
+                icon: Calculator,
+            },
+            {
+                title: 'Department Audit Support',
+                description: 'Handling scrutiny, notices, and representation before GST authorities.',
+                icon: Shield,
+            },
+            {
+                title: 'ITC Review',
+                description: 'Verification of input tax credit eligibility and blocked credit compliance.',
+                icon: CheckCircle,
+            },
+        ],
+        timeline: [
+            { stage: 'Data Consolidation', duration: '2-3 Days' },
+            { stage: 'Detailed Verification', duration: '3-5 Days' },
+            { stage: 'Draft Reconciliation', duration: '2 Days' },
+            { stage: 'Filing', duration: 'Final' },
+        ]
     };
 
-    const auditTypes = [
-        {
-            type: 'Annual Reconciliation (9C)',
-            description: 'Reconciling Audited Financials with GST Returns (GSTR-9). Mandatory for turnover > ₹5 Cr.',
-            icon: Calculator,
-            features: ['Book vs Return matching', 'Turnover verification', 'ITC Reconciliation', 'Tax Liability check'],
-        },
-        {
-            type: 'Department Audit (Sec 65)',
-            description: 'Detailed scrutiny of records by GST authorities at your business premises.',
-            icon: FileSearch,
-            features: ['Notice Reply', 'Document Compilation', 'Representation', 'Legal Defense'],
-        },
-        {
-            type: 'Special Audit (Sec 66)',
-            description: 'Audit directed by the department to be conducted by a CA/CMA nominated by them.',
-            icon: Shield,
-            features: ['Complex Case Analysis', 'Valuation Disputes', 'ITC Fraud Investigation', 'Detailed Report'],
-        },
-    ];
+    const content = { ...defaultContent };
+    if (fetchedService && fetchedService.plans && fetchedService.plans.length > 0) {
+        content.plans = fetchedService.plans.map((p: any, index: number) => {
+            const colors = ['bg-blue-500', 'bg-green-500', 'bg-purple-500', 'bg-yellow-500'];
+            const color = colors[index % colors.length];
+            return {
+                id: p.id,
+                name: p.planType,
+                price: p.discountedPrice || p.price,
+                description: p.planType === 'Standard' ? 'Most Popular Choice' : '',
+                recommended: p.planType === 'Standard' || p.isPopular,
+                color: color,
+                features: p.scopes ? p.scopes.map((s: any) => s.title || s.description) : (p.features || [])
+            };
+        });
+    }
 
-    const benefits = [
-        'Identification of Revenue Leakages',
-        'Verification of Input Tax Credit (ITC) eligibility',
-        'Avoidance of future litigation and interest',
-        'Correct classification of Goods/Services',
-        'Validation of Place of Supply rules',
-        'Assurance on tax positions taken',
-        'Refund of excess tax paid (if any)',
-        'Peace of Mind during Department visits'
-    ];
-
-    const criticalConsiderations = [
-        {
-            title: 'Self Certification',
-            description: 'GSTR-9C is now self-certified. The responsibility of accuracy lies entirely on the taxpayer.',
-            icon: CheckCircle,
-        },
-        {
-            title: 'Turnover Limits',
-            description: 'GSTR-9 is mandatory if turnover > ₹2 Cr. GSTR-9C is mandatory if turnover > ₹5 Cr.',
-            icon: Building2,
-        },
-        {
-            title: 'ITC Reversal',
-            description: 'Specific focus on Rule 42/43 reversals and blocked credits under Section 17(5).',
-            icon: AlertTriangle,
-        },
-        {
-            title: 'Limitation Period',
-            description: 'Notices can be issued up to 5 years from due date. Records must be preserved for 72 months.',
-            icon: Clock,
-        },
-    ];
-
-    const documents = [
-        'Audited Financial Statements (Balance Sheet/P&L)',
-        'Copies of filed GSTR-1, GSTR-3B & GSTR-9',
-        'Sales and Purchase Registers (Excel)',
-        'Input Tax Credit Register',
-        'E-Way Bill Reports',
-        'Tax Payment Challans',
-        'Refund Orders (if any)',
-        'Previous Audit/Scrutiny Orders'
-    ];
-
-    const dataRequired = [
-        'Turnover Reconciliation',
-        'Rate-wise Liability Calculation',
-        'ITC Claimed vs Availment in Books',
-        'Un-reconciled differences',
-        'Non-GST / Exempt supply details',
-        'Details of Demands/Refunds',
-        'HSN Summary'
-    ];
-
-    const process = [
-        {
-            step: 'Data Consolidation',
-            description: 'Aggregating financial data and GST portal data for the financial year',
-            time: '2-3 Days',
-        },
-        {
-            step: 'Initial Review',
-            description: 'High-level check of turnover, tax rates, and major ITC heads',
-            time: '1-2 Days',
-        },
-        {
-            step: 'Detailed Verification',
-            description: 'Transaction level checking of invoices, e-way bills, and stock records',
-            time: '3-5 Days',
-        },
-        {
-            step: 'Draft Reconciliation',
-            description: 'Preparation of GSTR-9C draft and identifying gaps',
-            time: '2 Days',
-        },
-        {
-            step: 'Management Representation',
-            description: 'Discussing findings with management and finalising tax positions',
-            time: '1 Day',
-        },
-        {
-            step: 'Filing',
-            description: 'Uploading the final GSTR-9 and 9C on the portal',
-            time: 'Final Step',
-        },
-    ];
-
-    const pricing = [
-        {
-            plan: 'Review',
-            price: '₹10,000',
-            desc: 'Small Biz',
-            features: [
-                'GSTR-9 Review',
-                'Basic Reconciliation',
-                'Filing Support',
-            ]
-        },
-        {
-            plan: 'Standard',
-            price: '₹20,000',
-            desc: 'Recommended',
-            features: [
-                'GSTR-9 + 9C',
-                'Detailed ITC Check',
-                'Drafting Reconciliation',
-                'Review Meeting'
-            ]
-        },
-        {
-            plan: 'Department',
-            price: 'Custom',
-            features: [
-                'Notice Reply',
-                'Department Representation',
-                'Hearing Attendance',
-                'Appeal Filing'
-            ]
-        }
-    ];
-
-    const faqs = [
-        {
-            q: 'Is GST Audit by CA mandatory?',
-            a: 'No, the mandatory requirement for CA certification on GSTR-9C was removed in Budget 2021. It is now self-certified. However, professional help is recommended for accuracy.',
-        },
-        {
-            q: 'What is the due date for GSTR-9/9C?',
-            a: 'The due date is typically 31st December following the end of the financial year. For example, for FY 22-23, due date is 31st Dec 2023.',
-        },
-        {
-            q: 'What happens if I miss the due date?',
-            a: 'Late fee is levied at ₹200 per day (subject to caps based on turnover). Delay can also attract scrutiny and interest on unpaid tax.',
-        },
-        {
-            q: 'Can I claim missed ITC in Annual Return?',
-            a: 'No, usually the time limit to claim ITC for a FY ends on 30th November of the next year. Annual return is primarily for reconciliation, not for claiming new credits.',
-        },
-        {
-            q: 'Is GSTR-9C required if turnover is below ₹5 Cr?',
-            a: 'No, filing of GSTR-9C is optional for taxpayers having aggregate turnover up to ₹5 Crores.',
-        },
-    ];
-
-    return (
-        <div className="bg-white min-h-screen">
-            {/* Hero Section */}
-            <section className="bg-gradient-to-br from-primary via-primary to-secondary text-white py-16 lg:py-20">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="max-w-4xl">
-                        <div className="inline-block px-4 py-2 bg-accent/20 rounded-full text-sm font-semibold mb-4">
-                            GST Assurance
-                        </div>
-                        <h1 className="text-3xl lg:text-5xl text-white mb-4">GST Audit & Annual Return</h1>
-                        <p className="text-xl text-neutral-100 leading-relaxed mb-6">
-                            Expert assistance for GSTR-9/9C filing and Department Audits. Ensure 100% compliance and avoid litigation.
-                        </p>
-                        <div className="flex flex-wrap gap-4">
-                            <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg">
-                                <Clock className="w-5 h-5 text-accent" />
-                                <span>Due: 31st Dec</span>
-                            </div>
-                            <div className="flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg">
-                                <Shield className="w-5 h-5 text-accent" />
-                                <span>Risk Mitigation</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Audit Types */}
-            <section className="py-16 -mt-8 relative z-10">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid md:grid-cols-3 gap-6">
-                        {auditTypes.map((item, index) => (
-                            <div
-                                key={index}
-                                className="bg-white p-8 rounded-xl shadow-lg border border-neutral-200 hover:shadow-2xl transition-all"
-                            >
-                                <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center mb-4">
-                                    <item.icon className="w-6 h-6 text-white" />
-                                </div>
-                                <h3 className="text-2xl text-primary mb-3">{item.type}</h3>
-                                <p className="text-neutral-600 mb-6">{item.description}</p>
-                                <ul className="space-y-3">
-                                    {item.features.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-2">
-                                            <CheckCircle className="w-4 h-4 text-accent flex-shrink-0 mt-1" />
-                                            <span className="text-sm text-neutral-700">{feature}</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Benefits & Considerations */}
-            <section className="py-16 bg-neutral-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-12">
-                        {/* Benefits */}
-                        <div>
-                            <h2 className="text-3xl lg:text-4xl text-primary mb-6">Value of Compliance</h2>
-                            <div className="space-y-3">
-                                {benefits.map((benefit, index) => (
-                                    <div key={index} className="flex items-start gap-3 bg-white p-4 rounded-lg shadow-sm">
-                                        <CheckCircle className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                                        <span className="text-neutral-700">{benefit}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* Critical Rules */}
-                        <div>
-                            <h2 className="text-3xl lg:text-4xl text-primary mb-6">Key Regulations</h2>
-                            <div className="space-y-4">
-                                {criticalConsiderations.map((item, index) => (
-                                    <div key={index} className="bg-orange-50 p-6 rounded-lg border border-orange-200">
-                                        <div className="flex items-start gap-3">
-                                            <item.icon className="w-5 h-5 text-orange-600 flex-shrink-0 mt-0.5" />
-                                            <div>
-                                                <h3 className="text-lg text-orange-900 font-semibold mb-1">{item.title}</h3>
-                                                <p className="text-orange-800 text-sm">{item.description}</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Documents Required */}
-            <section className="py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="grid lg:grid-cols-2 gap-12">
-                        <div>
-                            <h2 className="text-3xl lg:text-4xl text-primary mb-6">Documents Required</h2>
-                            <p className="text-lg text-neutral-600 mb-6">
-                                Records to be kept ready
-                            </p>
-                            <div className="space-y-3">
-                                {documents.map((doc, index) => (
-                                    <div key={index} className="flex items-start gap-3 bg-neutral-50 p-4 rounded-lg">
-                                        <FileText className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
-                                        <span className="text-neutral-700">{doc}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div>
-                            <h2 className="text-3xl lg:text-4xl text-primary mb-6">Reconciliation Data</h2>
-                            <p className="text-lg text-neutral-600 mb-6">
-                                Information for GSTR-9C
-                            </p>
-                            <div className="bg-gradient-to-br from-primary to-secondary rounded-xl p-6 text-white">
-                                <div className="space-y-3">
-                                    {dataRequired.map((item, index) => (
-                                        <div key={index} className="flex items-start gap-3">
-                                            <CheckCircle className="w-4 h-4 text-accent flex-shrink-0 mt-1" />
-                                            <span className="text-sm text-neutral-100">{item}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            {/* Process */}
-            <section className="py-16 bg-neutral-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl lg:text-4xl text-primary mb-4">Audit Workflow</h2>
-                        <p className="text-lg text-neutral-600">Our systemic approach to GST Audit</p>
-                    </div>
-                    <div className="max-w-4xl mx-auto space-y-6">
-                        {process.map((step, index) => (
-                            <div
-                                key={index}
-                                className="bg-white rounded-xl shadow-lg border border-neutral-200 p-6 hover:shadow-2xl transition-all"
-                            >
-                                <div className="flex items-start gap-6">
-                                    <div className="w-12 h-12 bg-accent rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-lg">
-                                        {index + 1}
-                                    </div>
-                                    <div className="flex-1">
-                                        <div className="flex items-start justify-between gap-4 mb-2">
-                                            <h3 className="text-xl text-primary font-semibold">{step.step}</h3>
-                                            <span className="text-sm text-accent font-medium flex items-center gap-1 flex-shrink-0">
-                                                <Clock className="w-4 h-4" />
-                                                {step.time}
-                                            </span>
-                                        </div>
-                                        <p className="text-neutral-600">{step.description}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* Pricing Section */}
-            <section className="py-16">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-16">
-                        <h2 className="text-3xl lg:text-4xl font-bold text-primary mb-4">Professional Fees</h2>
-                        <p className="text-lg text-gray-600">Transparent pricing for GST Compliance.</p>
-                    </div>
-                    <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-                        {pricing.map((plan, index) => (
-                            <div key={index} className={`relative bg-white rounded-2xl shadow-lg border ${index === 1 ? 'border-accent shadow-xl scale-105 z-10' : 'border-neutral-200'} p-8 flex flex-col`}>
-                                {index === 1 && (
-                                    <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-accent text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg">
-                                        {plan.desc}
-                                    </div>
-                                )}
-                                <h3 className="text-xl font-bold text-gray-900 mb-6">{plan.plan}</h3>
-                                <div className="mb-8">
-                                    <span className="text-4xl font-bold text-primary">{plan.price}</span>
-                                    {plan.price !== 'Custom' && <span className="text-gray-500"></span>}
-                                </div>
-                                <ul className="space-y-4 mb-8 flex-1">
-                                    {plan.features.map((feature, idx) => (
-                                        <li key={idx} className="flex items-start gap-3 text-sm text-gray-700">
-                                            <CheckCircle className="w-5 h-5 text-accent flex-shrink-0" />
-                                            {feature}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <button
-                                    onClick={handleStartService}
-                                    className={`w-full py-3 rounded-xl font-bold transition-all ${index === 1
-                                        ? 'bg-accent text-white hover:bg-accent/90 shadow-lg hover:shadow-accent/30'
-                                        : 'bg-primary/5 text-primary hover:bg-primary hover:text-white'
-                                        }`}
-                                >
-                                    Start Compliance
-                                </button>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* FAQs */}
-            <section className="py-16">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl lg:text-4xl text-primary mb-4">Frequently Asked Questions</h2>
-                    </div>
-                    <div className="space-y-4">
-                        {faqs.map((faq, index) => (
-                            <details
-                                key={index}
-                                className="bg-white rounded-xl shadow-md border border-neutral-200 overflow-hidden group"
-                            >
-                                <summary className="px-6 py-4 cursor-pointer font-medium text-primary hover:bg-neutral-50 transition-colors list-none flex items-center justify-between">
-                                    <span>{faq.q}</span>
-                                    <ArrowRight className="w-5 h-5 transform group-open:rotate-90 transition-transform" />
-                                </summary>
-                                <div className="px-6 pb-4 text-neutral-700 leading-relaxed">
-                                    {faq.a}
-                                </div>
-                            </details>
-                        ))}
-                    </div>
-                </div>
-            </section>
-
-            {/* CTA Section */}
-            <section className="py-16 bg-gradient-to-r from-primary to-secondary text-white">
-                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-                    <h2 className="text-3xl md:text-5xl font-bold mb-6">Stay Compliant</h2>
-                    <p className="text-xl text-blue-100 mb-10">
-                        Handle Dept Audits with Confidence.
-                    </p>
-                    <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                        <button
-                            onClick={handleStartService}
-                            className="px-8 py-4 bg-accent text-white font-semibold rounded-lg hover:bg-accent/90 transition-all hover:shadow-xl transform hover:-translate-y-1 inline-flex items-center justify-center gap-2">
-                            CONSULT EXPERT
-                            <ArrowRight className="w-5 h-5" />
-                        </button>
-                    </div>
-                </div>
-            </section>
-        </div>
-    );
+    return <ServiceTemplate serviceSlug="gst-audit" serviceId={fetchedService?.id} content={content} />;
 }
-
-
-
-
-

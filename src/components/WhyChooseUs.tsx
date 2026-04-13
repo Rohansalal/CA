@@ -193,10 +193,10 @@ export function WhyChooseUs() {
                         <Award className="w-4 h-4 text-white" />
                         <span className="text-xs font-bold uppercase tracking-wide text-white">Why Choose Us</span>
                     </div>
-                    <h2 className="text-4xl lg:text-5xl font-bold text-white mb-4">
+                    <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-4">
                         Why Choose Avinash Payal & Associates?
                     </h2>
-                    <p className="text-lg text-blue-100 max-w-2xl mx-auto">
+                    <p className="text-base sm:text-lg text-blue-100 max-w-2xl mx-auto">
                         Deep financial expertise combined with a commitment to excellence.
                     </p>
                 </div>
@@ -205,14 +205,13 @@ export function WhyChooseUs() {
                 <div className="grid lg:grid-cols-2 gap-12 items-start">
 
                     {/* Left Column: Image */}
-                    <div className="order-2 lg:order-1">
-                        <div className="sticky top-8">
+                    <div className="order-1 lg:order-1">
+                        <div className="lg:sticky lg:top-8">
                             <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-slate-200">
                                 <img
-                                    // src="https://images.unsplash.com/photo-1759310610325-2c7cb621e5e3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGhhbmRzaGFrZSUyMHRydXN0fGVufDF8fHx8MTc2ODgwOTM2Nnww&ixlib=rb-4.1.0&q=80&w=1080"
                                     src='/WhyChooseUS.png'
                                     alt="Professional CA Partnership"
-                                    className="w-full h-[600px] lg:h-[800px] object-cover"
+                                    className="w-full h-[260px] sm:h-[420px] lg:h-[600px] object-cover"
                                 />
                                 {/* Overlay */}
                                 <div className="absolute inset-0 bg-gradient-to-t from-blue-900/90 via-blue-900/40 to-transparent" />
@@ -234,7 +233,7 @@ export function WhyChooseUs() {
                     </div>
 
                     {/* Right Column: Feature Boxes - Vertical Stack */}
-                    <div className="order-1 lg:order-2">
+                    <div className="order-2 lg:order-2">
                         <div className="space-y-4">
                             {features.map((feature, index) => (
                                 <div
@@ -248,7 +247,7 @@ export function WhyChooseUs() {
 
                                     {/* Content */}
                                     <div className="flex-1 min-w-0">
-                                        <h3 className="text-base font-bold text-slate-800 group-hover:text-[#136da1] transition-colors mb-1">
+                                        <h3 className="text-base sm:text-lg font-bold text-slate-800 group-hover:text-[#136da1] transition-colors mb-1">
                                             {feature.title}
                                         </h3>
                                         <p className="text-sm text-orange-600 font-bold leading-tight">

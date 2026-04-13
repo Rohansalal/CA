@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { User, Mail, Phone, Calendar, Shield, ArrowLeft, Save, Edit2, ChevronRight, CreditCard, FileText } from 'lucide-react';
+import {
+  User, Mail, Phone, Calendar, Shield, ArrowLeft, Save, Edit2, ChevronRight,
+  CreditCard, FileText, Building2, MapPin, BadgeCheck, Lock, Fingerprint,
+  Hash, Briefcase, Landmark, Inbox, Sparkles, ExternalLink, AlertCircle,
+  CheckCircle2, Clock, TrendingUp, Award
+} from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export const UserProfile: React.FC = () => {
     const { username } = useParams<{ username: string }>();
@@ -98,117 +104,145 @@ export const UserProfile: React.FC = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#F1F5F9]/50 font-outfit">
+        <div className="min-h-screen bg-[#F9FAFB] font-sans">
             {/* Header / Navigation */}
-            <header className="bg-[#F8FAFC]/95 backdrop-blur-md border-b border-gray-100 h-20 px-8 md:px-12 flex items-center justify-between sticky top-0 z-40">
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={() => navigate('/dashboard')}
-                        className="p-2 hover:bg-gray-100 rounded-xl transition-all group"
-                        title="Back to Dashboard"
-                    >
-                        <ArrowLeft className="w-5 h-5 text-gray-400 group-hover:text-primary group-hover:-translate-x-1 transition-all" />
-                    </button>
-                    <div>
-                        <h2 className="text-xl font-black text-[#0b1f3a] tracking-tight">Identity Profile</h2>
-                        <p className="text-[10px] font-bold text-gray-600 uppercase tracking-widest">Secure Member Workspace</p>
+            <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => navigate('/dashboard')}
+                            className="p-2 hover:bg-gray-100 rounded-lg transition-colors group"
+                            title="Back to Dashboard"
+                        >
+                            <ArrowLeft className="w-5 h-5 text-gray-500 group-hover:text-gray-700 transition-colors" />
+                        </button>
+                        <div className="h-6 w-px bg-gray-200" />
+                        <div>
+                            <h1 className="text-lg font-semibold text-gray-900">My Profile</h1>
+                            <p className="text-xs text-gray-500">Manage your account settings</p>
+                        </div>
                     </div>
-                </div>
 
-                <div className="flex items-center gap-4">
-                    <button
-                        onClick={() => isEditing ? handleSave() : setIsEditing(true)}
-                        disabled={loading}
-                        className={`flex items-center gap-2 px-6 py-2.5 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest shadow-lg ${isEditing
-                            ? 'bg-emerald-500 text-black hover:bg-emerald-600 shadow-emerald-500/20'
-                            : 'bg-[#0b1f3a] text-black hover:bg-primary hover:text-black shadow-blue-500/20'
-                            } ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:-translate-y-0.5 active:scale-95'}`}
-                    >
-                        {loading ? (
-                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                        ) : isEditing ? (
-                            <>
-                                <Save className="w-3.5 h-3.5" /> Commit Changes
-                            </>
-                        ) : (
-                            <>
-                                <Edit2 className="w-3.5 h-3.5" /> Update Personal Data
-                            </>
-                        )}
-                    </button>
+                    <div className="flex items-center gap-3">
+                        <button
+                            onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+                            disabled={loading}
+                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${isEditing
+                                ? 'bg-emerald-600 text-white hover:bg-emerald-700 shadow-sm'
+                                : 'bg-gray-900 text-white hover:bg-gray-800 shadow-sm'
+                                } ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:-translate-y-0.5 active:scale-95'}`}
+                        >
+                            {loading ? (
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                            ) : isEditing ? (
+                                <>
+                                    <Save className="w-4 h-4" /> Save Changes
+                                </>
+                            ) : (
+                                <>
+                                    <Edit2 className="w-4 h-4" /> Edit Profile
+                                </>
+                            )}
+                        </button>
+                    </div>
                 </div>
             </header>
 
-            <main className="max-w-7xl mx-auto p-6 md:p-10 lg:p-12">
-                {/* Hero Profile Section */}
-                <div className="relative overflow-hidden rounded-[2rem] md:rounded-[2.5rem] bg-[#0b1f3a] p-6 md:p-14 text-black shadow-2xl mb-8 md:mb-12 border border-blue-900/50">
-                    <div className="absolute top-0 right-0 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-primary/20 rounded-full -mr-20 md:-mr-40 -mt-20 md:-mt-40 blur-[50px] md:blur-[100px]"></div>
-                    <div className="absolute bottom-0 left-0 w-32 md:w-64 h-32 md:h-64 bg-emerald-500/10 rounded-full -ml-16 md:-ml-32 -mb-16 md:-mb-32 blur-[40px] md:blur-[80px]"></div>
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+                {/* Hero Profile Section - Redesigned */}
+                <div className="relative overflow-hidden rounded-2xl md:rounded-3xl bg-gradient-to-br from-[#0b1f3a] via-[#0f2744] to-[#1a3a5c] p-6 md:p-10 lg:p-12 text-white shadow-xl mb-8 md:mb-12">
+                    <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-blue-500/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
+                    <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-500/10 rounded-full -ml-24 -mb-24 blur-3xl"></div>
 
-                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-10">
+                    <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 md:gap-8">
                         <div className="relative">
-                            <div className="w-24 h-24 md:w-40 md:h-40 bg-white/10 backdrop-blur-md rounded-[1.5rem] md:rounded-[2.5rem] p-4 border border-white/20 shadow-2xl flex items-center justify-center text-4xl md:text-6xl font-black text-black group cursor-pointer overflow-hidden">
-                                <div className="absolute inset-0 bg-gradient-to-tr from-primary/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                                <span className="relative z-10">{formData.name.charAt(0).toUpperCase()}</span>
+                            <div className="w-24 h-24 md:w-32 md:h-32 bg-white rounded-2xl shadow-2xl flex items-center justify-center text-4xl md:text-5xl font-bold text-[#0b1f3a] ring-4 ring-white/20">
+                                {formData.name.charAt(0).toUpperCase()}
                             </div>
-                            <div className="absolute -bottom-2 -right-2 w-8 h-8 md:w-10 md:h-10 bg-emerald-500 rounded-xl md:rounded-2xl flex items-center justify-center shadow-lg border-2 md:border-4 border-[#0b1f3a]">
-                                <Shield className="w-4 h-4 md:w-5 md:h-5 text-[#0b1f3a]" />
+                            <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-emerald-500 rounded-xl flex items-center justify-center shadow-lg ring-2 ring-white">
+                                <BadgeCheck className="w-5 h-5 text-white" />
                             </div>
                         </div>
 
                         <div className="flex-1 text-center md:text-left">
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-emerald-500/20 border border-emerald-500/30 rounded-full text-[9px] font-bold uppercase tracking-widest text-emerald-400 mb-3 md:mb-4">
-                                <span className="relative flex h-1.5 w-1.5">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-3">
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 border border-emerald-400/30 rounded-full text-xs font-semibold text-emerald-300">
+                                    <span className="relative flex h-2 w-2">
+                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                        <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+                                    </span>
+                                    Verified
                                 </span>
-                                Verified Identity
+                                <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-500/20 border border-blue-400/30 rounded-full text-xs font-semibold text-blue-300">
+                                    <Shield className="w-3.5 h-3.5" />
+                                    {user?.role}
+                                </span>
                             </div>
-                            <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-2 text-black">{user?.name}</h1>
-                            <div className="flex flex-wrap justify-center md:justify-start gap-2 md:gap-4 text-xs md:text-sm text-gray-200 font-medium">
-                                <span className="flex items-center gap-1.5"><Mail className="w-3.5 h-3.5 md:w-4 md:h-4" /> {user?.email}</span>
-                                <span className="hidden md:block w-1 h-1 bg-gray-500 rounded-full my-auto"></span>
-                                <span className="flex items-center gap-1.5"><Shield className="w-3.5 h-3.5 md:w-4 md:h-4" /> {user?.role} Account</span>
+                            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mb-3 text-white">{user?.name}</h1>
+                            <div className="flex flex-wrap justify-center md:justify-start gap-x-4 gap-y-2 text-sm text-gray-300">
+                                <span className="flex items-center gap-2"><Mail className="w-4 h-4 text-gray-400" /> {user?.email}</span>
                                 {user?.phone && (
-                                    <>
-                                        <span className="hidden md:block w-1 h-1 bg-gray-500 rounded-full my-auto"></span>
-                                        <span className="flex items-center gap-1.5"><Phone className="w-3.5 h-3.5 md:w-4 md:h-4" /> {user.phone}</span>
-                                    </>
+                                    <span className="flex items-center gap-2"><Phone className="w-4 h-4 text-gray-400" /> {user.phone}</span>
                                 )}
                             </div>
+                        </div>
+
+                        <div className="hidden md:flex flex-col gap-2">
+                            <button
+                                onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+                                disabled={loading}
+                                className={`flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold transition-all duration-200 ${isEditing
+                                    ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                                    : 'bg-white text-[#0b1f3a] hover:bg-gray-100'
+                                    } ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:-translate-y-0.5 active:scale-95 shadow-lg'}`}
+                            >
+                                {isEditing ? <Save className="w-4 h-4" /> : <Edit2 className="w-4 h-4" />}
+                                {isEditing ? 'Save Changes' : 'Edit Profile'}
+                            </button>
                         </div>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
-                    {/* Sidebar Information / Navigation */}
-                    <div className="space-y-8">
-                        <div className="bg-white rounded-[2rem] p-6 md:p-8 border border-gray-100 shadow-sm border-l-4 border-l-primary">
-                            <h3 className="text-sm font-black text-[#0b1f3a] uppercase tracking-widest mb-6 flex items-center gap-2">
-                                <Shield className="w-4 h-4 text-primary" /> Governance Status
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+                    {/* Sidebar - Status Cards */}
+                    <div className="space-y-6">
+                        {/* Account Status Card */}
+                        <div className="bg-white rounded-xl p-6 border border-gray-200 shadow-sm hover:shadow-md transition-shadow duration-200">
+                            <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                <Shield className="w-4 h-4 text-emerald-500" /> Account Status
                             </h3>
-                            <div className="space-y-4">
-                                <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-100">
-                                    <p className="text-[10px] font-black text-emerald-800 uppercase tracking-widest mb-1">KYC STATUS</p>
-                                    <p className="text-sm font-bold text-emerald-900">Fully Authenticated</p>
+                            <div className="space-y-3">
+                                <div className="flex items-center justify-between p-3 bg-emerald-50 rounded-lg border border-emerald-100">
+                                    <div>
+                                        <p className="text-xs font-medium text-emerald-700 uppercase">KYC Status</p>
+                                        <p className="text-sm font-semibold text-emerald-900">Verified</p>
+                                    </div>
+                                    <CheckCircle2 className="w-5 h-5 text-emerald-500" />
                                 </div>
-                                <div className="p-4 bg-blue-50 rounded-2xl border border-blue-100">
-                                    <p className="text-[10px] font-black text-blue-800 uppercase tracking-widest mb-1">MEMBER SINCE</p>
-                                    <p className="text-sm font-bold text-blue-900">{new Date(user?.createdAt || Date.now()).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</p>
+                                <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg border border-blue-100">
+                                    <div>
+                                        <p className="text-xs font-medium text-blue-700 uppercase">Member Since</p>
+                                        <p className="text-sm font-semibold text-blue-900">{new Date(user?.createdAt || Date.now()).toLocaleDateString(undefined, { month: 'long', year: 'numeric' })}</p>
+                                    </div>
+                                    <Calendar className="w-5 h-5 text-blue-500" />
                                 </div>
                             </div>
                         </div>
 
-                        <div className="bg-white rounded-[2rem] p-6 md:p-8 border border-gray-100 shadow-sm">
-                            <h3 className="text-sm font-black text-[#0b1f3a] uppercase tracking-widest mb-4">Security Insights</h3>
-                            <p className="text-xs text-gray-800 leading-relaxed font-bold">
-                                Your account is encrypted with 256-bit SSL technology. All business documents are stored in decentralized cloud nodes.
-                            </p>
-                            <div className="mt-6 pt-6 border-t border-gray-50 flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
-                                    <Shield className="w-4 h-4" />
+                        {/* Security Insights Card - Visually Distinct */}
+                        <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl p-6 border border-emerald-200 shadow-sm">
+                            <div className="flex items-center gap-2 mb-3">
+                                <div className="w-8 h-8 bg-emerald-100 rounded-lg flex items-center justify-center">
+                                    <Lock className="w-4 h-4 text-emerald-600" />
                                 </div>
-                                <span className="text-[10px] font-black text-gray-900 uppercase tracking-widest">Encrypted Data</span>
+                                <h3 className="text-sm font-semibold text-emerald-900">Security Insights</h3>
+                            </div>
+                            <p className="text-xs text-emerald-700 leading-relaxed mb-4">
+                                Your account is protected with 256-bit SSL encryption. All documents are stored securely with end-to-end encryption.
+                            </p>
+                            <div className="flex items-center gap-2 text-xs text-emerald-600">
+                                <Fingerprint className="w-4 h-4" />
+                                <span className="font-medium">Biometric Ready</span>
                             </div>
                         </div>
                     </div>
@@ -287,91 +321,162 @@ export const UserProfile: React.FC = () => {
                         </div>
 
                         {/* Tax Credentials */}
-                        <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 border border-gray-100 shadow-sm relative overflow-hidden group">
+                        <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 border border-gray-100 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow duration-200">
+                            <div className="absolute top-0 right-0 w-32 md:w-40 h-32 md:h-40 bg-orange-500/5 rounded-full -mr-16 -mt-16 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
                             <div className="flex items-center gap-3 mb-8">
                                 <div className="w-1.5 h-5 bg-[#ee7228] rounded-full"></div>
                                 <h3 className="text-lg md:text-xl font-black text-[#0b1f3a] tracking-tight">Tax Credentials</h3>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                {/* GSTIN */}
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-1">GST Identification (GSTIN)</label>
-                                    <input
-                                        type="text"
-                                        disabled={!isEditing}
-                                        value={formData.gstNumber}
-                                        onChange={(e) => setFormData({ ...formData, gstNumber: e.target.value })}
-                                        className="w-full h-14 px-6 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:bg-white focus:border-primary/30 transition-all outline-none font-bold text-[#0b1f3a] disabled:opacity-50 font-mono tracking-wider"
-                                        placeholder="27AAAAA0000A1Z5"
-                                    />
+                                    {isEditing ? (
+                                        <input
+                                            type="text"
+                                            value={formData.gstNumber}
+                                            onChange={(e) => setFormData({ ...formData, gstNumber: e.target.value })}
+                                            className="w-full h-14 px-6 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:bg-white focus:border-primary/30 transition-all outline-none font-bold text-[#0b1f3a] font-mono tracking-wider"
+                                            placeholder="27AAAAA0000A1Z5"
+                                        />
+                                    ) : (
+                                        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                            <div className="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center shrink-0">
+                                                <Hash className="w-5 h-5 text-orange-600" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-500">GST Number</p>
+                                                <p className="text-base font-semibold text-gray-900 font-mono tracking-wider">{formData.gstNumber || 'Not set'}</p>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
+
+                                {/* PAN */}
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-1">Permanent Account (PAN)</label>
-                                    <input
-                                        type="text"
-                                        disabled={!isEditing}
-                                        value={formData.panNumber}
-                                        onChange={(e) => setFormData({ ...formData, panNumber: e.target.value })}
-                                        className="w-full h-14 px-6 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:bg-white focus:border-primary/30 transition-all outline-none font-bold text-[#0b1f3a] disabled:opacity-50 font-mono tracking-wider"
-                                        placeholder="ABCDE1234F"
-                                    />
+                                    {isEditing ? (
+                                        <input
+                                            type="text"
+                                            value={formData.panNumber}
+                                            onChange={(e) => setFormData({ ...formData, panNumber: e.target.value })}
+                                            className="w-full h-14 px-6 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:bg-white focus:border-primary/30 transition-all outline-none font-bold text-[#0b1f3a] font-mono tracking-wider"
+                                            placeholder="ABCDE1234F"
+                                        />
+                                    ) : (
+                                        <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                            <div className="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center shrink-0">
+                                                <CreditCard className="w-5 h-5 text-amber-600" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-medium text-gray-500">PAN Number</p>
+                                                <p className="text-base font-semibold text-gray-900 font-mono tracking-wider">{formData.panNumber || 'Not set'}</p>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>
 
                         {/* Location / Office */}
-                        <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 border border-gray-100 shadow-sm">
+                        <div className="bg-white rounded-[2rem] md:rounded-[2.5rem] p-6 md:p-10 border border-gray-100 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow duration-200">
+                            <div className="absolute top-0 right-0 w-32 md:w-40 h-32 md:h-40 bg-blue-500/5 rounded-full -mr-16 -mt-16 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+
                             <div className="flex items-center gap-3 mb-8">
                                 <div className="w-1.5 h-5 bg-blue-500 rounded-full"></div>
                                 <h3 className="text-lg md:text-xl font-black text-[#0b1f3a] tracking-tight">Registered Office</h3>
                             </div>
 
                             <div className="space-y-8">
+                                {/* Address */}
                                 <div className="space-y-2">
                                     <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-1">Physical Address</label>
-                                    <textarea
-                                        rows={2}
-                                        disabled={!isEditing}
-                                        value={formData.address}
-                                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                        className="w-full p-6 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:bg-white focus:border-primary/30 transition-all outline-none font-bold text-[#0b1f3a] disabled:opacity-50 resize-none"
-                                        placeholder="Building, Street, Area..."
-                                    />
+                                    {isEditing ? (
+                                        <textarea
+                                            rows={2}
+                                            value={formData.address}
+                                            onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                            className="w-full p-6 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:bg-white focus:border-primary/30 transition-all outline-none font-bold text-[#0b1f3a] resize-none"
+                                            placeholder="Building, Street, Area..."
+                                        />
+                                    ) : (
+                                        <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                            <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
+                                                <MapPin className="w-5 h-5 text-blue-600" />
+                                            </div>
+                                            <div className="flex-1">
+                                                <p className="text-sm font-medium text-gray-500">Street Address</p>
+                                                <p className="text-base font-semibold text-gray-900">{formData.address || 'Not set'}</p>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                    {/* City */}
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-1">City Hub</label>
-                                        <input
-                                            type="text"
-                                            disabled={!isEditing}
-                                            value={formData.city}
-                                            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                                            className="w-full h-14 px-6 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:bg-white focus:border-primary/30 transition-all outline-none font-bold text-[#0b1f3a] disabled:opacity-50"
-                                            placeholder="City"
-                                        />
+                                        {isEditing ? (
+                                            <input
+                                                type="text"
+                                                value={formData.city}
+                                                onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                                                className="w-full h-14 px-6 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:bg-white focus:border-primary/30 transition-all outline-none font-bold text-[#0b1f3a]"
+                                                placeholder="City"
+                                            />
+                                        ) : (
+                                            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                                <Building2 className="w-5 h-5 text-gray-400 shrink-0" />
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-500">City</p>
+                                                    <p className="text-base font-semibold text-gray-900">{formData.city || 'Not set'}</p>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
+                                    {/* State */}
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-1">State Zone</label>
-                                        <input
-                                            type="text"
-                                            disabled={!isEditing}
-                                            value={formData.state}
-                                            onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                                            className="w-full h-14 px-6 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:bg-white focus:border-primary/30 transition-all outline-none font-bold text-[#0b1f3a] disabled:opacity-50"
-                                            placeholder="State"
-                                        />
+                                        {isEditing ? (
+                                            <input
+                                                type="text"
+                                                value={formData.state}
+                                                onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                                                className="w-full h-14 px-6 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:bg-white focus:border-primary/30 transition-all outline-none font-bold text-[#0b1f3a]"
+                                                placeholder="State"
+                                            />
+                                        ) : (
+                                            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                                <Landmark className="w-5 h-5 text-gray-400 shrink-0" />
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-500">State</p>
+                                                    <p className="text-base font-semibold text-gray-900">{formData.state || 'Not set'}</p>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
+                                    {/* Pincode */}
                                     <div className="space-y-2">
                                         <label className="text-[10px] font-black text-gray-900 uppercase tracking-widest px-1">Postal Code</label>
-                                        <input
-                                            type="text"
-                                            disabled={!isEditing}
-                                            value={formData.pincode}
-                                            onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
-                                            className="w-full h-14 px-6 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:bg-white focus:border-primary/30 transition-all outline-none font-bold text-[#0b1f3a] disabled:opacity-50"
-                                            placeholder="000 000"
-                                        />
+                                        {isEditing ? (
+                                            <input
+                                                type="text"
+                                                value={formData.pincode}
+                                                onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
+                                                className="w-full h-14 px-6 bg-gray-50 border border-gray-100 rounded-2xl focus:ring-4 focus:ring-primary/10 focus:bg-white focus:border-primary/30 transition-all outline-none font-bold text-[#0b1f3a]"
+                                                placeholder="000 000"
+                                            />
+                                        ) : (
+                                            <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100">
+                                                <MapPin className="w-5 h-5 text-gray-400 shrink-0" />
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-500">PIN Code</p>
+                                                    <p className="text-base font-semibold text-gray-900">{formData.pincode || 'Not set'}</p>
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -426,12 +531,22 @@ const PaymentHistoryList = () => {
 
     if (payments.length === 0) {
         return (
-            <div className="bg-white rounded-[2.5rem] p-8 md:p-16 border border-dashed border-gray-200 text-center shadow-inner">
-                <div className="w-20 h-20 bg-gray-50 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                    <CreditCard className="w-8 h-8 text-gray-300" />
+            <div className="bg-white rounded-2xl md:rounded-3xl p-8 md:p-12 border border-gray-200 text-center">
+                <div className="w-20 h-20 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <Inbox className="w-10 h-10 text-indigo-400" />
                 </div>
-                <h4 className="text-xl font-black text-[#0b1f3a] tracking-tight mb-2">Clean Ledger</h4>
-                <p className="text-sm text-gray-800 font-bold">No service history or transactions found in your account.</p>
+                <h4 className="text-xl font-semibold text-gray-900 mb-2">No Activity Yet</h4>
+                <p className="text-sm text-gray-500 max-w-md mx-auto mb-6">
+                    Start using services to see your transactions here. Explore our audit and tax services to get started.
+                </p>
+                <button
+                    onClick={() => window.location.href = '/services'}
+                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-gray-900 text-white text-sm font-medium rounded-xl hover:bg-gray-800 transition-all hover:-translate-y-0.5"
+                >
+                    <Sparkles className="w-4 h-4" />
+                    Explore Services
+                    <ExternalLink className="w-3.5 h-3.5" />
+                </button>
             </div>
         );
     }

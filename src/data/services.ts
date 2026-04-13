@@ -1,5 +1,5 @@
 import { 
-  Building2, Receipt, Calculator, PieChart, Landmark 
+  Building2, Receipt, Calculator, PieChart, Landmark, FileText 
 } from 'lucide-react';
 import React from 'react';
 
@@ -63,30 +63,32 @@ export const SERVICE_CATEGORIES: ServiceCategory[] = [
     ]
   },
   {
+    id: 'roc-mca-services',
+    title: 'ROC / MCA Services',
+    route: '/services/roc-mca-services',
+    icon: FileText,
+    color: 'blue',
+    subServices: [
+      { id: 'change-directors-kmp', name: 'Change in Directors/KMP', route: '/services/business-compliances/change-directors-kmp' },
+      { id: 'change-registered-office', name: 'Change in Registered Office', route: '/services/business-compliances/change-registered-office' },
+      { id: 'annual-filing-company', name: 'Annual Filing - Company', route: '/services/business-compliances/annual-filing-company' },
+      { id: 'din', name: 'DIN', route: '/services/business-compliances/din-dir3-kyc' },
+      { id: 'dir3-kyc', name: 'DIR3-KYC', route: '/services/business-compliances/din-dir3-kyc' },
+      { id: 'dir-wkyc', name: 'DIR-WKYC', route: '/services/business-compliances/din-dir3-kyc' },
+      { id: 'minutes-book', name: 'Minutes Book', route: '/services/business-compliances/minutes-book' },
+      { id: 'statutory-record', name: 'Statutory Record', route: '/services/business-compliances/statutory-record' },
+      { id: 'annual-filing-llp', name: 'Annual Filing - LLP', route: '/services/business-compliances/annual-filing-llp' },
+    ]
+  },
+  {
     id: 'accounting-services',
     title: 'Accounting Services',
-    route: '/services/business-compliances/book-keeping',
+    route: '/services/accounting-services',
     icon: Calculator,
     color: 'blue',
     subServices: [
       { id: 'book-keeping', name: 'Book Keeping', route: '/services/business-compliances/book-keeping' },
       { id: 'book-supervision', name: 'Book Supervision', route: '/services/business-compliances/book-supervision' },
-      {
-        id: 'roc-mca-compliance',
-        name: 'ROC / MCA Compliance',
-        route: '/services/roc-mca-compliance',
-        subServices: [
-          { id: 'change-directors-kmp', name: 'Change in directors/KMP', route: '/services/business-compliances/change-directors-kmp' },
-          { id: 'change-registered-office', name: 'Change in Registered office', route: '/services/business-compliances/change-registered-office' },
-          { id: 'annual-filing-company', name: 'Annual filling-Company', route: '/services/business-compliances/annual-filing-company' },
-          { id: 'din', name: 'DIN', route: '/services/business-compliances/din-dir3-kyc' },
-          { id: 'dir3-kyc', name: 'DIR3-KYC', route: '/services/business-compliances/din-dir3-kyc' },
-          { id: 'dir-wkyc', name: 'DIR-WKYC', route: '/services/business-compliances/din-dir3-kyc' },
-          { id: 'minutes-book', name: 'Minutes Book', route: '/services/business-compliances/minutes-book' },
-          { id: 'statutory-record', name: 'Statutory record', route: '/services/business-compliances/statutory-record' },
-          { id: 'annual-filing-llp', name: 'Annual filling-LLP', route: '/services/business-compliances/annual-filing-llp' },
-        ]
-      },
     ]
   },
   {
